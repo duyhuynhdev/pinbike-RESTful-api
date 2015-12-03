@@ -1,0 +1,3 @@
+[submodule "src/main/java/me/pinbike/sharedjava"]
+	path = src/main/java/me/pinbike/sharedjava
+	url = git@gitlab.com:funride/shared-java.git

@@ -15,9 +15,9 @@ import java.io.IOException;
 public class MainService {
     @POST
     @Path("/")
-    @Consumes(MediaType.)
+    @Consumes(MediaType.TEXT_HTML)
     public Response main() throws IOException {
-        return Response.status(200).entity("").build();
+        return Response.status(200).entity("PINBIKE EXPRESS").build();
     }
 
 

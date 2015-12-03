@@ -1,4 +1,4 @@
-package me.pinbike.sharedjava;
+package me.pinbike.util;
 
 import com.pinride.pinbike.framework.util.JSONUtil;
 import me.pinbike.util.PinBikeConstant;

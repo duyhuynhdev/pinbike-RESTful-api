@@ -1,7 +1,7 @@
 package me.pinbike.provider.exception;
 
 
-import me.pinbike.sharedjava.PinBikeResponse;
+import me.pinbike.util.PinBikeResponse;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.PinBikeConstant;
 import org.apache.log4j.Logger;
