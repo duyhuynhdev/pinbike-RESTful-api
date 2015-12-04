@@ -1,6 +1,5 @@
 package me.pinbike.provider.exception;
 
-import com.pinride.pinbike.framework.util.JSONUtil;
 import me.pinbike.util.PinBikeConstant;
 
 import javax.validation.ValidationException;
@@ -41,8 +40,4 @@ public class PinBikeException extends ValidationException {
         this.messageCode = messageCode;
     }
 
-    @Override
-    public String toString() {
-        return JSONUtil.Serialize(this);
-    }
 }

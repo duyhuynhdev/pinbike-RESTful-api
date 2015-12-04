@@ -1,0 +1,25 @@
+<constraint-mappings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/mapping validation-mapping-1.0.xsd"
+                     xmlns="http://jboss.org/xml/ns/javax/validation/mapping">
+    <default-package>me.pinbike.sharedjava.validation</default-package>
+    <!--@IsExist-->
+    <constraint-definition annotation="me.pinbike.sharedjava.validation.annotation.IsExist">
+        <validated-by include-existing-validators="false">
+            <value>me.pinbike.util.validator.IsExistValidator</value>
+        </validated-by>
+    </constraint-definition>
+    <!--@NotEmpty-->
+    <constraint-definition annotation="me.pinbike.sharedjava.validation.annotation.NotEmpty">
+        <validated-by include-existing-validators="false">
+            <value>me.pinbike.util.validator.NotEmptyValidator</value>
+        </validated-by>
+    </constraint-definition>
+    <!--@Range-->
+    <constraint-definition annotation="me.pinbike.sharedjava.validation.annotation.Range">
+        <validated-by include-existing-validators="false">
+            <value>me.pinbike.util.validator.DoubleRangeValidator</value>
+            <value>me.pinbike.util.validator.LongRangeValidator</value>
+        </validated-by>
+
+    </constraint-definition>
+</constraint-mappings>

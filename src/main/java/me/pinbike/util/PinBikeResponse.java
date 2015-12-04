@@ -1,9 +1,5 @@
 package me.pinbike.util;
 
-import com.pinride.pinbike.framework.util.JSONUtil;
-import me.pinbike.util.PinBikeConstant;
-
-
 /**
  * Created by hpduy17 on 10/13/15.
  */
@@ -40,10 +36,6 @@ public class PinBikeResponse<T> {
         this.message = message;
     }
 
-    @Override
-    public String toString() {
-        return JSONUtil.Serialize(this);
-    }
 
     public boolean isSuccess() {
         return success;
