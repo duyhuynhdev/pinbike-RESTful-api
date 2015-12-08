@@ -3,19 +3,19 @@ package me.pinbike.util;
 /**
  * Created by hpduy17 on 10/13/15.
  */
-public class PinBikeResponse<T> {
+public class ResponseWrapper<T> {
     protected boolean success = false;
     protected int messageCode;
     protected String message = "";
     protected T result = null;
 
-    public PinBikeResponse() {
+    public ResponseWrapper() {
         this.success = true;
         this.messageCode = PinBikeConstant.MessageCode.Successfully;
         this.message = "Successfully";
     }
 
-    public PinBikeResponse(T result) {
+    public ResponseWrapper(T result) {
         this.success = true;
         this.messageCode = PinBikeConstant.MessageCode.Successfully;
         this.message = "Successfully";
@@ -23,14 +23,14 @@ public class PinBikeResponse<T> {
     }
 
 
-    public PinBikeResponse(int messageCode, T result) {
+    public ResponseWrapper(int messageCode, T result) {
         this.success = true;
         this.messageCode = messageCode;
         this.message = "Successfully";
         this.result = result;
     }
 
-    public PinBikeResponse(boolean success, int messageCode, String message) {
+    public ResponseWrapper(boolean success, int messageCode, String message) {
         this.success = success;
         this.messageCode = messageCode;
         this.message = message;

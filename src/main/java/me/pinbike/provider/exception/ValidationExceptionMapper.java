@@ -1,9 +1,9 @@
 package me.pinbike.provider.exception;
 
 
-import me.pinbike.util.PinBikeResponse;
+import me.pinbike.sharedjava.model.constanst.MessageCode;
 import me.pinbike.util.LogUtil;
-import me.pinbike.util.PinBikeConstant;
+import me.pinbike.util.ResponseWrapper;
 import org.apache.log4j.Logger;
 import org.hibernate.validator.method.MethodConstraintViolation;
 import org.hibernate.validator.method.MethodConstraintViolationException;
@@ -30,13 +30,13 @@ public class ValidationExceptionMapper implements ExceptionMapper<ValidationExce
     @Override
     public Response toResponse(ValidationException exception) {
         String exMess = exception.getMessage();
-        int messageCode = PinBikeConstant.MessageCode.Element_is_invalid;
+        int messageCode = MessageCode.ELEMENT_INVALID;
         if (exception instanceof MethodConstraintViolationException) {
             MethodConstraintViolationException methodConstraintViolationException = MethodConstraintViolationException.class.cast(exception);
-            Set<MethodConstraintViolation<?>> contraints = methodConstraintViolationException.getConstraintViolations();
-            if (contraints != null && !contraints.isEmpty()) {
+            Set<MethodConstraintViolation<?>> constraints = methodConstraintViolationException.getConstraintViolations();
+            if (constraints != null && !constraints.isEmpty()) {
                 exMess = "";
-                for (MethodConstraintViolation c : contraints) {
+                for (MethodConstraintViolation c : constraints) {
                     exMess += c.getMessage() + "\n";
                 }
             }
@@ -46,7 +46,7 @@ public class ValidationExceptionMapper implements ExceptionMapper<ValidationExce
             exMess = pinBikeException.getMessage();
             messageCode = pinBikeException.getMessageCode();
         }
-        PinBikeResponse res = new PinBikeResponse(false, messageCode, exMess);
+        ResponseWrapper res = new ResponseWrapper(false, messageCode, exMess);
         logger.error(res.toString());
         return Response.status(200).
                 entity(res).

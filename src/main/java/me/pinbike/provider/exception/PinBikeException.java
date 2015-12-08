@@ -1,6 +1,6 @@
 package me.pinbike.provider.exception;
 
-import me.pinbike.util.PinBikeConstant;
+import me.pinbike.sharedjava.model.constanst.MessageCode;
 
 import javax.validation.ValidationException;
 
@@ -8,7 +8,7 @@ import javax.validation.ValidationException;
  * Created by hpduy17 on 10/26/15.
  */
 public class PinBikeException extends ValidationException {
-    private int messageCode = PinBikeConstant.MessageCode.Element_is_invalid;
+    private int messageCode = MessageCode.ELEMENT_INVALID;
 
     public PinBikeException() {
     }
