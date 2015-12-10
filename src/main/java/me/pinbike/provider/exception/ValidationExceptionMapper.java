@@ -1,7 +1,7 @@
 package me.pinbike.provider.exception;
 
 
-import me.pinbike.sharedjava.model.constanst.MessageCode;
+import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.ResponseWrapper;
 import org.apache.log4j.Logger;
@@ -30,7 +30,7 @@ public class ValidationExceptionMapper implements ExceptionMapper<ValidationExce
     @Override
     public Response toResponse(ValidationException exception) {
         String exMess = exception.getMessage();
-        int messageCode = MessageCode.ELEMENT_INVALID;
+        int messageCode = AC.MessageCode.ELEMENT_INVALID;
         if (exception instanceof MethodConstraintViolationException) {
             MethodConstraintViolationException methodConstraintViolationException = MethodConstraintViolationException.class.cast(exception);
             Set<MethodConstraintViolation<?>> constraints = methodConstraintViolationException.getConstraintViolations();

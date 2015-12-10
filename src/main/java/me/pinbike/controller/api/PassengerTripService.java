@@ -37,9 +37,10 @@ public class PassengerTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.createTrip(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<CreateTripAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>(responseContent);
+        return response;
     }
 
 
@@ -54,9 +55,10 @@ public class PassengerTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.cancelTrip(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<CancelTripAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>();
+        return response;
     }
 
 
@@ -71,24 +73,10 @@ public class PassengerTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.requestDriver(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
-        return new ResponseWrapper<>(responseContent);
-    }
+        ResponseWrapper<RequestDriverAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-    @POST
-    @Path("/ReceivedDriverAcceptAPI")
-    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
-    public ResponseWrapper<ReceivedDriverAcceptAPI.Response> ReceivedDriverAcceptAPI(@Valid RequestWrapper<ReceivedDriverAcceptAPI.Request> request) throws IOException {
-        IPassengerTripAdapter adapter = new PassengerTripAdapterTemp();
-
-        ReceivedDriverAcceptAPI.Response responseContent;
-        ReceivedDriverAcceptAPI.Request requestContent = request.requestContent;
-
-        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
-        responseContent = adapter.receivedDriverAccept(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
-
-        return new ResponseWrapper<>();
+        return response;
     }
 
     @POST
@@ -102,9 +90,10 @@ public class PassengerTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.getDriverUpdated(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<GetDriverUpdatedAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>(responseContent);
+        return response;
     }
 
 }

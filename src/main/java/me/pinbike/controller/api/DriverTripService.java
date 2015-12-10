@@ -26,7 +26,6 @@ public class DriverTripService {
 
     private Logger logger = LogUtil.getLogger(this.getClass());
 
-
     @POST
     @Path("/GetRequestFromPassengerAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
@@ -39,16 +38,16 @@ public class DriverTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.getRequestFromPassenger(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<GetRequestFromPassengerAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>(responseContent);
+        return response;
     }
 
     @POST
     @Path("/ArrivedPickUpLocationAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<ArrivedPickUpLocationAPI.Response> ArrivedPickUpLocationAPI(@Valid RequestWrapper<ArrivedPickUpLocationAPI.Request> request) throws IOException {
-
         IDriverTripAdapter adapter = new DriverTripAdapterTemp();
 
         ArrivedPickUpLocationAPI.Response responseContent;
@@ -56,10 +55,10 @@ public class DriverTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.arrivedPickUpLocation(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<ArrivedPickUpLocationAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-
-        return new ResponseWrapper<>();
+        return response;
     }
 
     @POST
@@ -74,9 +73,10 @@ public class DriverTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.acceptPassengerRequest(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<AcceptPassengerRequestAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>();
+        return response;
     }
 
     @POST
@@ -91,15 +91,16 @@ public class DriverTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.destroyTrip(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<DestroyTripAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>();
+        return response;
     }
 
     @POST
     @Path("/GetPassengerUpdatedAPI") //TODO: LONG POLLING
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
-    public ResponseWrapper<GetPassengerUpdatedAPI.Response> GetPartnerUpdatedAPI(@Valid RequestWrapper<GetPassengerUpdatedAPI.Request> request) throws IOException {
+    public ResponseWrapper<GetPassengerUpdatedAPI.Response> GetPassengerUpdatedAPI(@Valid RequestWrapper<GetPassengerUpdatedAPI.Request> request) throws IOException {
         IDriverTripAdapter adapter = new DriverTripAdapterTemp();
 
         GetPassengerUpdatedAPI.Response responseContent;
@@ -107,9 +108,10 @@ public class DriverTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.getPassengerUpdated(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<GetPassengerUpdatedAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>();
+        return response;
     }
 
     @POST
@@ -123,9 +125,10 @@ public class DriverTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.startTrip(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<StartTripAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>();
+        return response;
     }
 
     @POST
@@ -139,9 +142,10 @@ public class DriverTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.endTrip(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<EndTripAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>();
+        return response;
     }
 
     @POST
@@ -155,9 +159,10 @@ public class DriverTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.ratingTrip(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<RatingTripAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>();
+        return response;
     }
 }
 

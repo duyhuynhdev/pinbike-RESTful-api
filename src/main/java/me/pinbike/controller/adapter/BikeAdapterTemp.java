@@ -17,7 +17,6 @@ public class BikeAdapterTemp extends ModelDataFactory implements IBikeAdapter {
 
     @Override
     public UpdateMyCurrentBikeAPI.Response updateMyCurrentBike(UpdateMyCurrentBikeAPI.Request request) {
-        UpdateMyCurrentBikeAPI.Response response = new UpdateMyCurrentBikeAPI.Response();
-        return response;
+        return null;
     }
 }

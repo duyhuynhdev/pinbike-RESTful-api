@@ -13,8 +13,6 @@ public interface IPassengerTripAdapter {
 
     RequestDriverAPI.Response requestDriver(RequestDriverAPI.Request request);
 
-    ReceivedDriverAcceptAPI.Response receivedDriverAccept(ReceivedDriverAcceptAPI.Request request);
-
     GetDriverUpdatedAPI.Response getDriverUpdated(GetDriverUpdatedAPI.Request request);
 
 }

@@ -5,7 +5,9 @@ import me.pinbike.controller.adapter.adapter_interface.ModelDataFactory;
 import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
 import me.pinbike.polling.PollingDB;
+import me.pinbike.provider.exception.PinBikeException;
 import me.pinbike.sharedjava.model.*;
+import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.sample_data.SampleData;
 
 import java.util.Arrays;
@@ -25,44 +27,40 @@ public class PassengerTripAdapterTemp extends ModelDataFactory implements IPasse
     @Override
     public CancelTripAPI.Response cancelTrip(CancelTripAPI.Request request) {
         PollingDB db = PollingDB.getInstance();
-        // change
-        PollingChannel<PollingDB.Receipt> acceptPassengerRequest = db.getChannel(PollingChannelName.ACCEPT_PASSENGER_REQUEST);
-        PollingDB.Receipt receipt = new PollingDB.Receipt();
-        receipt.isReceived = false;
-        acceptPassengerRequest.change(SampleData.tripId, receipt);
-        CancelTripAPI.Response response = new CancelTripAPI.Response();
-        return response;
+        // remove request
+        PollingChannel<PollingDB.TripRequest> tripRequestPollingChannel = db.getChannel(PollingChannelName.TRIP_REQUEST);
+        tripRequestPollingChannel.remove(SampleData.tripId);
+        return null;
     }
 
     @Override
     public RequestDriverAPI.Response requestDriver(RequestDriverAPI.Request request) {
-        PollingDB db = PollingDB.getInstance();
-        // change
         RequestDriverAPI.Response response = new RequestDriverAPI.Response();
-        PollingChannel<PollingDB.Request> getRequestFromPassengerChannel = db.getChannel(PollingChannelName.GET_REQUEST_FROM_PASSENGER);
-        PollingDB.Request rq = getRequestFromPassengerChannel.get(SampleData.tripId);
-        if (rq != null && rq.accepterId >= 0) {
+        PollingDB db = PollingDB.getInstance();
+
+        // trigger driver
+        PollingChannel<PollingDB.Listener> listenerPollingChannel = db.getChannel(PollingChannelName.WAITING_REQUEST);
+        PollingDB.Listener listener = listenerPollingChannel.get(request.driverId);
+        if (listener == null || !listener.isAvailable) {
+            throw new PinBikeException(AC.MessageCode.DRIVER_BUSY, "Driver is not available");
         } else {
+            listener.isAvailable = false;
+            listener.passengerId = request.passengerId;
+            listener.tripId = request.tripId;
+            listenerPollingChannel.change(request.driverId, listener);
+        }
+
+        // change
+        PollingChannel<PollingDB.TripRequest> tripRequestPollingChannel = db.getChannel(PollingChannelName.TRIP_REQUEST);
+        PollingDB.TripRequest rq = tripRequestPollingChannel.get(request.tripId);
+        if (rq == null || rq.accepterId <= 0) {
             if (rq == null)
-                rq = new PollingDB.Request();
+                rq = new PollingDB.TripRequest();
             rq.tripId = request.tripId;
             rq.requesterId = request.driverId;
-            getRequestFromPassengerChannel.change(SampleData.driverId, rq);
+            tripRequestPollingChannel.change(request.tripId, rq);
         }
         response.driverId = rq.accepterId;
-        return response;
-    }
-
-    //TODO: REMOVE
-    @Override
-    public ReceivedDriverAcceptAPI.Response receivedDriverAccept(ReceivedDriverAcceptAPI.Request request) {
-        PollingDB db = PollingDB.getInstance();
-        // change
-        PollingChannel<PollingDB.Receipt> acceptPassengerRequest = db.getChannel(PollingChannelName.ACCEPT_PASSENGER_REQUEST);
-        PollingDB.Receipt receipt = new PollingDB.Receipt();
-        receipt.isReceived = true;
-        acceptPassengerRequest.change(SampleData.tripId, receipt);
-        ReceivedDriverAcceptAPI.Response response = new ReceivedDriverAcceptAPI.Response();
         return response;
     }
 
@@ -71,10 +69,10 @@ public class PassengerTripAdapterTemp extends ModelDataFactory implements IPasse
         PollingDB db = PollingDB.getInstance();
         PollingChannel<PollingDB.UserUpdated> getDriverUpdate = db.getChannel(PollingChannelName.GET_USER_UPDATED);
         long timeout = getDriverUpdate.getTimeout();
-        PollingDB.UserUpdated userUpdated = null;
+        boolean changed = false;
         while (timeout > 0) {
-            userUpdated = getDriverUpdate.subscribe(SampleData.driverId);
-            if (userUpdated != null)
+            changed = getDriverUpdate.subscribe(SampleData.driverId);
+            if (changed)
                 break;
             try {
                 timeout -= getDriverUpdate.getDelay();
@@ -84,9 +82,9 @@ public class PassengerTripAdapterTemp extends ModelDataFactory implements IPasse
 
         }
         GetDriverUpdatedAPI.Response response = null;
-        if (userUpdated != null) {
+        if (changed) {
             response = new GetDriverUpdatedAPI.Response(getUpdatedLocation());
-            response.type = userUpdated.type;
+            response.type = getDriverUpdate.get(SampleData.driverId).type;
         }
         return response;
     }

@@ -39,9 +39,10 @@ public class BikeService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.addBike(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<AddBikeAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>(responseContent);
+        return response;
     }
 
     @POST
@@ -55,8 +56,10 @@ public class BikeService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.updateMyCurrentBike(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
-        return new ResponseWrapper<>();
+        ResponseWrapper<UpdateMyCurrentBikeAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+
+        return response;
     }
 
 

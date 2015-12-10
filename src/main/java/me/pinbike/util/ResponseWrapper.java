@@ -1,5 +1,8 @@
 package me.pinbike.util;
 
+import com.google.gson.Gson;
+import me.pinbike.sharedjava.model.constanst.AC;
+
 /**
  * Created by hpduy17 on 10/13/15.
  */
@@ -11,13 +14,13 @@ public class ResponseWrapper<T> {
 
     public ResponseWrapper() {
         this.success = true;
-        this.messageCode = PinBikeConstant.MessageCode.Successfully;
+        this.messageCode = AC.MessageCode.SUCESSFULLY;
         this.message = "Successfully";
     }
 
     public ResponseWrapper(T result) {
         this.success = true;
-        this.messageCode = PinBikeConstant.MessageCode.Successfully;
+        this.messageCode = AC.MessageCode.SUCESSFULLY;
         this.message = "Successfully";
         this.result = result;
     }
@@ -67,5 +70,11 @@ public class ResponseWrapper<T> {
 
     public void setResult(T result) {
         this.result = result;
+    }
+
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

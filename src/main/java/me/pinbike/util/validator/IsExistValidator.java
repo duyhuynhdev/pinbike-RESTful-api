@@ -16,10 +16,6 @@ public class IsExistValidator implements ConstraintValidator<IsExist, Long> {
     }
 
     public boolean isValid(Long object, ConstraintValidatorContext constraintContext) {
-        constraintContext.disableDefaultConstraintViolation();
-        constraintContext
-                .buildConstraintViolationWithTemplate(this.message)
-                .addConstraintViolation();
-        return object != 2;
+        return true;
     }
 }

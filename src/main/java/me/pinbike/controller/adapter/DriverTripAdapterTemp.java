@@ -15,17 +15,27 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
     @Override
     public GetRequestFromPassengerAPI.Response getRequestFromPassenger(GetRequestFromPassengerAPI.Request request) {
         PollingDB db = PollingDB.getInstance();
+        PollingChannel<PollingDB.Listener> listenerPollingChannel = db.getChannel(PollingChannelName.WAITING_REQUEST);
         //subscribe
-        PollingChannel<PollingDB.Request> getRequestFromPassengerChannel = db.getChannel(PollingChannelName.GET_REQUEST_FROM_PASSENGER);
-        long timeout = getRequestFromPassengerChannel.getTimeout();
-        PollingDB.Request rq = null;
+        long timeout = listenerPollingChannel.getTimeout();
+        boolean changed = false;
+        boolean isGoOnline = false;
         while (timeout > 0) {
-            rq = getRequestFromPassengerChannel.subscribe(SampleData.driverId);
-            if (rq != null)
+            changed = listenerPollingChannel.subscribe(request.driverId);
+            if (changed)
                 break;
             try {
-                timeout -= getRequestFromPassengerChannel.getDelay();
-                Thread.sleep(getRequestFromPassengerChannel.getDelay());
+                if (!isGoOnline) {
+                    isGoOnline = true;
+                    PollingDB.Listener listener = listenerPollingChannel.get(request.driverId);
+                    if (listener == null) {
+                        listener = new PollingDB.Listener();
+                    }
+                    listener.isAvailable = true;
+                    listenerPollingChannel.changeContent(request.driverId, listener);
+                }
+                timeout -= listenerPollingChannel.getDelay();
+                Thread.sleep(listenerPollingChannel.getDelay());
 
             } catch (InterruptedException ex) {
 
@@ -33,13 +43,16 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
 
         }
         GetRequestFromPassengerAPI.Response response = null;
-        if (rq != null) {
+        if (changed) {
+            PollingDB.Listener listener = listenerPollingChannel.get(request.driverId);
             response = new GetRequestFromPassengerAPI.Response();
-            response.tripId = factory.getNumberUpTo(Integer.MAX_VALUE);
+            response.tripId = listener.tripId;
             response.passengerDetail = getUserDetail();
             response.tripDetail = getTripDetail();
-            response.tripDetail.passengerId = response.passengerDetail.userId;
+            response.tripDetail.passengerId = listener.passengerId;
         }
+
+
         return response;
     }
 
@@ -52,39 +65,24 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
         userUpdated.location = getUpdatedLocation();
         userUpdated.type = SampleData.update_types[1];// arrived;
         getUserUpdated.change(SampleData.driverId, userUpdated);
-        ArrivedPickUpLocationAPI.Response response = new ArrivedPickUpLocationAPI.Response();
-        return response;
+        return null;
     }
 
     @Override
     public AcceptPassengerRequestAPI.Response acceptPassengerRequest(AcceptPassengerRequestAPI.Request request) {
         PollingDB db = PollingDB.getInstance();
         //change
-        PollingChannel<PollingDB.Acceptance> requestDriverChannel = db.getChannel(PollingChannelName.REQUEST_DRIVER);
-        PollingDB.Acceptance acceptance = new PollingDB.Acceptance();
-        acceptance.isAccepted = true;
-        requestDriverChannel.change(SampleData.tripId, acceptance);
-        // subscribe
-        PollingChannel<PollingDB.Receipt> acceptPassengerRequestChannel = db.getChannel(PollingChannelName.ACCEPT_PASSENGER_REQUEST);
-        long timeout = acceptPassengerRequestChannel.getTimeout();
-        PollingDB.Receipt receipt = null;
-        while (timeout > 0) {
-            receipt = acceptPassengerRequestChannel.subscribe(SampleData.tripId);
-            if (receipt != null)
-                break;
-            try {
-                timeout -= acceptPassengerRequestChannel.getDelay();
-                Thread.sleep(acceptPassengerRequestChannel.getDelay());
-
-            } catch (InterruptedException ex) {
-
-            }
-
+        AcceptPassengerRequestAPI.Response response = new AcceptPassengerRequestAPI.Response();
+        response.isSuccess = false;
+        PollingChannel<PollingDB.TripRequest> tripRequestPollingChannel = db.getChannel(PollingChannelName.TRIP_REQUEST);
+        PollingDB.TripRequest rq = tripRequestPollingChannel.get(request.tripId);
+        if (rq != null && rq.requesterId == request.driverId) {
+            rq.accepterId = request.driverId;
+            tripRequestPollingChannel.change(request.tripId, rq);
+            response.isSuccess = true;
         }
-        AcceptPassengerRequestAPI.Response response = null;
-        if (receipt != null && receipt.isReceived)
-            response = new AcceptPassengerRequestAPI.Response();
         return response;
+
     }
 
     @Override
@@ -96,8 +94,7 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
         userUpdated.location = getUpdatedLocation();
         userUpdated.type = SampleData.update_types[4];// cancel;
         getUserUpdated.change(request.userId, userUpdated);
-        DestroyTripAPI.Response response = new DestroyTripAPI.Response();
-        return response;
+        return null;
     }
 
     @Override
@@ -105,10 +102,10 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
         PollingDB db = PollingDB.getInstance();
         PollingChannel<PollingDB.UserUpdated> getPassengerUpdated = db.getChannel(PollingChannelName.GET_USER_UPDATED);
         long timeout = getPassengerUpdated.getTimeout();
-        PollingDB.UserUpdated userUpdated = null;
+        boolean changed = false;
         while (timeout > 0) {
-            userUpdated = getPassengerUpdated.subscribe(SampleData.passengerId);
-            if (userUpdated != null)
+            changed = getPassengerUpdated.subscribe(SampleData.passengerId);
+            if (changed)
                 break;
             try {
                 timeout -= getPassengerUpdated.getDelay();
@@ -118,9 +115,9 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
 
         }
         GetPassengerUpdatedAPI.Response response = null;
-        if (userUpdated != null) {
+        if (changed) {
             response = new GetPassengerUpdatedAPI.Response(getUpdatedLocation());
-            response.type = userUpdated.type;
+            response.type = getPassengerUpdated.get(SampleData.passengerId).type;
         }
         return response;
     }
@@ -134,8 +131,7 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
         userUpdated.location = getUpdatedLocation();
         userUpdated.type = SampleData.update_types[2];// start;
         getUserUpdated.change(SampleData.driverId, userUpdated);
-        StartTripAPI.Response response = new StartTripAPI.Response();
-        return response;
+        return null;
     }
 
     @Override
@@ -147,13 +143,11 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
         userUpdated.location = getUpdatedLocation();
         userUpdated.type = SampleData.update_types[3];// end;
         getUserUpdated.change(SampleData.driverId, userUpdated);
-        EndTripAPI.Response response = new EndTripAPI.Response();
-        return response;
+        return null;
     }
 
     @Override
     public RatingTripAPI.Response ratingTrip(RatingTripAPI.Request request) {
-        RatingTripAPI.Response response = new RatingTripAPI.Response();
-        return response;
+        return null;
     }
 }

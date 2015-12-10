@@ -41,15 +41,13 @@ public class UserAdapterTemp extends ModelDataFactory implements IUserAdapter {
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = getUpdatedLocation();
         userUpdated.type = SampleData.update_types[0];// location;
-        getUserUpdated.change(request.userId,userUpdated);
+        getUserUpdated.change(request.userId, userUpdated);
 
-        UpdateMyLocationAPI.Response response = new UpdateMyLocationAPI.Response();
-        return response;
+        return null;
     }
 
     @Override
     public ChangeAvailableStatusAPI.Response changeAvailableStatus(ChangeAvailableStatusAPI.Request request) {
-        ChangeAvailableStatusAPI.Response response = new ChangeAvailableStatusAPI.Response();
-        return response;
+        return null;
     }
 }

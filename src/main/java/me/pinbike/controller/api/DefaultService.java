@@ -38,9 +38,10 @@ public class DefaultService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.getDefaultSetting(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<GetDefaultSettingAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>(responseContent);
+        return response;
     }
 
 

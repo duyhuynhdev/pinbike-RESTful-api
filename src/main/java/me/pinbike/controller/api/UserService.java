@@ -6,10 +6,7 @@ package me.pinbike.controller.api;
 
 import me.pinbike.controller.adapter.UserAdapterTemp;
 import me.pinbike.controller.adapter.adapter_interface.IUserAdapter;
-import me.pinbike.sharedjava.model.ChangeAvailableStatusAPI;
-import me.pinbike.sharedjava.model.GetDriverAroundAPI;
-import me.pinbike.sharedjava.model.GetUserProfileAPI;
-import me.pinbike.sharedjava.model.UpdateMyLocationAPI;
+import me.pinbike.sharedjava.model.*;
 import me.pinbike.sharedjava.model.base.RequestWrapper;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.PinBikeConstant;
@@ -40,9 +37,10 @@ public class UserService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.getUserProfile(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<GetUserProfileAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>(responseContent);
+        return response;
     }
 
     @POST
@@ -56,9 +54,10 @@ public class UserService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.getDriverAround(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<GetDriverAroundAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>(responseContent);
+        return response;
     }
 
 
@@ -73,9 +72,10 @@ public class UserService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.updateMyLocation(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<UpdateMyLocationAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>(responseContent);
+        return response;
     }
 
     @POST
@@ -89,9 +89,10 @@ public class UserService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.changeAvailableStatus(requestContent);
-        logger.info(responseContent.getClass().getSimpleName() + ":" + responseContent.toString());
+        ResponseWrapper<ChangeAvailableStatusAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
-        return new ResponseWrapper<>(responseContent);
+        return response;
     }
 
 

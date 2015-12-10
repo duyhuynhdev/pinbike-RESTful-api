@@ -9,6 +9,7 @@ import me.pinbike.sharedjava.model.GetDefaultSettingAPI;
 public class DefaultAdapter implements IDefaultAdapter{
     @Override
     public GetDefaultSettingAPI.Response getDefaultSetting(GetDefaultSettingAPI.Request request) {
+        //TODO waiting Constant from back end @ann
         return null;
     }
 }

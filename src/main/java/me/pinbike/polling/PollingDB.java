@@ -16,10 +16,9 @@ public class PollingDB {
     }
 
     private PollingDB() {
-        db.put(PollingChannelName.REQUEST_DRIVER, new PollingChannel<Acceptance>(90000, 1000));
-        db.put(PollingChannelName.GET_REQUEST_FROM_PASSENGER, new PollingChannel<Request>(90000, 1000));
-        db.put(PollingChannelName.ACCEPT_PASSENGER_REQUEST, new PollingChannel<Receipt>(90000, 1000));
-        db.put(PollingChannelName.GET_USER_UPDATED, new PollingChannel<UserUpdated>(90000, 1000));
+        db.put(PollingChannelName.WAITING_REQUEST, new PollingChannel<Listener>(30000, 1000)); // KEY DRIVER ID
+        db.put(PollingChannelName.TRIP_REQUEST, new PollingChannel<TripRequest>(30000, 1000)); // KEY TRIP ID
+        db.put(PollingChannelName.GET_USER_UPDATED, new PollingChannel<UserUpdated>(30000, 1000));// KEY USER ID
     }
 
     private Map<PollingChannelName, IPollingChannel> db = new HashMap<>();
@@ -35,17 +34,16 @@ public class PollingDB {
         public UpdatedLocation location;
     }
 
-    public static class Request {
+    public static class TripRequest {
         public long tripId;
         public long accepterId;
         public long requesterId;
     }
 
-    public static class Acceptance {
-        public boolean isAccepted;
+    public static class Listener {
+        public boolean isAvailable;
+        public long tripId;
+        public long passengerId;
     }
 
-    public static class Receipt {
-        public boolean isReceived;
-    }
 }

@@ -21,6 +21,6 @@ public class DefaultAdapterTemp extends ModelDataFactory implements IDefaultAdap
         try {
             response.priceModel = jsonToObject(SampleData.priceModelJSON,GetDefaultSettingAPI.Response.PriceModel.class);
         }catch (Exception ignored){}
-        return null;
+        return response;
     }
 }
