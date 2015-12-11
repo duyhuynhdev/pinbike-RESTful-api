@@ -36,7 +36,7 @@
     </repositories>
     <build>
         <defaultGoal>install</defaultGoal>
-        <finalName>PinBikeExpressApi</finalName>
+        <finalName>api</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -243,7 +243,7 @@
         <dependency>
             <groupId>com.pinride</groupId>
             <artifactId>pinbike.thrift</artifactId>
-            <version>0.0.3-NEW</version>
+            <version>0.0.9-NEW</version>
         </dependency>
     </dependencies>
     <properties>
