@@ -6,8 +6,11 @@ import com.pinride.pinbike.config.adapter.AdapterResponseValue.ResponseValue;
 import com.pinride.pinbike.thriftclient.AbstractClient;
 import me.pinbike.provider.exception.PinBikeException;
 import me.pinbike.sharedjava.model.constanst.AC;
+import me.pinbike.util.PinBikeConstant;
+import me.pinbike.util.SendMailUtil;
 import org.apache.log4j.Logger;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 
@@ -23,7 +26,7 @@ public class DaoTemplate<T> {
         try {
             logger.info(object.toString());
             ResponseValue<T> response = client.insert(object);
-            validateResponse(response.getErrorCode());
+            validateResponse(response.getErrorCode(),getGenericName()+".insert()",object.toString());
             return response.getValue();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
@@ -38,7 +41,7 @@ public class DaoTemplate<T> {
         try {
             logger.info(object.toString());
             int errorCode = client.update(object);
-            validateResponse(errorCode);
+            validateResponse(errorCode, getGenericName() + ".update()", object.toString());
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
             throw ex;
@@ -53,7 +56,7 @@ public class DaoTemplate<T> {
         try {
             logger.info(id);
             int errorCode = client.remove(id);
-            validateResponse(errorCode);
+            validateResponse(errorCode, getGenericName() + ".delete()", "" + id);
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
             throw ex;
@@ -67,7 +70,7 @@ public class DaoTemplate<T> {
         try {
             logger.info(id);
             ResponseValue<T> response = client.get(id);
-            validateResponse(response.getErrorCode());
+            validateResponse(response.getErrorCode(), getGenericName() + ".get()", "" + id);
             return response.getValue();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
@@ -82,7 +85,7 @@ public class DaoTemplate<T> {
         try {
             logger.info(ids.toArray());
             ResponseListValue<T> response = client.gets(ids);
-            validateResponse(response.getErrorCode());
+            validateResponse(response.getErrorCode(), getGenericName() + ".getList()", ids.toArray().toString());
             return response.getList();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
@@ -93,12 +96,12 @@ public class DaoTemplate<T> {
         }
     }
 
-    public ResponseListValue<T> getAll() {
+    public List<T> getAll() {
         try {
             logger.info("no-param");
             ResponseListValue<T> response = client.getAll();
-            validateResponse(response.getErrorCode());
-            return response;
+            validateResponse(response.getErrorCode(), getGenericName() + ".getAll()", "no-param");
+            return response.getList();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
             throw ex;
@@ -108,7 +111,7 @@ public class DaoTemplate<T> {
         }
     }
 
-    public void validateResponse(int errorCode) {
+    public void validateResponse(final int errorCode, final String methodName, final String inputObject) {
         boolean isSuccess = false;
         String message = "";
         int messageCode = AC.MessageCode.FAIL;
@@ -167,14 +170,23 @@ public class DaoTemplate<T> {
                 break;
             case ErrorCode.PARSER_DATA_FAIL:
                 message = "Parse data fail";
-                messageCode = AC.MessageCode.NOT_EXIST;
+                messageCode = AC.MessageCode.BACKEND_ERROR;
                 break;
             case ErrorCode.SUCCESS:
                 isSuccess = true;
                 break;
         }
         if (!isSuccess) {
-            throw new PinBikeException(messageCode, message);
+            PinBikeException ex = new PinBikeException(messageCode, message);
+            SendMailUtil.sendPinBikeError(PinBikeConstant.DeveloperMail.backend_mails, errorCode, methodName, inputObject, ex);
+            throw ex;
         }
     }
+
+    protected String getGenericName() {
+        return ((Class<T>) ((ParameterizedType) getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName();
+    }
+
+
 }

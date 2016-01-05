@@ -1,5 +1,8 @@
 package me.pinbike.controller.adapter.adapter_interface;
 
+import com.pinride.pinbike.config.Const;
+import com.pinride.pinbike.thrift.*;
+import me.pinbike.sharedjava.model.*;
 import me.pinbike.sharedjava.model.base.*;
 import me.pinbike.util.DateTimeUtils;
 import me.pinbike.util.sample_data.SampleData;
@@ -7,6 +10,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.fluttercode.datafactory.impl.DataFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
@@ -17,6 +21,9 @@ import java.util.Random;
 public class ModelDataFactory {
     protected DataFactory factory = new DataFactory();
 
+    /**
+     * RESPONSE OBJECT
+     */
     public Bike getBike() {
         Bike bike = new Bike();
         bike.bikeId = factory.getNumberUpTo(Integer.MAX_VALUE);
@@ -116,6 +123,7 @@ public class ModelDataFactory {
         userDetail.rating = getRating();
         userDetail.sex = factory.getItem(SampleData.sexes);
         userDetail.status = factory.getItem(SampleData.statuses);
+        userDetail.intro = getDescription(50);
         userDetail.userId = factory.getNumberUpTo(Integer.MAX_VALUE);
         return userDetail;
     }
@@ -128,10 +136,251 @@ public class ModelDataFactory {
     }
 
     /**
+     * REQUEST OBJECT
+     */
+
+    public AcceptPassengerRequestAPI.Request getAcceptPassengerRequestAPIRequest(long driverId, long tripId) {
+        AcceptPassengerRequestAPI.Request request = new AcceptPassengerRequestAPI.Request();
+        request.driverId = driverId;
+        request.tripId = tripId;
+        return request;
+    }
+
+    public AddBikeAPI.Request getAddBikeAPIRequest(long userId) {
+        AddBikeAPI.Request request = new AddBikeAPI.Request();
+        request.description = getDescription(20);
+        request.licensePlate = factory.getNumberText(2) + "-" + factory.getRandomChars(1).toUpperCase() + factory.getNumberText(1) + " " + factory.getNumberText(4);
+        request.model = factory.getItem(SampleData.bike_models) + " " + factory.getItem(SampleData.colors);
+        request.userId = userId;
+        return request;
+    }
+
+    public ArrivedPickUpLocationAPI.Request getArrivedPickUpLocationAPIRequest(long driverId, long tripId) {
+        ArrivedPickUpLocationAPI.Request request = new ArrivedPickUpLocationAPI.Request();
+        request.driverId = driverId;
+        request.tripId = tripId;
+        return request;
+    }
+
+    public CancelTripAPI.Request getCancelTripAPIRequest(long userId, long tripId) {
+        CancelTripAPI.Request request = new CancelTripAPI.Request();
+        request.userId = userId;
+        request.tripId = tripId;
+        return request;
+    }
+
+    public ChangeAvailableStatusAPI.Request getChangeAvailableStatusAPIRequest(long userId, boolean isAvailable) {
+        ChangeAvailableStatusAPI.Request request = new ChangeAvailableStatusAPI.Request();
+        request.userId = userId;
+        request.isAvailable = isAvailable;
+        return request;
+    }
+
+    public CreateTripAPI.Request getCreateTripAPIRequest(long passengerId) {
+        CreateTripAPI.Request request = new CreateTripAPI.Request();
+        request.distance = factory.getNumberBetween(10, 50);
+        request.endLocation = getLocation(10.123, 106.456, 100);
+        request.passengerId = passengerId;
+        request.price = factory.getNumberBetween((int) (1000 * request.distance), (int) (2000 * request.distance));
+        request.startLocation = getLocation(10.123, 106.456, 100);
+        return request;
+    }
+
+    public DestroyTripAPI.Request getDestroyTripAPIRequest(long tripId, long userId) {
+        DestroyTripAPI.Request request = new DestroyTripAPI.Request();
+        request.reason = getDescription(20);
+        request.tripId = tripId;
+        request.userId = userId;
+        return request;
+    }
+
+    public EndTripAPI.Request getEndTripAPIRequest(long driverId, long tripId) {
+        EndTripAPI.Request request = new EndTripAPI.Request();
+        request.driverId = driverId;
+        request.tripId = tripId;
+        return request;
+    }
+
+    public GetDefaultSettingAPI.Request getDefaultSettingAPIRequest() {
+        GetDefaultSettingAPI.Request request = new GetDefaultSettingAPI.Request();
+        return request;
+    }
+
+    public GetDriverAroundAPI.Request getDriverAroundAPIRequest() {
+        GetDriverAroundAPI.Request request = new GetDriverAroundAPI.Request();
+        request.lat = 10.123;
+        request.lng = 106.456;
+        return request;
+    }
+
+    public GetDriverUpdatedAPI.Request getDriverUpdatedAPIRequest(long driverId, long tripId) {
+        GetDriverUpdatedAPI.Request request = new GetDriverUpdatedAPI.Request();
+        request.driverId = driverId;
+        request.tripId = tripId;
+        return request;
+    }
+
+    public GetPassengerUpdatedAPI.Request getPassengerUpdatedAPIRequest(long driverId, long tripId) {
+        GetPassengerUpdatedAPI.Request request = new GetPassengerUpdatedAPI.Request();
+        request.passengerId = driverId;
+        request.tripId = tripId;
+        return request;
+    }
+
+    public GetRequestFromPassengerAPI.Request getRequestFromPassengerAPIRequest(long driverId) {
+        GetRequestFromPassengerAPI.Request request = new GetRequestFromPassengerAPI.Request();
+        request.driverId = driverId;
+        return request;
+    }
+
+    public GetUserProfileAPI.Request getUserProfileAPIRequest(long ownerId, long userId) {
+        GetUserProfileAPI.Request request = new GetUserProfileAPI.Request();
+        request.ownerId = ownerId;
+        request.userId = userId;
+        return request;
+    }
+
+    public RatingTripAPI.Request getRatingTripAPIRequest(long tripId, long userId) {
+        RatingTripAPI.Request request = new RatingTripAPI.Request();
+        request.tripId = tripId;
+        request.userId = userId;
+        request.comment = getDescription(20);
+        request.score = factory.getNumberBetween(0, 5);
+        return request;
+    }
+
+    public ReceivedDriverAcceptAPI.Request getReceivedDriverAcceptAPIRequest(long driverId, long tripId, long passengerId) {
+        ReceivedDriverAcceptAPI.Request request = new ReceivedDriverAcceptAPI.Request();
+        request.driverId = driverId;
+        request.passengerId = passengerId;
+        request.tripId = tripId;
+        return request;
+    }
+
+    public RequestDriverAPI.Request getRequestDriverAPIRequest(long driverId, long tripId, long passengerId) {
+        RequestDriverAPI.Request request = new RequestDriverAPI.Request();
+        request.driverId = driverId;
+        request.passengerId = passengerId;
+        request.tripId = tripId;
+        return request;
+    }
+
+    public StartTripAPI.Request getStartTripAPIRequest(long driverId, long tripId) {
+        StartTripAPI.Request request = new StartTripAPI.Request();
+        request.driverId = driverId;
+        request.tripId = tripId;
+        return request;
+    }
+
+    public UpdateMyCurrentBikeAPI.Request getUpdateMyCurrentBikeAPIRequest(long userId, long bikeId) {
+        UpdateMyCurrentBikeAPI.Request request = new UpdateMyCurrentBikeAPI.Request();
+        request.bikeId = bikeId;
+        request.userId = userId;
+        return request;
+    }
+
+    public UpdateMyLocationAPI.Request getUpdateMyLocationAPIRequest(long driverId, long tripId) {
+        UpdateMyLocationAPI.Request request = new UpdateMyLocationAPI.Request();
+        request.userId = driverId;
+        request.location = getLocation(10.123, 106.456, 100);
+        return request;
+    }
+
+    /**
+     * BACKEND OBJECT
+     */
+
+    public TBike getTBike(long userId) {
+        TBike bike = new TBike();
+        bike.description = getDescription(20);
+        bike.licensePlate = factory.getNumberText(2) + "-" + factory.getRandomChars(1).toUpperCase() + factory.getNumberText(1) + " " + factory.getNumberText(4);
+        bike.model = factory.getItem(SampleData.bike_models) + " " + factory.getItem(SampleData.colors);
+        bike.userId = userId;
+        return bike;
+    }
+
+    public TBroadcast getTBroadCast(long userId) {
+        TBroadcast broadcast = new TBroadcast();
+        broadcast.active = true;
+        broadcast.deviceId = factory.getRandomChars(10);
+        broadcast.regId = factory.getRandomChars(20);
+        broadcast.os = Const.PinBike.BroadcastOS.IOS;
+        broadcast.userId = userId;
+        return broadcast;
+    }
+
+    public TConst getTConst() {
+        TConst tconst = new TConst();
+        tconst.aroundDistance = 5 / 100;
+        tconst.coverImage = "http://www.sleekcover.com/covers/christmas-flakes-facebook-cover.jpg";
+        tconst.fanPage = "https://www.facebook.com/PinBikeMe";
+        tconst.notes = "";
+        tconst.price = SampleData.priceModelJSON;
+        tconst.qaLink = "https://www.facebook.com/PinBikeMe";
+        tconst.reasonDestroyTrip = "";
+        tconst.requestTimeout = 30;
+        tconst.website = "http://www.pinbike.me";
+        return tconst;
+    }
+
+    public TOrganization getTOrganization() {
+        TOrganization organization = new TOrganization();
+        organization.address = factory.getAddress() + factory.getCity();
+        organization.name = factory.getBusinessName();
+        return organization;
+    }
+
+    public TRating getTRating(long userId, long tripId) {
+        TRating rating = new TRating();
+        rating.comment = getDescription(50);
+        rating.score = factory.getNumberBetween(0, 5);
+        rating.tripId = tripId;
+        rating.userId = userId;
+        return rating;
+    }
+
+    public TTrip getTTrip(long passengerId) {
+        TTrip trip = new TTrip();
+        trip.datetimeEndTrip = DateTimeUtils.now() + factory.getNumberUpTo(DateTimeUtils.SECONDS_PER_DAY);
+        trip.datetimeStartTrip = DateTimeUtils.now();
+        trip.distance = factory.getNumberBetween(10, 50);
+        Location endLocation = getLocation(10.123, 106.456, 100);
+        Location startLocation = getLocation(10.123, 106.456, 100);
+        TLatLng endLatLng = new TLatLng(endLocation.lat, endLocation.lng, trip.datetimeEndTrip);
+        TLatLng startLatLng = new TLatLng(startLocation.lat, startLocation.lng, trip.datetimeStartTrip);
+        trip.endLatLng = endLatLng;
+        trip.endLocation = factory.getAddress() + factory.getCity();
+        trip.estimatedTime = (long) (trip.distance * 1000 * (40 / 3600));
+        trip.notes = getDescription(20);
+        trip.passengerId = passengerId;
+        trip.price = factory.getNumberBetween((int) (1000 * trip.distance), (int) (2000 * trip.distance));
+        trip.reason = getDescription(10);
+        trip.startLatLng = startLatLng;
+        trip.startLocation = factory.getAddress() + factory.getCity();
+        return trip;
+    }
+
+    public TUser getTUser() {
+        TUser user = new TUser();
+        user.avatar = factory.getItem(SampleData.avatars);
+        user.brithday = factory.getDateBetween(new Date(473412072000L), new Date(1135927272000L)).getTime() / 1000;
+        user.address = factory.getAddress() + factory.getCity();
+        user.email = factory.getEmailAddress();
+        user.socialId = factory.getEmailAddress();
+        user.socialType = Const.PinBike.RegisterType.REGISTER_EMAIL;
+        user.availableDriver = true;
+        user.name = factory.getName();
+        user.phone = factory.getItem(SampleData.phone_prefixes) + factory.getNumberText(7);
+        user.sex = factory.getItem(SampleData.sexes);
+        user.status = 1;
+        user.bikeIds = new ArrayList<>();
+        user.organizationIds = new ArrayList<>();
+        user.intro = getDescription(50);
+        return user;
+    }
+
+    /**
      * Custom Function by Duy Huynh
-     *
-     * @param length
-     * @return
      */
     public String getDescription(int length) {
         String description = "";
@@ -146,4 +395,9 @@ public class ModelDataFactory {
         T result = mapper.readValue(src, type);
         return result;
     }
+
+    public DataFactory getFactory() {
+        return factory;
+    }
+
 }

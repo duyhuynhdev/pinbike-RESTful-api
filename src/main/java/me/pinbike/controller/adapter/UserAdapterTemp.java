@@ -9,7 +9,7 @@ import me.pinbike.sharedjava.model.ChangeAvailableStatusAPI;
 import me.pinbike.sharedjava.model.GetDriverAroundAPI;
 import me.pinbike.sharedjava.model.GetUserProfileAPI;
 import me.pinbike.sharedjava.model.UpdateMyLocationAPI;
-import me.pinbike.util.sample_data.SampleData;
+import me.pinbike.sharedjava.model.constanst.AC;
 
 import java.util.Arrays;
 
@@ -40,7 +40,7 @@ public class UserAdapterTemp extends ModelDataFactory implements IUserAdapter {
         PollingChannel<PollingDB.UserUpdated> getUserUpdated = db.getChannel(PollingChannelName.GET_USER_UPDATED);
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = getUpdatedLocation();
-        userUpdated.type = SampleData.update_types[0];// location;
+        userUpdated.type = AC.UpdatedStatus.LOCATION;// location;
         getUserUpdated.change(request.userId, userUpdated);
 
         return null;

@@ -4,7 +4,7 @@ package me.pinbike.controller.api;
  * Created by hpduy17 on 10/12/15.
  */
 
-import me.pinbike.controller.adapter.BikeAdapterTemp;
+import me.pinbike.controller.adapter.BikeAdapter;
 import me.pinbike.controller.adapter.adapter_interface.IBikeAdapter;
 import me.pinbike.sharedjava.model.AddBikeAPI;
 import me.pinbike.sharedjava.model.UpdateMyCurrentBikeAPI;
@@ -32,7 +32,7 @@ public class BikeService {
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<AddBikeAPI.Response> AddBikeAPI(@Valid RequestWrapper<AddBikeAPI.Request> request) throws IOException {
 
-        IBikeAdapter adapter = new BikeAdapterTemp();
+        IBikeAdapter adapter = new BikeAdapter();
 
         AddBikeAPI.Response responseContent;
         AddBikeAPI.Request requestContent = request.requestContent;
@@ -49,7 +49,7 @@ public class BikeService {
     @Path("/UpdateMyCurrentBikeAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<UpdateMyCurrentBikeAPI.Response> UpdateMyCurrentBikeAPI(@Valid RequestWrapper<UpdateMyCurrentBikeAPI.Request> request) throws IOException {
-        IBikeAdapter adapter = new BikeAdapterTemp();
+        IBikeAdapter adapter = new BikeAdapter();
 
         UpdateMyCurrentBikeAPI.Response responseContent;
         UpdateMyCurrentBikeAPI.Request requestContent = request.requestContent;

@@ -26,7 +26,7 @@ public class UserDao extends DaoTemplate<TUser> {
         try {
             logger.info(ll.toString());
             AdapterResponseValue.ResponseListValue<TUser> response = client.getDriverAround(ll.lat, ll.lng);
-            validateResponse(response.getErrorCode());
+            validateResponse(response.getErrorCode(), getGenericName() + ".getDriverAround()", ll.toString());
             return response.getList();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
@@ -40,8 +40,8 @@ public class UserDao extends DaoTemplate<TUser> {
     public void updateAvailableDriver(long id, boolean isAvailable) {
         try {
             logger.info(String.format("{id:%d, isAvailable:%s", id, isAvailable));
-            int errorCode = client.updateAvailableDriver(id, 1); // TODO waiting backend change int to boolean
-            validateResponse(errorCode);
+            int errorCode = client.updateAvailableDriver(id, isAvailable);
+            validateResponse(errorCode, getGenericName() + ".updateAvailableDriver()", String.format("{id:%d, isAvailable:%s", id, isAvailable));
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
             throw ex;
@@ -55,7 +55,7 @@ public class UserDao extends DaoTemplate<TUser> {
         try {
             logger.info(String.format("{id:%d, location:%s", id, ll.toString()));
             int errorCode = client.updateLocation(id, ll.lat, ll.lng);
-            validateResponse(errorCode);
+            validateResponse(errorCode, getGenericName() + ".updateLocation()", String.format("{id:%d, location:%s", id, ll.toString()));
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
             throw ex;

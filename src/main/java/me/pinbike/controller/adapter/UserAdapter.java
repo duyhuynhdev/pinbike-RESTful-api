@@ -31,7 +31,7 @@ public class UserAdapter implements IUserAdapter {
         UserDao userDao = new UserDao();
         BikeDao bikeDao = new BikeDao();
         OrganizationDao organizationDao = new OrganizationDao();
-        TUser user = userDao.get(request.userId);
+        TUser user = userDao.get(request.ownerId);
         List<TBike> bikes = bikeDao.getList(user.bikeIds);
         List<TOrganization> organizations = organizationDao.getList(user.organizationIds);
         UserDetail userDetail = new Converter().convertUser(user, bikes, organizations);

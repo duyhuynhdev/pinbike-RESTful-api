@@ -4,7 +4,7 @@ package me.pinbike.controller.api;
  * Created by hpduy17 on 10/12/15.
  */
 
-import me.pinbike.controller.adapter.DriverTripAdapterTemp;
+import me.pinbike.controller.adapter.DriverTripAdapter;
 import me.pinbike.controller.adapter.adapter_interface.IDriverTripAdapter;
 import me.pinbike.sharedjava.model.*;
 import me.pinbike.sharedjava.model.base.RequestWrapper;
@@ -31,7 +31,7 @@ public class DriverTripService {
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<GetRequestFromPassengerAPI.Response> GetRequestFromPassengerAPI(@Valid RequestWrapper<GetRequestFromPassengerAPI.Request> request) throws IOException {
 
-        IDriverTripAdapter adapter = new DriverTripAdapterTemp();
+        IDriverTripAdapter adapter = new DriverTripAdapter();
 
         GetRequestFromPassengerAPI.Response responseContent;
         GetRequestFromPassengerAPI.Request requestContent = request.requestContent;
@@ -48,7 +48,7 @@ public class DriverTripService {
     @Path("/ArrivedPickUpLocationAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<ArrivedPickUpLocationAPI.Response> ArrivedPickUpLocationAPI(@Valid RequestWrapper<ArrivedPickUpLocationAPI.Request> request) throws IOException {
-        IDriverTripAdapter adapter = new DriverTripAdapterTemp();
+        IDriverTripAdapter adapter = new DriverTripAdapter();
 
         ArrivedPickUpLocationAPI.Response responseContent;
         ArrivedPickUpLocationAPI.Request requestContent = request.requestContent;
@@ -66,7 +66,7 @@ public class DriverTripService {
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<AcceptPassengerRequestAPI.Response> AcceptPassengerRequestAPI(@Valid RequestWrapper<AcceptPassengerRequestAPI.Request> request) throws IOException {
 
-        IDriverTripAdapter adapter = new DriverTripAdapterTemp();
+        IDriverTripAdapter adapter = new DriverTripAdapter();
 
         AcceptPassengerRequestAPI.Response responseContent;
         AcceptPassengerRequestAPI.Request requestContent = request.requestContent;
@@ -84,7 +84,7 @@ public class DriverTripService {
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<DestroyTripAPI.Response> DestroyTripAPI(@Valid RequestWrapper<DestroyTripAPI.Request> request) throws IOException {
 
-        IDriverTripAdapter adapter = new DriverTripAdapterTemp();
+        IDriverTripAdapter adapter = new DriverTripAdapter();
 
         DestroyTripAPI.Response responseContent;
         DestroyTripAPI.Request requestContent = request.requestContent;
@@ -101,7 +101,7 @@ public class DriverTripService {
     @Path("/GetPassengerUpdatedAPI") //TODO: LONG POLLING
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<GetPassengerUpdatedAPI.Response> GetPassengerUpdatedAPI(@Valid RequestWrapper<GetPassengerUpdatedAPI.Request> request) throws IOException {
-        IDriverTripAdapter adapter = new DriverTripAdapterTemp();
+        IDriverTripAdapter adapter = new DriverTripAdapter();
 
         GetPassengerUpdatedAPI.Response responseContent;
         GetPassengerUpdatedAPI.Request requestContent = request.requestContent;
@@ -118,7 +118,7 @@ public class DriverTripService {
     @Path("/StartTripAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<StartTripAPI.Response> StartTripAPI(@Valid RequestWrapper<StartTripAPI.Request> request) throws IOException {
-        IDriverTripAdapter adapter = new DriverTripAdapterTemp();
+        IDriverTripAdapter adapter = new DriverTripAdapter();
 
         StartTripAPI.Response responseContent;
         StartTripAPI.Request requestContent = request.requestContent;
@@ -135,7 +135,7 @@ public class DriverTripService {
     @Path("/EndTripAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<EndTripAPI.Response> EndTripAPI(@Valid RequestWrapper<EndTripAPI.Request> request) throws IOException {
-        IDriverTripAdapter adapter = new DriverTripAdapterTemp();
+        IDriverTripAdapter adapter = new DriverTripAdapter();
 
         EndTripAPI.Response responseContent;
         EndTripAPI.Request requestContent = request.requestContent;
@@ -152,7 +152,7 @@ public class DriverTripService {
     @Path("/RatingTripAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<RatingTripAPI.Response> RatingTripAPI(@Valid RequestWrapper<RatingTripAPI.Request> request) throws IOException {
-        IDriverTripAdapter adapter = new DriverTripAdapterTemp();
+        IDriverTripAdapter adapter = new DriverTripAdapter();
 
         RatingTripAPI.Response responseContent;
         RatingTripAPI.Request requestContent = request.requestContent;

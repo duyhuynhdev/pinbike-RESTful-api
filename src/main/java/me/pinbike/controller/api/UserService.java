@@ -4,9 +4,12 @@ package me.pinbike.controller.api;
  * Created by hpduy17 on 10/12/15.
  */
 
-import me.pinbike.controller.adapter.UserAdapterTemp;
+import me.pinbike.controller.adapter.UserAdapter;
 import me.pinbike.controller.adapter.adapter_interface.IUserAdapter;
-import me.pinbike.sharedjava.model.*;
+import me.pinbike.sharedjava.model.ChangeAvailableStatusAPI;
+import me.pinbike.sharedjava.model.GetDriverAroundAPI;
+import me.pinbike.sharedjava.model.GetUserProfileAPI;
+import me.pinbike.sharedjava.model.UpdateMyLocationAPI;
 import me.pinbike.sharedjava.model.base.RequestWrapper;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.PinBikeConstant;
@@ -30,7 +33,7 @@ public class UserService {
     @Path("/GetUserProfileAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<GetUserProfileAPI.Response> GetUserProfileAPI(@Valid RequestWrapper<GetUserProfileAPI.Request> request) throws IOException {
-        IUserAdapter adapter = new UserAdapterTemp();
+        IUserAdapter adapter = new UserAdapter();
 
         GetUserProfileAPI.Response responseContent;
         GetUserProfileAPI.Request requestContent = request.requestContent;
@@ -47,7 +50,7 @@ public class UserService {
     @Path("/GetDriverAroundAPI") //TODO: LONG POLLING
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<GetDriverAroundAPI.Response> GetDriverAroundAPI(@Valid RequestWrapper<GetDriverAroundAPI.Request> request) throws IOException {
-        IUserAdapter adapter = new UserAdapterTemp();
+        IUserAdapter adapter = new UserAdapter();
 
         GetDriverAroundAPI.Response responseContent;
         GetDriverAroundAPI.Request requestContent = request.requestContent;
@@ -65,7 +68,7 @@ public class UserService {
     @Path("/UpdateMyLocationAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<UpdateMyLocationAPI.Response> UpdateMyLocationAPI(@Valid RequestWrapper<UpdateMyLocationAPI.Request> request) throws IOException {
-        IUserAdapter adapter = new UserAdapterTemp();
+        IUserAdapter adapter = new UserAdapter();
 
         UpdateMyLocationAPI.Response responseContent;
         UpdateMyLocationAPI.Request requestContent = request.requestContent;
@@ -82,7 +85,7 @@ public class UserService {
     @Path("/ChangeAvailableStatusAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<ChangeAvailableStatusAPI.Response> ChangeAvailableStatusAPI(@Valid RequestWrapper<ChangeAvailableStatusAPI.Request> request) throws IOException {
-        IUserAdapter adapter = new UserAdapterTemp();
+        IUserAdapter adapter = new UserAdapter();
 
         ChangeAvailableStatusAPI.Response responseContent;
         ChangeAvailableStatusAPI.Request requestContent = request.requestContent;

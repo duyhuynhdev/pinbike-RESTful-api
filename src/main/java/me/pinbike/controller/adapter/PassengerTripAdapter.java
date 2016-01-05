@@ -13,13 +13,11 @@ import me.pinbike.dao.UserDao;
 import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
 import me.pinbike.polling.PollingDB;
-import me.pinbike.provider.exception.PinBikeException;
 import me.pinbike.sharedjava.model.CancelTripAPI;
 import me.pinbike.sharedjava.model.CreateTripAPI;
 import me.pinbike.sharedjava.model.GetDriverUpdatedAPI;
 import me.pinbike.sharedjava.model.RequestDriverAPI;
 import me.pinbike.sharedjava.model.base.UserDetail;
-import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.DateTimeUtils;
 import me.pinbike.util.PinBikeConstant;
 
@@ -94,13 +92,13 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         // trigger driver
         PollingChannel<PollingDB.Listener> listenerPollingChannel = db.getChannel(PollingChannelName.WAITING_REQUEST);
         PollingDB.Listener listener = listenerPollingChannel.get(driver.userId);
-        if (listener == null || !listener.isAvailable) {
-            throw new PinBikeException(AC.MessageCode.DRIVER_BUSY, "Driver is not available");
-        } else {
+        if (listener != null && listener.isAvailable) {
             listener.isAvailable = false;
             listener.passengerId = passenger.userId;
             listener.tripId = trip.tripId;
             listenerPollingChannel.change(driver.userId, listener);
+        } else {
+//            throw new PinBikeException(AC.MessageCode.DRIVER_BUSY, "Driver is not available");
         }
 
         // change

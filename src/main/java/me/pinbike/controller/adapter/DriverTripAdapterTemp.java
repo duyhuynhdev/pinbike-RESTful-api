@@ -6,6 +6,7 @@ import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
 import me.pinbike.polling.PollingDB;
 import me.pinbike.sharedjava.model.*;
+import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.sample_data.SampleData;
 
 /**
@@ -50,6 +51,7 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
             response.passengerDetail = getUserDetail();
             response.tripDetail = getTripDetail();
             response.tripDetail.passengerId = listener.passengerId;
+            response.passengerDetail.userId = listener.passengerId;
         }
 
 
@@ -63,7 +65,7 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
         PollingChannel<PollingDB.UserUpdated> getUserUpdated = db.getChannel(PollingChannelName.GET_USER_UPDATED);
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = getUpdatedLocation();
-        userUpdated.type = SampleData.update_types[1];// arrived;
+        userUpdated.type = AC.UpdatedStatus.ARRIVED;// arrived;
         getUserUpdated.change(SampleData.driverId, userUpdated);
         return null;
     }
@@ -92,7 +94,7 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
         PollingChannel<PollingDB.UserUpdated> getUserUpdated = db.getChannel(PollingChannelName.GET_USER_UPDATED);
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = getUpdatedLocation();
-        userUpdated.type = SampleData.update_types[4];// cancel;
+        userUpdated.type = AC.UpdatedStatus.DESTROYED;// cancel;
         getUserUpdated.change(request.userId, userUpdated);
         return null;
     }
@@ -117,7 +119,7 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
         GetPassengerUpdatedAPI.Response response = null;
         if (changed) {
             response = new GetPassengerUpdatedAPI.Response(getUpdatedLocation());
-            response.type = getPassengerUpdated.get(SampleData.passengerId).type;
+            response.type = getPassengerUpdated.get(request.passengerId).type;
         }
         return response;
     }
@@ -129,7 +131,7 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
         PollingChannel<PollingDB.UserUpdated> getUserUpdated = db.getChannel(PollingChannelName.GET_USER_UPDATED);
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = getUpdatedLocation();
-        userUpdated.type = SampleData.update_types[2];// start;
+        userUpdated.type = AC.UpdatedStatus.STARTED;// start;
         getUserUpdated.change(SampleData.driverId, userUpdated);
         return null;
     }
@@ -141,7 +143,7 @@ public class DriverTripAdapterTemp extends ModelDataFactory implements IDriverTr
         PollingChannel<PollingDB.UserUpdated> getUserUpdated = db.getChannel(PollingChannelName.GET_USER_UPDATED);
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = getUpdatedLocation();
-        userUpdated.type = SampleData.update_types[3];// end;
+        userUpdated.type = AC.UpdatedStatus.ENDED;// end;
         getUserUpdated.change(SampleData.driverId, userUpdated);
         return null;
     }

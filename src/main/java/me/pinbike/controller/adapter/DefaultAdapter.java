@@ -12,4 +12,5 @@ public class DefaultAdapter implements IDefaultAdapter{
         //TODO waiting Constant from back end @ann
         return null;
     }
+
 }

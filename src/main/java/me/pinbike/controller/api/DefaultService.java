@@ -4,13 +4,14 @@ package me.pinbike.controller.api;
  * Created by hpduy17 on 10/12/15.
  */
 
-import me.pinbike.controller.adapter.DefaultAdapterTemp;
+import me.pinbike.controller.adapter.DefaultAdapter;
 import me.pinbike.controller.adapter.adapter_interface.IDefaultAdapter;
 import me.pinbike.sharedjava.model.GetDefaultSettingAPI;
 import me.pinbike.sharedjava.model.base.RequestWrapper;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.PinBikeConstant;
 import me.pinbike.util.ResponseWrapper;
+import me.pinbike.util.TestSet;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.spi.validation.ValidateRequest;
 
@@ -31,7 +32,7 @@ public class DefaultService {
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<GetDefaultSettingAPI.Response> GetDefaultSettingAPI(@Valid RequestWrapper<GetDefaultSettingAPI.Request> request) throws IOException {
 
-        IDefaultAdapter adapter = new DefaultAdapterTemp();
+        IDefaultAdapter adapter = new DefaultAdapter();
 
         GetDefaultSettingAPI.Response responseContent;
         GetDefaultSettingAPI.Request requestContent = request.requestContent;
@@ -41,6 +42,17 @@ public class DefaultService {
         ResponseWrapper<GetDefaultSettingAPI.Response> response = new ResponseWrapper<>(responseContent);
         logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
+        return response;
+    }
+
+    @POST
+    @Path("/GetTestSetAPI")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<TestSet> GetTestSet(@Valid RequestWrapper<?> request) throws IOException {
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        ResponseWrapper<TestSet> response =  new ResponseWrapper<>();
+        response.setResult(TestSet.getInstance());
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
         return response;
     }
 

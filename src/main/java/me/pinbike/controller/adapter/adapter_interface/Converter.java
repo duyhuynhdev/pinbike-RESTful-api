@@ -10,6 +10,8 @@ import java.util.List;
  */
 public class Converter {
     public UserDetail convertUser(TUser user, List<TBike> bikes, List<TOrganization> organizations) {
+        if (user == null)
+            return null;
         UserDetail userDetail = new UserDetail();
         userDetail.avatar = user.avatar;
         userDetail.birthday = user.brithday;
@@ -37,6 +39,8 @@ public class Converter {
     }
 
     public Bike convertBike(TBike bike) {
+        if (bike == null)
+            return null;
         Bike bikeDetail = new Bike();
         bikeDetail.bikeId = bike.bikeId;
         bikeDetail.description = bike.description;
@@ -46,6 +50,8 @@ public class Converter {
     }
 
     public Organization convertOrganization(TOrganization organization) {
+        if (organization == null)
+            return null;
         Organization organizationDetail = new Organization();
         organizationDetail.organizationId = organization.organizationId;
         organizationDetail.organizationJoinedDate = organization.dateCreated;
@@ -54,6 +60,8 @@ public class Converter {
     }
 
     public UpdatedLocation convertUpdatedLocation(TLatLng ll) {
+        if (ll == null)
+            return null;
         UpdatedLocation location = new UpdatedLocation();
         location.location.lat = ll.lat;
         location.location.lng = ll.lng;
@@ -61,11 +69,17 @@ public class Converter {
         return location;
     }
 
-    public TripDetail convertTripDetail(TTrip trip){
+    public TripDetail convertTripDetail(TTrip trip) {
+        if (trip == null)
+            return null;
         TripDetail tripDetail = new TripDetail();
         tripDetail.distance = trip.distance;
         tripDetail.endLocation.address = trip.getEndLocation(); //TODO will fix in future
+        tripDetail.endLocation.lat = trip.getEndLatLng().lat;
+        tripDetail.endLocation.lng = trip.getEndLatLng().lng;
         tripDetail.startLocation.address = trip.getStartLocation(); //TODO will fix in future
+        tripDetail.startLocation.lat = trip.getStartLatLng().lat;
+        tripDetail.startLocation.lng = trip.getStartLatLng().lng;
         tripDetail.passengerId = trip.passengerId;
         tripDetail.price = trip.price;
         return tripDetail;

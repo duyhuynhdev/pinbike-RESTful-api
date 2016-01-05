@@ -4,9 +4,12 @@ package me.pinbike.controller.api;
  * Created by hpduy17 on 10/12/15.
  */
 
-import me.pinbike.controller.adapter.PassengerTripAdapterTemp;
+import me.pinbike.controller.adapter.PassengerTripAdapter;
 import me.pinbike.controller.adapter.adapter_interface.IPassengerTripAdapter;
-import me.pinbike.sharedjava.model.*;
+import me.pinbike.sharedjava.model.CancelTripAPI;
+import me.pinbike.sharedjava.model.CreateTripAPI;
+import me.pinbike.sharedjava.model.GetDriverUpdatedAPI;
+import me.pinbike.sharedjava.model.RequestDriverAPI;
 import me.pinbike.sharedjava.model.base.RequestWrapper;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.PinBikeConstant;
@@ -30,7 +33,7 @@ public class PassengerTripService {
     @Path("/CreateTripAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<CreateTripAPI.Response> CreateTripAPI(@Valid RequestWrapper<CreateTripAPI.Request> request) throws IOException {
-        IPassengerTripAdapter adapter = new PassengerTripAdapterTemp();
+        IPassengerTripAdapter adapter = new PassengerTripAdapter();
 
         CreateTripAPI.Response responseContent;
         CreateTripAPI.Request requestContent = request.requestContent;
@@ -48,7 +51,7 @@ public class PassengerTripService {
     @Path("/CancelTripAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<CancelTripAPI.Response> CancelTripAPI(@Valid RequestWrapper<CancelTripAPI.Request> request) throws IOException {
-        IPassengerTripAdapter adapter = new PassengerTripAdapterTemp();
+        IPassengerTripAdapter adapter = new PassengerTripAdapter();
 
         CancelTripAPI.Response responseContent;
         CancelTripAPI.Request requestContent = request.requestContent;
@@ -66,7 +69,7 @@ public class PassengerTripService {
     @Path("/RequestDriverAPI") //TODO: LONG POLLING
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<RequestDriverAPI.Response> RequestDriverAPI(@Valid RequestWrapper<RequestDriverAPI.Request> request) throws IOException {
-        IPassengerTripAdapter adapter = new PassengerTripAdapterTemp();
+        IPassengerTripAdapter adapter = new PassengerTripAdapter();
 
         RequestDriverAPI.Response responseContent;
         RequestDriverAPI.Request requestContent = request.requestContent;
@@ -83,7 +86,7 @@ public class PassengerTripService {
     @Path("/GetDriverUpdatedAPI")//TODO: LONG POLLING
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<GetDriverUpdatedAPI.Response> GetDriverUpdatedAPI(@Valid RequestWrapper<GetDriverUpdatedAPI.Request> request) throws IOException {
-        IPassengerTripAdapter adapter = new PassengerTripAdapterTemp();
+        IPassengerTripAdapter adapter = new PassengerTripAdapter();
 
         GetDriverUpdatedAPI.Response responseContent;
         GetDriverUpdatedAPI.Request requestContent = request.requestContent;

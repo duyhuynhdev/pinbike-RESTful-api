@@ -20,8 +20,8 @@ public class LogUtil {
         if (initialized) {
             return;
         }
-        String apppath = ".";
-        String APP_ENV = "development";
+        String apppath = "/pinbike2/data/logs/";
+        String APP_ENV = "api";
 
         if (APP_ENV == null) {
             APP_ENV = "";

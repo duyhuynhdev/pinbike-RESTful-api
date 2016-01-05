@@ -5,9 +5,10 @@ import me.pinbike.controller.adapter.adapter_interface.ModelDataFactory;
 import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
 import me.pinbike.polling.PollingDB;
-import me.pinbike.provider.exception.PinBikeException;
-import me.pinbike.sharedjava.model.*;
-import me.pinbike.sharedjava.model.constanst.AC;
+import me.pinbike.sharedjava.model.CancelTripAPI;
+import me.pinbike.sharedjava.model.CreateTripAPI;
+import me.pinbike.sharedjava.model.GetDriverUpdatedAPI;
+import me.pinbike.sharedjava.model.RequestDriverAPI;
 import me.pinbike.util.sample_data.SampleData;
 
 import java.util.Arrays;
@@ -41,13 +42,13 @@ public class PassengerTripAdapterTemp extends ModelDataFactory implements IPasse
         // trigger driver
         PollingChannel<PollingDB.Listener> listenerPollingChannel = db.getChannel(PollingChannelName.WAITING_REQUEST);
         PollingDB.Listener listener = listenerPollingChannel.get(request.driverId);
-        if (listener == null || !listener.isAvailable) {
-            throw new PinBikeException(AC.MessageCode.DRIVER_BUSY, "Driver is not available");
-        } else {
+        if (listener != null && listener.isAvailable) {
             listener.isAvailable = false;
             listener.passengerId = request.passengerId;
             listener.tripId = request.tripId;
             listenerPollingChannel.change(request.driverId, listener);
+        } else {
+//            throw new PinBikeException(AC.MessageCode.DRIVER_BUSY, "Driver is not available");
         }
 
         // change
@@ -71,7 +72,7 @@ public class PassengerTripAdapterTemp extends ModelDataFactory implements IPasse
         long timeout = getDriverUpdate.getTimeout();
         boolean changed = false;
         while (timeout > 0) {
-            changed = getDriverUpdate.subscribe(SampleData.driverId);
+            changed = getDriverUpdate.subscribe(request.driverId);
             if (changed)
                 break;
             try {
@@ -84,7 +85,7 @@ public class PassengerTripAdapterTemp extends ModelDataFactory implements IPasse
         GetDriverUpdatedAPI.Response response = null;
         if (changed) {
             response = new GetDriverUpdatedAPI.Response(getUpdatedLocation());
-            response.type = getDriverUpdate.get(SampleData.driverId).type;
+            response.type = getDriverUpdate.get(request.driverId).type;
         }
         return response;
     }
