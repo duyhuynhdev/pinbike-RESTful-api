@@ -220,9 +220,9 @@ public class ModelDataFactory {
         return request;
     }
 
-    public GetPassengerUpdatedAPI.Request getPassengerUpdatedAPIRequest(long driverId, long tripId) {
+    public GetPassengerUpdatedAPI.Request getPassengerUpdatedAPIRequest(long passengerId, long tripId) {
         GetPassengerUpdatedAPI.Request request = new GetPassengerUpdatedAPI.Request();
-        request.passengerId = driverId;
+        request.passengerId = passengerId;
         request.tripId = tripId;
         return request;
     }
@@ -279,10 +279,10 @@ public class ModelDataFactory {
         return request;
     }
 
-    public UpdateMyLocationAPI.Request getUpdateMyLocationAPIRequest(long driverId, long tripId) {
+    public UpdateMyLocationAPI.Request getUpdateMyLocationAPIRequest(long userId) {
         UpdateMyLocationAPI.Request request = new UpdateMyLocationAPI.Request();
-        request.userId = driverId;
-        request.location = getLocation(10.123, 106.456, 100);
+        request.userId = userId;
+        request.location = new LatLng(getLocation(10.123, 106.456, 100));
         return request;
     }
 

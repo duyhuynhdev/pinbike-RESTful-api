@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.jboss.resteasy.spi.validation.ValidateRequest;
 
 import javax.validation.Valid;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -45,13 +46,24 @@ public class DefaultService {
         return response;
     }
 
+    @GET
+    @Path("/GetTestSetAPI")
+    public ResponseWrapper<TestSet> GetTestSet() throws IOException {
+        ResponseWrapper<TestSet> response =  new ResponseWrapper<>();
+        TestSet testSet = TestSet.getInstance();
+        testSet.setup();
+        response.setResult(testSet);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+        return response;
+    }
+
     @POST
     @Path("/GetTestSetAPI")
-    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
-    public ResponseWrapper<TestSet> GetTestSet(@Valid RequestWrapper<?> request) throws IOException {
-        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+    public ResponseWrapper<TestSet> postTestSet() throws IOException {
         ResponseWrapper<TestSet> response =  new ResponseWrapper<>();
-        response.setResult(TestSet.getInstance());
+        TestSet testSet = TestSet.getInstance();
+        testSet.setup();
+        response.setResult(testSet);
         logger.info(response.getClass().getSimpleName() + ":" + response.toString());
         return response;
     }

@@ -7,7 +7,7 @@ public class PinBikeConstant {
     public static final String APPLICATION_JSON_UTF8 = "application/json;charset=UTF-8";
 
     public static class BackEndConfig {
-        public static final String Host = "42.119.150.92";
+        public static final String Host = "pinride.ddns.net";
         public static final int Port = 9000;
     }
 
@@ -16,7 +16,7 @@ public class PinBikeConstant {
     }
 
     public static class DeveloperMail {
-        public static final String[] backend_mails = {"duyhuynh@pinride.me", "anngoc2017@gmail.com"};
+        public static final String[] backend_mails = {"errorbot@pinride.me", "anngoc2017@gmail.com"};
     }
 
     public static class MailLayout {

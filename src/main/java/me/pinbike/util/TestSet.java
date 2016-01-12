@@ -1,26 +1,28 @@
 package me.pinbike.util;
 
 import com.google.gson.Gson;
-import com.pinride.pinbike.thrift.TBike;
-import com.pinride.pinbike.thrift.TTrip;
-import com.pinride.pinbike.thrift.TUser;
 import me.pinbike.controller.adapter.adapter_interface.ModelDataFactory;
 import me.pinbike.dao.BikeDao;
 import me.pinbike.dao.TripDao;
 import me.pinbike.dao.UserDao;
 import me.pinbike.sharedjava.model.constanst.AC;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * Created by hpduy17 on 1/4/16.
  */
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TestSet {
+    @JsonIgnore
     public static final String URL = AC.MAIN_SERVER + "GetTestSetAPI";
-    public TUser passenger;
-    public TUser driver;
-    public TBike bike;
-    public TTrip trip;
+    @JsonIgnore
+    public boolean installed = false;
 
+    public long passengerId;
+    public long driverId;
+    public long bikeId;
+    public long tripId;
     private static TestSet ourInstance = new TestSet();
 
     public static TestSet getInstance() {
@@ -32,42 +34,40 @@ public class TestSet {
     }
 
     public void fetch(TestSet that) {
-        this.passenger = that.passenger;
-        this.driver = that.driver;
-        this.bike = that.bike;
-        this.trip = that.trip;
+        this.passengerId = that.passengerId;
+        this.driverId = that.driverId;
+        this.bikeId = that.bikeId;
+        this.tripId = that.tripId;
 
     }
 
     public void setup() {
         // fill data
-        passenger = new ModelDataFactory().getTUser();
-        driver = new ModelDataFactory().getTUser();
-        bike = new ModelDataFactory().getTBike(driver.userId);
-        trip = new ModelDataFactory().getTTrip(passenger.userId);
-        // insert
-        passenger = new UserDao().insert(passenger);
-        driver = new UserDao().insert(driver);
-        bike = new BikeDao().insert(bike);
-        trip = new TripDao().insert(trip);
+        if (installed)
+            return;
+        passengerId = new UserDao().insert(new ModelDataFactory().getTUser()).userId;
+        driverId = new UserDao().insert(new ModelDataFactory().getTUser()).userId;
+        bikeId = new BikeDao().insert(new ModelDataFactory().getTBike(driverId)).bikeId;
+        tripId = new TripDao().insert(new ModelDataFactory().getTTrip(passengerId)).tripId;
+        installed = true;
     }
 
     public void removeAll() {
         try {
-            new UserDao().delete(passenger.userId);
+            new UserDao().delete(passengerId);
         } catch (Exception ignored) {
         }
         try {
-            new UserDao().delete(driver.userId);
+            new UserDao().delete(driverId);
         } catch (Exception ignored) {
         }
         try {
 
-            new BikeDao().delete(bike.bikeId);
+            new BikeDao().delete(bikeId);
         } catch (Exception ignored) {
         }
         try {
-            new TripDao().delete(trip.tripId);
+            new TripDao().delete(tripId);
         } catch (Exception ignored) {
         }
     }

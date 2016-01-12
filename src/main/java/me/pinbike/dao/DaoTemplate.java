@@ -11,6 +11,7 @@ import me.pinbike.util.SendMailUtil;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,7 +27,7 @@ public class DaoTemplate<T> {
         try {
             logger.info(object.toString());
             ResponseValue<T> response = client.insert(object);
-            validateResponse(response.getErrorCode(),getGenericName()+".insert()",object.toString());
+            validateResponse(response.getErrorCode(), getGenericName() + ".insert()", object.toString());
             return response.getValue();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
@@ -83,9 +84,11 @@ public class DaoTemplate<T> {
 
     public List<T> getList(List<Long> ids) {
         try {
+            if (ids == null || ids.isEmpty())
+                return new ArrayList<>();
             logger.info(ids.toArray());
             ResponseListValue<T> response = client.gets(ids);
-            validateResponse(response.getErrorCode(), getGenericName() + ".getList()", ids.toArray().toString());
+            validateResponse(response.getErrorCode(), getGenericName() + ".getList()", ids.toString());
             return response.getList();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);

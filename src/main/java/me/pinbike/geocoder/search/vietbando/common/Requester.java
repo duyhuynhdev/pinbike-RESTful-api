@@ -1,5 +1,6 @@
 package me.pinbike.geocoder.search.vietbando.common;
 
+import com.google.gson.Gson;
 import me.pinbike.geocoder.common.HttpRequester;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -36,6 +37,11 @@ public class Requester extends HttpRequester {
     public static class Input{
         public String apiName;
         public String data;
+        @Override
+        public String toString() {
+            Gson gson = new Gson();
+            return gson.toJson(this);
+        }
     }
 
 

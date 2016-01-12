@@ -14,13 +14,13 @@ public class ResponseWrapper<T> {
 
     public ResponseWrapper() {
         this.success = true;
-        this.messageCode = AC.MessageCode.SUCESSFULLY;
+        this.messageCode = AC.MessageCode.SUCCESSFULLY;
         this.message = "Successfully";
     }
 
     public ResponseWrapper(T result) {
         this.success = true;
-        this.messageCode = AC.MessageCode.SUCESSFULLY;
+        this.messageCode = AC.MessageCode.SUCCESSFULLY;
         this.message = "Successfully";
         this.result = result;
     }

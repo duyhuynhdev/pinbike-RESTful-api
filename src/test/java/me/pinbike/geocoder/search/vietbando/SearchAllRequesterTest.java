@@ -20,4 +20,9 @@ public class SearchAllRequesterTest {
         input.IsOrder = true;
         new SearchAllRequester().call(input);
     }
+
+    @Test
+    public void testCall1() throws Exception {
+
+    }
 }

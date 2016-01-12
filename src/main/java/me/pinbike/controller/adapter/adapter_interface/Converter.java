@@ -24,6 +24,9 @@ public class Converter {
         userDetail.sex = user.sex;
         userDetail.status = user.status;
         userDetail.userId = user.userId;
+        userDetail.currentLocation = new LatLng();
+        userDetail.currentLocation.lat = user.currentLocation.lat;
+        userDetail.currentLocation.lng = user.currentLocation.lng;
         userDetail.intro = user.intro;
         for (TBike bike : bikes) {
             userDetail.bikes.add(convertBike(bike));
@@ -62,11 +65,11 @@ public class Converter {
     public UpdatedLocation convertUpdatedLocation(TLatLng ll) {
         if (ll == null)
             return null;
-        UpdatedLocation location = new UpdatedLocation();
-        location.location.lat = ll.lat;
-        location.location.lng = ll.lng;
-        location.updatedTime = ll.time;
-        return location;
+        UpdatedLocation updatedLocation = new UpdatedLocation();
+        updatedLocation.location.lat = ll.lat;
+        updatedLocation.location.lng = ll.lng;
+        updatedLocation.updatedTime = ll.time;
+        return updatedLocation;
     }
 
     public TripDetail convertTripDetail(TTrip trip) {
