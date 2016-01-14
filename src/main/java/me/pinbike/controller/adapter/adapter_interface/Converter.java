@@ -77,12 +77,20 @@ public class Converter {
             return null;
         TripDetail tripDetail = new TripDetail();
         tripDetail.distance = trip.distance;
+        tripDetail.endLocation = new Location();
+        tripDetail.startLocation = new Location();
+
         tripDetail.endLocation.address = trip.getEndLocation(); //TODO will fix in future
-        tripDetail.endLocation.lat = trip.getEndLatLng().lat;
-        tripDetail.endLocation.lng = trip.getEndLatLng().lng;
+        if (trip.getEndLatLng() != null) {
+            tripDetail.endLocation.lat = trip.getEndLatLng().lat;
+            tripDetail.endLocation.lng = trip.getEndLatLng().lng;
+        }
+
         tripDetail.startLocation.address = trip.getStartLocation(); //TODO will fix in future
-        tripDetail.startLocation.lat = trip.getStartLatLng().lat;
-        tripDetail.startLocation.lng = trip.getStartLatLng().lng;
+        if (trip.getStartLatLng() != null) {
+            tripDetail.startLocation.lat = trip.getStartLatLng().lat;
+            tripDetail.startLocation.lng = trip.getStartLatLng().lng;
+        }
         tripDetail.passengerId = trip.passengerId;
         tripDetail.price = trip.price;
         return tripDetail;

@@ -1,9 +1,6 @@
 package me.pinbike.controller.adapter;
 
-import com.pinride.pinbike.thrift.TBike;
-import com.pinride.pinbike.thrift.TOrganization;
-import com.pinride.pinbike.thrift.TTrip;
-import com.pinride.pinbike.thrift.TUser;
+import com.pinride.pinbike.thrift.*;
 import me.pinbike.controller.adapter.adapter_interface.Converter;
 import me.pinbike.controller.adapter.adapter_interface.IPassengerTripAdapter;
 import me.pinbike.dao.BikeDao;
@@ -42,6 +39,12 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         trip.distance = request.distance;
         trip.startLocation = request.startLocation.address; // TODO will fix in the future
         trip.endLocation = request.endLocation.address; // TODO will fix in the future
+        trip.endLatLng = new TLatLng();
+        trip.startLatLng = new TLatLng();
+        trip.endLatLng.lat = request.endLocation.lat;
+        trip.endLatLng.lng = request.endLocation.lng;
+        trip.startLatLng.lat = request.startLocation.lat;
+        trip.startLatLng.lng = request.startLocation.lng;
         trip.passengerId = passenger.userId;
         trip.price = request.price;
         trip = tripDao.insert(trip);

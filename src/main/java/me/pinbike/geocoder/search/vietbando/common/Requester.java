@@ -1,7 +1,7 @@
 package me.pinbike.geocoder.search.vietbando.common;
 
 import com.google.gson.Gson;
-import me.pinbike.geocoder.common.HttpRequester;
+import me.pinbike.util.common.HttpRequester;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;

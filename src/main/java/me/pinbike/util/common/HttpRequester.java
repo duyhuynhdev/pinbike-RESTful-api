@@ -1,4 +1,4 @@
-package me.pinbike.geocoder.common;
+package me.pinbike.util.common;
 
 import org.jetbrains.annotations.Nullable;
 

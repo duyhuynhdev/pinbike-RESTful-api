@@ -4,6 +4,7 @@ import me.pinbike.provider.exception.PinBikeException;
 import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.DateTimeUtils;
 import me.pinbike.util.LogUtil;
+import me.pinbike.util.sms.SMSManager;
 import org.apache.log4j.Logger;
 import org.fluttercode.datafactory.impl.DataFactory;
 
@@ -31,6 +32,7 @@ public class ActivationDao {
             actCode.epochTimeInSecond = DateTimeUtils.now();
             regBoard.put(phoneNumber, actCode);
             // send SMS
+            new SMSManager().sendActivationCode(phoneNumber,actCode.code);
             //if success
             codeGenerated.put(actCode.code, DateTimeUtils.now());
             return actCode.code;

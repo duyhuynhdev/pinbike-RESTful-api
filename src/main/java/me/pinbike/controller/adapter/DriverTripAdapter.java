@@ -64,8 +64,6 @@ public class DriverTripAdapter implements IDriverTripAdapter {
             response.passengerDetail = new Converter().convertUser(passenger, bikes, organizations);
             response.tripDetail = new Converter().convertTripDetail(trip);
         }
-
-
         return response;
     }
 
@@ -138,7 +136,8 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         userDao.update(user);
         //update trip status
         trip.status = AC.UpdatedStatus.DESTROYED;
-        trip.reason = request.reason;
+        if (request.reason != null)
+            trip.reason = request.reason.description;
         trip.datetimeEndTrip = DateTimeUtils.now();
         tripDao.update(trip);
         //TODO who destroy??

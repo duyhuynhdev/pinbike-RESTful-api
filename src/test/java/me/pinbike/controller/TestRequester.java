@@ -1,6 +1,6 @@
 package me.pinbike.controller;
 
-import me.pinbike.geocoder.common.HttpRequester;
+import me.pinbike.util.common.HttpRequester;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
 

@@ -188,7 +188,7 @@ public class ModelDataFactory {
 
     public DestroyTripAPI.Request getDestroyTripAPIRequest(long tripId, long userId) {
         DestroyTripAPI.Request request = new DestroyTripAPI.Request();
-        request.reason = getDescription(20);
+        request.reason = getUserReason();
         request.tripId = tripId;
         request.userId = userId;
         return request;
