@@ -34,9 +34,10 @@ public class Requester extends HttpRequester {
         return result;
     }
 
-    public static class Input{
+    public static class Input {
         public String apiName;
         public String data;
+
         @Override
         public String toString() {
             Gson gson = new Gson();

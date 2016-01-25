@@ -117,7 +117,7 @@ public class ModelDataFactory {
         userDetail.email = factory.getEmailAddress();
         userDetail.isAvailable = true;
         userDetail.joinedDate = factory.getDateBetween(new Date(1417761483000L), new Date()).getTime() / 1000;
-        userDetail.name = factory.getName();
+        userDetail.givenName = factory.getName();
         userDetail.organizations = Arrays.asList(getOrganization(), getOrganization(), getOrganization());
         userDetail.phone = factory.getItem(SampleData.phone_prefixes) + factory.getNumberText(7);
         userDetail.rating = getRating();
@@ -363,11 +363,11 @@ public class ModelDataFactory {
     public TUser getTUser() {
         TUser user = new TUser();
         user.avatar = factory.getItem(SampleData.avatars);
-        user.brithday = factory.getDateBetween(new Date(473412072000L), new Date(1135927272000L)).getTime() / 1000;
+        user.birthday = factory.getDateBetween(new Date(473412072000L), new Date(1135927272000L)).getTime() / 1000;
         user.address = factory.getAddress() + factory.getCity();
         user.email = factory.getEmailAddress();
         user.socialId = factory.getEmailAddress();
-        user.socialType = Const.PinBike.RegisterType.REGISTER_EMAIL;
+        user.socialType = Const.PinBike.SocialType.EMAIL;
         user.availableDriver = true;
         user.name = factory.getName();
         user.phone = factory.getItem(SampleData.phone_prefixes) + factory.getNumberText(7);

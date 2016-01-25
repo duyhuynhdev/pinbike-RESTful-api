@@ -15,4 +15,6 @@ public interface IPassengerTripAdapter {
 
     GetDriverUpdatedAPI.Response getDriverUpdated(GetDriverUpdatedAPI.Request request);
 
+    GetTripHistoryAPI.Response getTripHistory(GetTripHistoryAPI.Request request);
+
 }

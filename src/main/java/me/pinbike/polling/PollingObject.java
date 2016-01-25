@@ -8,11 +8,11 @@ public class PollingObject<T> {
     private long changedTimeInSecond;
     private T content;
 
-    public boolean isChanged() {
+    public synchronized boolean isChanged() {
         return isChanged;
     }
 
-    public void setIsChanged(boolean isChanged) {
+    public synchronized void setIsChanged(boolean isChanged) {
         this.isChanged = isChanged;
     }
 

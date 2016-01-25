@@ -1,43 +1,62 @@
 package me.pinbike.controller.adapter.adapter_interface;
 
 import com.pinride.pinbike.thrift.*;
+import me.pinbike.dao.RatingDao;
+import me.pinbike.dao.TripDao;
 import me.pinbike.sharedjava.model.base.*;
+import me.pinbike.sharedjava.model.constanst.AC;
+import me.pinbike.util.common.Path;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
  * Created by hpduy17 on 12/9/15.
  */
 public class Converter {
-    public UserDetail convertUser(TUser user, List<TBike> bikes, List<TOrganization> organizations) {
+    public UserDetail convertUser(TUser user, List<TBike> bikes, List<TOrganization> organizations, boolean isDriver) {
         if (user == null)
             return null;
         UserDetail userDetail = new UserDetail();
         userDetail.avatar = user.avatar;
-        userDetail.birthday = user.brithday;
+        userDetail.birthday = user.birthday;
         userDetail.currentBikeId = user.currentBikeId;
         userDetail.email = user.email;
         userDetail.isAvailable = user.availableDriver;
         userDetail.joinedDate = user.dateCreated;
-        userDetail.name = user.name;
+        userDetail.givenName = user.name;
+        userDetail.familyName = user.lastName;
+        userDetail.middleName = user.middleName;
         userDetail.phone = user.phone;
         userDetail.sex = user.sex;
         userDetail.status = user.status;
         userDetail.userId = user.userId;
         userDetail.currentLocation = new LatLng();
-        userDetail.currentLocation.lat = user.currentLocation.lat;
-        userDetail.currentLocation.lng = user.currentLocation.lng;
+        if (user.currentLocation != null) {
+            userDetail.currentLocation.lat = user.currentLocation.lat;
+            userDetail.currentLocation.lng = user.currentLocation.lng;
+        }
         userDetail.intro = user.intro;
-        for (TBike bike : bikes) {
-            userDetail.bikes.add(convertBike(bike));
-        }
-        for (TOrganization organization : organizations) {
-            userDetail.organizations.add(convertOrganization(organization));
-        }
+        if (bikes != null)
+            for (TBike bike : bikes) {
+                userDetail.bikes.add(convertBike(bike));
+            }
+        if (organizations != null)
+            for (TOrganization organization : organizations) {
+                userDetail.organizations.add(convertOrganization(organization));
+            }
         Rating rating = new Rating();
         rating.totalScore = user.totalScore;
         rating.ratingCount = (int) user.numberOfRating;
+        try {
+            if (isDriver)
+                userDetail.numberOfTravelledTrip = new TripDao().getTripByDriver(user.userId).size();
+            else
+                userDetail.numberOfTravelledTrip = new TripDao().getTripByPassneger(user.userId).size();
+        } catch (Exception ignored) {
+        }
         userDetail.rating = rating;
+
         return userDetail;
     }
 
@@ -96,5 +115,42 @@ public class Converter {
         return tripDetail;
     }
 
+
+    public TripReviewSortDetail convertTripReviewSortDetail(TTrip trip, TUser partner) throws IOException {
+        if (trip == null && partner == null)
+            return null;
+        TripReviewSortDetail tripReviewSortDetail = new TripReviewSortDetail();
+        tripReviewSortDetail.distance = trip.distance;
+        tripReviewSortDetail.endLocation = new Location();
+        tripReviewSortDetail.startLocation = new Location();
+
+        tripReviewSortDetail.endLocation.address = trip.getEndLocation(); //TODO will fix in future
+        if (trip.getEndLatLng() != null) {
+            tripReviewSortDetail.endLocation.lat = trip.getEndLatLng().lat;
+            tripReviewSortDetail.endLocation.lng = trip.getEndLatLng().lng;
+        }
+
+        tripReviewSortDetail.startLocation.address = trip.getStartLocation(); //TODO will fix in future
+        if (trip.getStartLatLng() != null) {
+            tripReviewSortDetail.startLocation.lat = trip.getStartLatLng().lat;
+            tripReviewSortDetail.startLocation.lng = trip.getStartLatLng().lng;
+        }
+        tripReviewSortDetail.partnerId = partner.userId;
+        tripReviewSortDetail.partnerAvatar = Path.getInstance().getUrlFromPath(partner.avatar);
+        tripReviewSortDetail.timeInSecond = trip.dateCreated;
+        TRating tRating = new RatingDao().getTripRating(trip.tripId, partner.userId);
+        if (tRating != null)
+            tripReviewSortDetail.ratingScore = tRating.score;
+        else
+            tripReviewSortDetail.ratingScore = 0;
+        if (trip.status == AC.UpdatedStatus.ENDED) {
+            tripReviewSortDetail.isDestroyedTrip = false;
+            tripReviewSortDetail.price = trip.price;
+        } else {
+            tripReviewSortDetail.isDestroyedTrip = true;
+            tripReviewSortDetail.price = 0;
+        }
+        return tripReviewSortDetail;
+    }
 
 }

@@ -32,7 +32,9 @@ public class ESMS {
     //SMS TYPE
     public static final int type_random_phone = 3;
     public static final int type_fixed_phone_19001534 = 4;
-    public static final int type_CSKH = 6;
+    public static final int type_fixed_8775 = 6;
+    public static final int type_random_phone_express= 7;
+    public static final int type_fixed_phone_19001534_express = 8;
 
     public ESMS(String[] phoneNumber, String content, String apiName, int smsType, String requestId) {
         this.phoneNumber = phoneNumber;

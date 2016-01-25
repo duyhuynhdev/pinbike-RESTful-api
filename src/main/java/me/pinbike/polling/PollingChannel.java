@@ -54,9 +54,11 @@ public class PollingChannel<T> implements IPollingChannel {
             subscriber = new PollingObject<>();
             channel.put(key, subscriber);
         }
-        subscriber.setIsChanged(true);
-        subscriber.setChangedTimeInSecond(DateTimeUtils.now());
-        subscriber.setContent(content);
+        synchronized (subscriber) {
+            subscriber.setIsChanged(true);
+            subscriber.setChangedTimeInSecond(DateTimeUtils.now());
+            subscriber.setContent(content);
+        }
     }
 
     public void changeContent(long key, T content) {

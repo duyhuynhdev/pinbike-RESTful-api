@@ -4,7 +4,7 @@ package me.pinbike.controller.api;
  * Created by hpduy17 on 10/12/15.
  */
 
-import me.pinbike.controller.adapter.DefaultAdapter;
+import me.pinbike.controller.adapter.DefaultAdapterTemp;
 import me.pinbike.controller.adapter.adapter_interface.IDefaultAdapter;
 import me.pinbike.sharedjava.model.GetDefaultSettingAPI;
 import me.pinbike.sharedjava.model.base.RequestWrapper;
@@ -33,7 +33,7 @@ public class DefaultService {
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<GetDefaultSettingAPI.Response> GetDefaultSettingAPI(@Valid RequestWrapper<GetDefaultSettingAPI.Request> request) throws IOException {
 
-        IDefaultAdapter adapter = new DefaultAdapter();
+        IDefaultAdapter adapter = new DefaultAdapterTemp();
 
         GetDefaultSettingAPI.Response responseContent;
         GetDefaultSettingAPI.Request requestContent = request.requestContent;

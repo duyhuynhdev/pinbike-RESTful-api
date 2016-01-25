@@ -1,6 +1,8 @@
 package me.pinbike.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by hpduy17 on 6/17/15.
@@ -52,6 +54,16 @@ public class DateTimeUtils {
 
     public static long getTimeOnDay(long date) {
         return date % SECONDS_PER_DAY;
+    }
+
+    public static String getHCMFormatDate(long timeInMilisecond){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEEE, MMMMM dd, yyyy");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+
+        SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+
+        return dateFormat.format(timeInMilisecond)+ " at " + hourFormat.format(timeInMilisecond) + " (GTM +7)";
     }
 
 }

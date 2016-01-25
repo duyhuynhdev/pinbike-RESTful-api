@@ -57,11 +57,15 @@ public class DriverTripAdapter implements IDriverTripAdapter {
             PollingDB.Listener listener = listenerPollingChannel.get(driver.userId);
             TTrip trip = tripDao.get(listener.tripId);
             TUser passenger = userDao.get(listener.passengerId);
-            List<TBike> bikes = bikeDao.getList(passenger.bikeIds);
-            List<TOrganization> organizations = organizationDao.getList(passenger.organizationIds);
+            List<TBike> bikes = null;
+            List<TOrganization> organizations = null;
+            if (passenger.bikeIds != null)
+                bikes = bikeDao.getList(passenger.bikeIds);
+            if (passenger.organizationIds != null)
+                organizations = organizationDao.getList(passenger.organizationIds);
             response = new GetRequestFromPassengerAPI.Response();
             response.tripId = trip.tripId;
-            response.passengerDetail = new Converter().convertUser(passenger, bikes, organizations);
+            response.passengerDetail = new Converter().convertUser(passenger, bikes, organizations,false);
             response.tripDetail = new Converter().convertTripDetail(trip);
         }
         return response;

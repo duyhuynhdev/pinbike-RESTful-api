@@ -37,7 +37,7 @@ public class BikeAdapter implements IBikeAdapter {
         user = userDao.get(request.userId);
         List<TBike> bikes = bikeDao.getList(user.bikeIds);
         List<TOrganization> organizations = organizationDao.getList(user.organizationIds);
-        UserDetail userDetail = new Converter().convertUser(user, bikes, organizations);
+        UserDetail userDetail = new Converter().convertUser(user, bikes, organizations,false);
         return new AddBikeAPI.Response(userDetail);
     }
 

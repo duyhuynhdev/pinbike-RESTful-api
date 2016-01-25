@@ -5,12 +5,10 @@ import me.pinbike.controller.adapter.adapter_interface.ModelDataFactory;
 import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
 import me.pinbike.polling.PollingDB;
-import me.pinbike.sharedjava.model.ChangeAvailableStatusAPI;
-import me.pinbike.sharedjava.model.GetDriverAroundAPI;
-import me.pinbike.sharedjava.model.GetUserProfileAPI;
-import me.pinbike.sharedjava.model.UpdateMyLocationAPI;
+import me.pinbike.sharedjava.model.*;
 import me.pinbike.sharedjava.model.constanst.AC;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -48,6 +46,60 @@ public class UserAdapterTemp extends ModelDataFactory implements IUserAdapter {
 
     @Override
     public ChangeAvailableStatusAPI.Response changeAvailableStatus(ChangeAvailableStatusAPI.Request request) {
+        return null;
+    }
+
+    @Override
+    public RegisterAPI.Response register(RegisterAPI.Request request) {
+        RegisterAPI.Response response = new RegisterAPI.Response(getUserDetail());
+        return response;
+    }
+
+    @Override
+    public LoginByEmailAPI.Response loginByEmail(LoginByEmailAPI.Request request) {
+        LoginByEmailAPI.Response response = new LoginByEmailAPI.Response(getUserDetail());
+        return response;
+    }
+
+    @Override
+    public LoginBySocialAPI.Response loginBySocial(LoginBySocialAPI.Request request) {
+        LoginBySocialAPI.Response response = new LoginBySocialAPI.Response(getUserDetail());
+        return response;
+    }
+
+    @Override
+    public GetActivationCodeAPI.Response getActivationCode(GetActivationCodeAPI.Request request) {
+        return null;
+    }
+
+    @Override
+    public ActivatePhoneNumberAPI.Response activatePhoneNumber(ActivatePhoneNumberAPI.Request request) {
+        return null;
+    }
+
+    @Override
+    public LogoutAPI.Response logout(LogoutAPI.Request request) {
+        return null;
+    }
+
+    @Override
+    public ForgotPasswordAPI.Response forgotPassword(ForgotPasswordAPI.Request request,String os, String deviceId, String ipAddress) {
+
+        return null;
+    }
+
+    @Override
+    public ChangePasswordAPI.Response changePassword(ChangePasswordAPI.Request request, String os, String deviceId, String ipAddress) throws IOException {
+        return null;
+    }
+
+    @Override
+    public UpdateUserPhoneNumberAPI.Response updateUserPhoneNumber(UpdateUserPhoneNumberAPI.Request request) {
+        return null;
+    }
+
+    @Override
+    public UpdateUserAvatarAPI.Response updateUserAvatarAPI(UpdateUserAvatarAPI.Request request) {
         return null;
     }
 }

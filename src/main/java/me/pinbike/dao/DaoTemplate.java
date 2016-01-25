@@ -86,13 +86,13 @@ public class DaoTemplate<T> {
         try {
             if (ids == null || ids.isEmpty())
                 return new ArrayList<>();
-            logger.info(ids.toArray());
+            logger.info(ids.toString());
             ResponseListValue<T> response = client.gets(ids);
             validateResponse(response.getErrorCode(), getGenericName() + ".getList()", ids.toString());
             return response.getList();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
-            throw ex;
+            return new ArrayList<>();
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             throw new PinBikeException(AC.MessageCode.SYSTEM_EXCEPTION, ex.getMessage());

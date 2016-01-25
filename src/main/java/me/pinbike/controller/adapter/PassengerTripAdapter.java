@@ -10,15 +10,15 @@ import me.pinbike.dao.UserDao;
 import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
 import me.pinbike.polling.PollingDB;
-import me.pinbike.sharedjava.model.CancelTripAPI;
-import me.pinbike.sharedjava.model.CreateTripAPI;
-import me.pinbike.sharedjava.model.GetDriverUpdatedAPI;
-import me.pinbike.sharedjava.model.RequestDriverAPI;
+import me.pinbike.sharedjava.model.*;
+import me.pinbike.sharedjava.model.base.TripReviewSortDetail;
 import me.pinbike.sharedjava.model.base.UserDetail;
 import me.pinbike.util.DateTimeUtils;
 import me.pinbike.util.PinBikeConstant;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -56,9 +56,13 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         for (TUser user : users) {
             if (drivers.size() == PinBikeConstant.TripConst.NUMBER_OF_DRIVERS)
                 break;
-            List<TBike> bikes = bikeDao.getList(user.bikeIds);
-            List<TOrganization> organizations = organizationDao.getList(user.organizationIds);
-            drivers.add(converter.convertUser(user, bikes, organizations));
+            List<TBike> bikes = null;
+            List<TOrganization> organizations = null;
+            if (passenger.bikeIds != null)
+                bikes = bikeDao.getList(passenger.bikeIds);
+            if (passenger.organizationIds != null)
+                organizations = organizationDao.getList(passenger.organizationIds);
+            drivers.add(converter.convertUser(user, bikes, organizations, true));
         }
         CreateTripAPI.Response response = new CreateTripAPI.Response();
         response.drivers = drivers;
@@ -147,4 +151,75 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         }
         return response;
     }
+
+    @Override
+    public GetTripHistoryAPI.Response getTripHistory(GetTripHistoryAPI.Request request) {
+        UserDao userDao = new UserDao();
+        TripDao tripDao = new TripDao();
+        TUser user = userDao.get(request.userId);
+        List<TripReviewSortDetail> dvt = new ArrayList<>();
+        List<TripReviewSortDetail> pst = new ArrayList<>();
+        List<TTrip> driverTrips = null;
+        try {
+            driverTrips = tripDao.getTripByDriver(user.userId);
+        } catch (Exception ignored) {
+
+        }
+        List<TTrip> passengerTrips = null;
+        try {
+            passengerTrips = tripDao.getTripByPassneger(user.userId);
+        } catch (Exception ignored) {
+
+        }
+        if (driverTrips != null) {
+            Collections.sort(driverTrips, new Comparator<TTrip>() {
+                @Override
+                public int compare(TTrip o1, TTrip o2) {
+                    if (o1.dateCreated < o2.dateCreated)
+                        return -1;
+                    return 1;
+                }
+            });
+            for (TTrip t : driverTrips) {
+                try {
+                    TUser partner = userDao.get(t.passengerId);
+                    TripReviewSortDetail trv = new Converter().convertTripReviewSortDetail(t, partner);
+                    if (trv != null)
+                        dvt.add(trv);
+                    if (dvt.size() >= request.numberOfTrips)
+                        break;
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        if (passengerTrips != null) {
+            //sort
+            Collections.sort(passengerTrips, new Comparator<TTrip>() {
+                @Override
+                public int compare(TTrip o1, TTrip o2) {
+                    if (o1.dateCreated < o2.dateCreated)
+                        return -1;
+                    return 1;
+                }
+            });
+            //get
+            for (TTrip t : passengerTrips) {
+                try {
+                    TUser partner = userDao.get(t.driverId);
+                    TripReviewSortDetail trv = new Converter().convertTripReviewSortDetail(t, partner);
+                    if (trv != null)
+                        pst.add(trv);
+                    if (pst.size() >= request.numberOfTrips)
+                        break;
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        GetTripHistoryAPI.Response response = new GetTripHistoryAPI.Response();
+        response.driverTrips = dvt;
+        response.passengerTrips = pst;
+        return response;
+    }
+
+
 }

@@ -18,7 +18,21 @@ public class MainService {
     @GET
     @Path("/")
     public Response main() throws IOException {
-        return Response.status(200).entity("PINBIKE EXPRESS").build();
+        return Response.status(200).entity("<html>\n" +
+                "<body>\n" +
+                "\t<h1>JAX-RS Upload Form</h1>\n" +
+                "\n" +
+                "\t<form action=\"/api/UploadAvatarAPI\" method=\"post\" enctype=\"multipart/form-data\">\n" +
+                "\t\t\n" +
+                "\t   <p>\n" +
+                "\t\tSelect a file : <input type=\"file\" name=\"uploadedFile\" size=\"50\" />\n" +
+                "\t   </p>\n" +
+                "\n" +
+                "\t   <input type=\"submit\" value=\"Upload It\" />\n" +
+                "\t</form>\n" +
+                "\n" +
+                "</body>\n" +
+                "</html>").build();
     }
 
     @POST

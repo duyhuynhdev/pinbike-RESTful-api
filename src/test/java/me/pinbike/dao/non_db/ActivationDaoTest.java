@@ -21,7 +21,7 @@ public class ActivationDaoTest {
 
     @Test
     public void testGetActivationCode() throws Exception {
-        new ActivationDao().getActivationCode("0908587305");
+        new ActivationDao().getActivationCode("+84908587305");
     }
 
     @Test

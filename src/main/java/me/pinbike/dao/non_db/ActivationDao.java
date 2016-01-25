@@ -5,6 +5,7 @@ import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.DateTimeUtils;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.sms.SMSManager;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.fluttercode.datafactory.impl.DataFactory;
 
@@ -27,12 +28,19 @@ public class ActivationDao {
 
     public String getActivationCode(String phoneNumber) {
         try {
+//            try {
+//                new UserDao().getUserBySocial(phoneNumber, Const.PinBike.RegisterType.REGISTER_EMAIL);
+//                throw new PinBikeException(AC.MessageCode.ELEMENT_USED, "phone number has been used");
+//            } catch (PinBikeException ex) {
+//                if (ex.getMessageCode() != AC.MessageCode.NOT_EXIST)
+//                    throw ex;
+//            }
             ActCode actCode = new ActCode();
             actCode.code = generate();
             actCode.epochTimeInSecond = DateTimeUtils.now();
             regBoard.put(phoneNumber, actCode);
             // send SMS
-            new SMSManager().sendActivationCode(phoneNumber,actCode.code);
+            new SMSManager().sendActivationCode(phoneNumber, actCode.code);
             //if success
             codeGenerated.put(actCode.code, DateTimeUtils.now());
             return actCode.code;
@@ -45,13 +53,14 @@ public class ActivationDao {
         }
     }
 
-    public boolean activateAccount(String phoneNumber, String activationCode) {
+    public boolean activatePhoneNumber(String phoneNumber, String activationCode) {
         try {
             int errorCode = WRONG_CODE;
             if (regBoard.containsKey(phoneNumber)) {
                 if (regBoard.get(phoneNumber).code.equals(activationCode)) {
                     if (DateTimeUtils.now() - regBoard.get(phoneNumber).epochTimeInSecond < expiredTimeInSecond) {
                         errorCode = ACTIVE_SUCCESS;
+                        regBoard.get(phoneNumber).activated = true;
                     } else {
                         errorCode = EXPIRED_CODE;
                     }
@@ -65,6 +74,14 @@ public class ActivationDao {
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
             throw new PinBikeException(AC.MessageCode.SYSTEM_EXCEPTION, ex.getMessage());
+        }
+    }
+
+    public boolean checkPhoneNumberStatus(String phoneNumber) {
+        try {
+            return regBoard.get(phoneNumber).activated;
+        } catch (Exception ignored) {
+            return false;
         }
     }
 
@@ -95,7 +112,7 @@ public class ActivationDao {
     }
 
     private String generate() {
-        String code = factory.getNumberText(numberCharOfCode);
+        String code = String.valueOf(RandomStringUtils.randomNumeric(numberCharOfCode));
         HashMap<String, Long> generatedList = new HashMap<>(codeGenerated);
         while (generatedList.containsKey(code)) {
             if (DateTimeUtils.now() - generatedList.get(code) > expiredTimeInSecond) {
@@ -109,6 +126,7 @@ public class ActivationDao {
 
     private static class ActCode {
         public String code;
+        public boolean activated;
         public long epochTimeInSecond;
     }
 

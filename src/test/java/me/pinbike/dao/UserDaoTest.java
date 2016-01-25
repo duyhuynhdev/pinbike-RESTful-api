@@ -33,11 +33,13 @@ public class UserDaoTest {
             user.avatar = userDetail.avatar;
             user.email = userDetail.email;
             user.socialId = userDetail.email;
-            user.socialType = Const.PinBike.RegisterType.REGISTER_EMAIL;
+            user.socialType = Const.PinBike.SocialType.EMAIL;
             user.intro = userDetail.intro;
-            user.name = userDetail.name;
+            user.name = userDetail.givenName;
+            user.lastName = userDetail.familyName;
+            user.middleName = userDetail.middleName;
             user.phone = userDetail.phone;
-            user.brithday = userDetail.birthday;
+            user.birthday = userDetail.birthday;
             user.currentBikeId = userDetail.currentBikeId;
             user.availableDriver = true;
             user.dateCreated = userDetail.joinedDate;
@@ -70,11 +72,13 @@ public class UserDaoTest {
         user.avatar = userDetail.avatar;
         user.email = userDetail.email;
         user.socialId = userDetail.email;
-        user.socialType = Const.PinBike.RegisterType.REGISTER_EMAIL;
+        user.socialType = Const.PinBike.SocialType.EMAIL;
         user.intro = userDetail.intro;
-        user.name = userDetail.name;
+        user.name = userDetail.givenName;
+        user.lastName = userDetail.familyName;
+        user.middleName = userDetail.middleName;
         user.phone = userDetail.phone;
-        user.brithday = userDetail.birthday;
+        user.birthday = userDetail.birthday;
         user.currentBikeId = userDetail.currentBikeId;
         user.availableDriver = userDetail.isAvailable;
         user.dateCreated = userDetail.joinedDate;
@@ -89,10 +93,10 @@ public class UserDaoTest {
         assert user.intro.equals(response.intro);
         assert user.name.equals(response.name);
         assert user.phone.equals(response.phone);
-        assert user.brithday == response.brithday;
+        assert user.birthday == response.birthday;
         assert user.currentBikeId == response.currentBikeId;
         assert user.sex == response.sex;
-        assert Const.PinBike.RegisterType.REGISTER_EMAIL == response.socialType;
+        assert Const.PinBike.SocialType.EMAIL == response.socialType;
 
         System.out.println("[OUTPUT]" + response.toString());
 
@@ -106,7 +110,7 @@ public class UserDaoTest {
         user.intro = "intro";
         user.name = "Updater";
         user.phone = "123456789";
-        user.brithday = DateTimeUtils.now();
+        user.birthday = DateTimeUtils.now();
         dao.update(user);
         TUser response = dao.get(userId);
         assert response.avatar.equals("avatar");
@@ -114,7 +118,7 @@ public class UserDaoTest {
         assert response.intro.equals("intro");
         assert response.name.equals("Updater");
         assert response.phone.equals("123456789");
-        assert response.brithday == user.brithday;
+        assert response.birthday == user.birthday;
         System.out.println("[INPUT]" + user.toString());
         System.out.println("[OUTPUT]" + response.toString());
     }
@@ -148,11 +152,13 @@ public class UserDaoTest {
         TUser user = new TUser();
         user.avatar = userDetail.avatar;
         user.socialId = userDetail.email;
-        user.socialType = Const.PinBike.RegisterType.REGISTER_EMAIL;
+        user.socialType = Const.PinBike.SocialType.EMAIL;
         user.intro = userDetail.intro;
-        user.name = userDetail.name;
+        user.name = userDetail.givenName;
+        user.lastName = userDetail.familyName;
+        user.middleName = userDetail.middleName;
         user.phone = userDetail.phone;
-        user.brithday = userDetail.birthday;
+        user.birthday = userDetail.birthday;
         user.currentBikeId = userDetail.currentBikeId;
         user.availableDriver = userDetail.isAvailable;
         user.dateCreated = userDetail.joinedDate;

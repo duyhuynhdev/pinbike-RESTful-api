@@ -5,10 +5,7 @@ import me.pinbike.controller.adapter.adapter_interface.ModelDataFactory;
 import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
 import me.pinbike.polling.PollingDB;
-import me.pinbike.sharedjava.model.CancelTripAPI;
-import me.pinbike.sharedjava.model.CreateTripAPI;
-import me.pinbike.sharedjava.model.GetDriverUpdatedAPI;
-import me.pinbike.sharedjava.model.RequestDriverAPI;
+import me.pinbike.sharedjava.model.*;
 import me.pinbike.util.sample_data.SampleData;
 
 import java.util.Arrays;
@@ -88,5 +85,10 @@ public class PassengerTripAdapterTemp extends ModelDataFactory implements IPasse
             response.type = getDriverUpdate.get(request.driverId).type;
         }
         return response;
+    }
+
+    @Override
+    public GetTripHistoryAPI.Response getTripHistory(GetTripHistoryAPI.Request request) {
+        return null;
     }
 }

@@ -6,10 +6,7 @@ package me.pinbike.controller.api;
 
 import me.pinbike.controller.adapter.PassengerTripAdapter;
 import me.pinbike.controller.adapter.adapter_interface.IPassengerTripAdapter;
-import me.pinbike.sharedjava.model.CancelTripAPI;
-import me.pinbike.sharedjava.model.CreateTripAPI;
-import me.pinbike.sharedjava.model.GetDriverUpdatedAPI;
-import me.pinbike.sharedjava.model.RequestDriverAPI;
+import me.pinbike.sharedjava.model.*;
 import me.pinbike.sharedjava.model.base.RequestWrapper;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.PinBikeConstant;
@@ -94,6 +91,23 @@ public class PassengerTripService {
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.getDriverUpdated(requestContent);
         ResponseWrapper<GetDriverUpdatedAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+
+        return response;
+    }
+
+    @POST
+    @Path("/GetTripHistoryAPI")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<GetTripHistoryAPI.Response> GetTripHistoryAPI(@Valid RequestWrapper<GetTripHistoryAPI.Request> request) throws IOException {
+        IPassengerTripAdapter adapter = new PassengerTripAdapter();
+
+        GetTripHistoryAPI.Response responseContent;
+        GetTripHistoryAPI.Request requestContent = request.requestContent;
+
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        responseContent = adapter.getTripHistory(requestContent);
+        ResponseWrapper<GetTripHistoryAPI.Response> response = new ResponseWrapper<>(responseContent);
         logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
         return response;
