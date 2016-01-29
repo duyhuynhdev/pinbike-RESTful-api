@@ -36,4 +36,6 @@ public interface IUserAdapter {
     UpdateUserPhoneNumberAPI.Response updateUserPhoneNumber(UpdateUserPhoneNumberAPI.Request request);
 
     UpdateUserAvatarAPI.Response updateUserAvatarAPI(UpdateUserAvatarAPI.Request request);
+
+    GetLocationUpdatedAPI.Response getLocationUpdated(GetLocationUpdatedAPI.Request request);
 }

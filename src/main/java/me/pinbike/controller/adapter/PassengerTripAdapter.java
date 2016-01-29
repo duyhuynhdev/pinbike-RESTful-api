@@ -10,9 +10,11 @@ import me.pinbike.dao.UserDao;
 import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
 import me.pinbike.polling.PollingDB;
+import me.pinbike.provider.exception.PinBikeException;
 import me.pinbike.sharedjava.model.*;
 import me.pinbike.sharedjava.model.base.TripReviewSortDetail;
 import me.pinbike.sharedjava.model.base.UserDetail;
+import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.DateTimeUtils;
 import me.pinbike.util.PinBikeConstant;
 
@@ -128,14 +130,13 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         TripDao tripDao = new TripDao();
         UserDao userDao = new UserDao();
         TUser driver = userDao.get(request.driverId);
-        TTrip trip = tripDao.get(request.tripId);
+        tripDao.get(request.tripId);
         PollingDB db = PollingDB.getInstance();
         PollingChannel<PollingDB.UserUpdated> getDriverUpdate = db.getChannel(PollingChannelName.GET_USER_UPDATED);
         long timeout = getDriverUpdate.getTimeout();
         boolean changed = false;
         while (timeout > 0) {
-            changed = getDriverUpdate.subscribe(driver.userId);
-            if (changed)
+            if (getDriverUpdate.subscribe(driver.userId))
                 break;
             try {
                 timeout -= getDriverUpdate.getDelay();
@@ -148,8 +149,9 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         if (changed) {
             response = new GetDriverUpdatedAPI.Response(new Converter().convertUpdatedLocation(driver.currentLocation));
             response.type = getDriverUpdate.get(driver.userId).type;
+            return response;
         }
-        return response;
+        throw new PinBikeException(AC.MessageCode.FAIL, "Polling Time-out");
     }
 
     @Override

@@ -9,6 +9,7 @@ import me.pinbike.util.sample_data.SampleData;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.fluttercode.datafactory.impl.DataFactory;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -283,6 +284,115 @@ public class ModelDataFactory {
         UpdateMyLocationAPI.Request request = new UpdateMyLocationAPI.Request();
         request.userId = userId;
         request.location = new LatLng(getLocation(10.123, 106.456, 100));
+        return request;
+    }
+
+    public GetActivationCodeAPI.Request getActivationCodeAPIRequest(String phoneNumber) {
+        GetActivationCodeAPI.Request request = new GetActivationCodeAPI.Request();
+        request.phoneNumber = phoneNumber;
+        return request;
+    }
+
+    public ActivatePhoneNumberAPI.Request getActivatePhoneNumberAPIResquest(String phoneNumber,String activationCode) {
+        ActivatePhoneNumberAPI.Request request = new ActivatePhoneNumberAPI.Request();
+        request.phoneNumber = phoneNumber;
+        request.activationCode = activationCode;
+        return request;
+    }
+
+    public RegisterAPI.Request getRegisterAPIForDuyRequest() {
+        RegisterAPI.Request request = new RegisterAPI.Request();
+        request.avatar = factory.getItem(SampleData.avatars);
+        try {
+            request.birthday = DateTimeUtils.parseddMMyyyyToSecond("17/02/1991");
+        } catch (Exception ignored) {
+        }
+        request.email = "hpduy17@gmail.com";
+        request.familyName = "Huynh";
+        request.givenName = "Duy";
+        request.intro = "Perfect guy";
+        request.middleName = "Phuong";
+        request.password = "duy1702";
+        request.phone = "0908587305";
+        request.sex = 1;
+        request.socialId = "123456789";
+        request.socialType = Const.PinBike.SocialType.FACEBOOK;
+        return request;
+    }
+
+    public RegisterAPI.Request getRegisterAPIRequest() {
+        RegisterAPI.Request request = new RegisterAPI.Request();
+        request.avatar = factory.getItem(SampleData.avatars);
+        request.birthday = factory.getDateBetween(new Date(473412072000L), new Date(1135927272000L)).getTime() / 1000;
+        request.email = factory.getEmailAddress();
+        request.familyName = factory.getFirstName();
+        request.givenName = factory.getLastName();
+        request.intro = getDescription(20);
+        request.middleName = "";
+        request.password = "pinbike";
+        request.phone = "0908587305";
+        request.sex = 1;
+        request.socialId = "123456789";
+        request.socialType = Const.PinBike.SocialType.FACEBOOK;
+        return request;
+    }
+
+    public LoginByEmailAPI.Request getLoginByEmailAPIRequest(@Nullable String email) {
+        LoginByEmailAPI.Request request = new LoginByEmailAPI.Request();
+        request.email = email == null ? factory.getEmailAddress() : email;
+        request.password = "duy1702";
+        request.os = 2;
+        request.deviceId = getDescription(20);
+        request.regId = getDescription(10);
+        return request;
+    }
+
+    public LoginBySocialAPI.Request getLoginBySocialAPIRequest() {
+        LoginBySocialAPI.Request request = new LoginBySocialAPI.Request();
+        request.socialId = "123456789";
+        request.socialType = Const.PinBike.SocialType.FACEBOOK;
+        request.os = 2;
+        request.deviceId = getDescription(20);
+        request.regId = getDescription(10);
+        return request;
+    }
+
+    public ForgotPasswordAPI.Request getForgotPasswordAPIRequest() {
+        ForgotPasswordAPI.Request request = new ForgotPasswordAPI.Request();
+        request.email = "hpduy17@gmail.com";
+        return request;
+    }
+
+    public LogoutAPI.Request getLogoutAPIRequest(long userId, String deviceId) {
+        LogoutAPI.Request request = new LogoutAPI.Request();
+        request.userId = userId;
+        request.deviceId = deviceId;
+        return request;
+    }
+
+    public ChangePasswordAPI.Request getChangePasswordAPIRequest(long userId,String oldPass, String deviceId ) {
+        ChangePasswordAPI.Request request = new ChangePasswordAPI.Request();
+        request.userId = userId;
+        request.email = "hpduy17@gmail.com";
+        request.currentPassword = oldPass;
+        request.newPassword = "pinbike2";
+        request.deviceId = deviceId;
+        return request;
+    }
+
+    public UpdateUserAvatarAPI.Request getUpdateUserAvatarAPIRequest(long userId) {
+        UpdateUserAvatarAPI.Request request = new UpdateUserAvatarAPI.Request();
+        request.userId = userId;
+//        request.avatar = factory.getItem(SampleData.avatars);
+        request.avatar = "http://static.srcdn.com/slir/w700-h350-q90-c700:350/wp-content/uploads/Avengers-2-Planet-Hulk-Sequel-Space.jpg";
+        return request;
+    }
+
+    public UpdateUserPhoneNumberAPI.Request getUpdateUserPhoneNumberAPIRequest(long userId, String activationCode,String phoneNumber) {
+        UpdateUserPhoneNumberAPI.Request request = new UpdateUserPhoneNumberAPI.Request();
+        request.userId = userId;
+        request.phoneNumber = phoneNumber;
+        request.activationCode = activationCode;
         return request;
     }
 

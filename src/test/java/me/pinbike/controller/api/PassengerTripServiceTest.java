@@ -39,7 +39,7 @@ public class PassengerTripServiceTest {
         request.accessKey = testSet.passengerId;
         request.requestContent = requestContent;
         logger.info(request.toString());
-        String response = requester.request(CreateTripAPI.URL, request.toString());
+        String response = requester.request(CreateTripAPI.URL, " {\"deviceModel\":\"Genymotion Lollipop Preview - Nexus 5 - 5.0.0 - API 21 - 1080x1920\",\"os\":\"Android SDK: 21 (5.0)\",\"requestContent\":{\"endLocation\":{\"lat\":0.0,\"lng\":0.0},\"startLocation\":{\"lat\":10.8068683,\"lng\":106.6758666},\"distance\":7.0,\"passengerId\":2873,\"price\":26000.0},\"accessKey\":2873}");
         logger.info(response);
     }
 

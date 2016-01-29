@@ -6,7 +6,6 @@ import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
 import me.pinbike.polling.PollingDB;
 import me.pinbike.sharedjava.model.*;
-import me.pinbike.sharedjava.model.constanst.AC;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -35,10 +34,9 @@ public class UserAdapterTemp extends ModelDataFactory implements IUserAdapter {
     public UpdateMyLocationAPI.Response updateMyLocation(UpdateMyLocationAPI.Request request) {
         PollingDB db = PollingDB.getInstance();
         //change
-        PollingChannel<PollingDB.UserUpdated> getUserUpdated = db.getChannel(PollingChannelName.GET_USER_UPDATED);
-        PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
+        PollingChannel<PollingDB.LocationUpdated> getUserUpdated = db.getChannel(PollingChannelName.GET_LOCATION_UPDATED);
+        PollingDB.LocationUpdated userUpdated = new PollingDB.LocationUpdated();
         userUpdated.location = getUpdatedLocation();
-        userUpdated.type = AC.UpdatedStatus.LOCATION;// location;
         getUserUpdated.change(request.userId, userUpdated);
 
         return null;
@@ -100,6 +98,11 @@ public class UserAdapterTemp extends ModelDataFactory implements IUserAdapter {
 
     @Override
     public UpdateUserAvatarAPI.Response updateUserAvatarAPI(UpdateUserAvatarAPI.Request request) {
+        return null;
+    }
+
+    @Override
+    public GetLocationUpdatedAPI.Response getLocationUpdated(GetLocationUpdatedAPI.Request request) {
         return null;
     }
 }

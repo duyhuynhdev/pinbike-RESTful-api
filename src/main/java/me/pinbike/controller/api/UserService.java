@@ -214,7 +214,7 @@ public class UserService {
     }
 
     @POST
-    @Path("/ForgotPasswordAPI")
+    @Path("/ChangePasswordAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<ChangePasswordAPI.Response> ChangePasswordAPI(@Valid RequestWrapper<ChangePasswordAPI.Request> request, @Context HttpServletRequest req) throws IOException {
         IUserAdapter adapter = new UserAdapter();
@@ -237,7 +237,7 @@ public class UserService {
             userAgent = UserAgent.parseUserAgentString(req.getHeader("User-Agent"));
         } catch (Exception ignored) {
         }
-        if (a.equals(PinBikeConstant.accesskey)) {
+        if (new StringUtil().DecryptText(a).equals(PinBikeConstant.accesskey)) {
             ChangePasswordAPI.Request request = new ChangePasswordAPI.Request();
             request.newPassword = new StringUtil().DecryptText(p);
             request.email = e;
@@ -245,6 +245,7 @@ public class UserService {
             RequestWrapper<ChangePasswordAPI.Request> requestWrapper = new RequestWrapper<>();
             requestWrapper.os = userAgent == null ? "Unknown" : userAgent.getOperatingSystem().getName();
             requestWrapper.deviceModel = userAgent == null ? "Unknown" : userAgent.getBrowser().getName();
+            requestWrapper.requestContent = request;
             ResponseWrapper<ChangePasswordAPI.Response> response = ChangePasswordAPI(requestWrapper, req);
             if (response.isSuccess()) {
                 return "Change password success";
@@ -287,6 +288,23 @@ public class UserService {
         responseContent = adapter.updateUserPhoneNumber(requestContent);
         ResponseWrapper<UpdateUserPhoneNumberAPI.Response> response = new ResponseWrapper<>(responseContent);
         logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+        return response;
+    }
+
+    @POST
+    @Path("/GetLocationUpdatedAPI")//TODO: LONG POLLING
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<GetLocationUpdatedAPI.Response> GetLocationUpdatedAPI(@Valid RequestWrapper<GetLocationUpdatedAPI.Request> request) throws IOException {
+        IUserAdapter adapter = new UserAdapter();
+
+        GetLocationUpdatedAPI.Response responseContent;
+        GetLocationUpdatedAPI.Request requestContent = request.requestContent;
+
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        responseContent = adapter.getLocationUpdated(requestContent);
+        ResponseWrapper<GetLocationUpdatedAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+
         return response;
     }
 

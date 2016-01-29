@@ -61,7 +61,7 @@ public class BroadcastDao extends DaoTemplate<TBroadcast> {
 
     public void removeCurrentBroadcast(TUser user, String deviceId) {
         try {
-            logger.info(String.format("user:%s \n deviceId:%s", user.toString(), deviceId));
+            logger.info(String.format("{user:%s \n deviceId:%s}", user.toString(), deviceId));
             // get current broadcast
             TBroadcast broadcast = null;
             try {

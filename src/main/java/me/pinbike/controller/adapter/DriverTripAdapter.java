@@ -153,7 +153,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         TripDao tripDao = new TripDao();
         UserDao userDao = new UserDao();
         TUser passenger = userDao.get(request.passengerId);
-        TTrip trip = tripDao.get(request.tripId);
+        tripDao.get(request.tripId);
         PollingDB db = PollingDB.getInstance();
         PollingChannel<PollingDB.UserUpdated> getPassengerUpdated = db.getChannel(PollingChannelName.GET_USER_UPDATED);
         long timeout = getPassengerUpdated.getTimeout();

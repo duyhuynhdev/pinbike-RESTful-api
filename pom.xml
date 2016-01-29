@@ -246,9 +246,14 @@
             <version>1.18</version>
         </dependency>
         <dependency>
+            <groupId>com.maxmind.geoip</groupId>
+            <artifactId>geoip-api</artifactId>
+            <version>1.2.10</version>
+        </dependency>
+        <dependency>
             <groupId>com.pinride</groupId>
             <artifactId>pinbike.thrift</artifactId>
-            <version>0.0.21-NEW</version>
+            <version>0.0.23-NEW</version>
         </dependency>
     </dependencies>
     <properties>

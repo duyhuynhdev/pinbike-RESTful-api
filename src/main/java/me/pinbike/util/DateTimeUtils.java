@@ -1,5 +1,6 @@
 package me.pinbike.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -64,6 +65,12 @@ public class DateTimeUtils {
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
 
         return dateFormat.format(timeInMilisecond)+ " at " + hourFormat.format(timeInMilisecond) + " (GTM +7)";
+    }
+
+    public static long parseddMMyyyyToSecond(String timeAsString) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+        return dateFormat.parse(timeAsString).getTime()/1000;
     }
 
 }

@@ -2,10 +2,7 @@ package me.pinbike.controller.api;
 
 import me.pinbike.controller.TestRequester;
 import me.pinbike.controller.adapter.adapter_interface.ModelDataFactory;
-import me.pinbike.sharedjava.model.ChangeAvailableStatusAPI;
-import me.pinbike.sharedjava.model.GetDriverAroundAPI;
-import me.pinbike.sharedjava.model.GetUserProfileAPI;
-import me.pinbike.sharedjava.model.UpdateMyLocationAPI;
+import me.pinbike.sharedjava.model.*;
 import me.pinbike.sharedjava.model.base.RequestWrapper;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.TestSet;
@@ -78,4 +75,118 @@ public class UserServiceTest {
         String response = requester.request(ChangeAvailableStatusAPI.URL, request.toString());
         logger.info(response);
     }
+
+    @Test
+    public void testGetActivationCodeAPI() throws Exception {
+        GetActivationCodeAPI.Request requestContent = factory.getActivationCodeAPIRequest("0908587305");
+        RequestWrapper<GetActivationCodeAPI.Request> request = new RequestWrapper<>();
+        request.accessKey = testSet.driverId;
+        request.requestContent = requestContent;
+        logger.info(request.toString());
+        String response = requester.request(GetActivationCodeAPI.URL, request.toString());
+        logger.info(response);
+    }
+
+    @Test
+    public void testActivatePhoneNumberAPI() throws Exception {
+        String activationCode = "9249";
+        ActivatePhoneNumberAPI.Request requestContent = factory.getActivatePhoneNumberAPIResquest("0908587305",activationCode);
+        RequestWrapper<ActivatePhoneNumberAPI.Request> request = new RequestWrapper<>();
+        request.accessKey = testSet.driverId;
+        request.requestContent = requestContent;
+        logger.info(request.toString());
+        String response = requester.request(ActivatePhoneNumberAPI.URL, request.toString());
+        logger.info(response);
+    }
+
+
+    @Test
+    public void testRegisterAPI() throws Exception {
+        RegisterAPI.Request requestContent = factory.getRegisterAPIForDuyRequest();
+        RequestWrapper<RegisterAPI.Request> request = new RequestWrapper<>();
+        request.accessKey = testSet.driverId;
+        request.requestContent = requestContent;
+        logger.info(request.toString());
+        String response = requester.request(RegisterAPI.URL, request.toString());
+        logger.info(response);
+    }
+
+    @Test
+    public void testLoginByEmailAPI() throws Exception {
+        LoginByEmailAPI.Request requestContent = factory.getLoginByEmailAPIRequest("hpduy17@gmail.com");
+        RequestWrapper<LoginByEmailAPI.Request> request = new RequestWrapper<>();
+        request.accessKey = testSet.driverId;
+        request.requestContent = requestContent;
+        logger.info(request.toString());
+        String response = requester.request(LoginByEmailAPI.URL, request.toString());
+        logger.info(response);
+    }
+
+    @Test
+    public void testLoginBySocialAPI() throws Exception {
+        LoginBySocialAPI.Request requestContent = factory.getLoginBySocialAPIRequest();
+        RequestWrapper<LoginBySocialAPI.Request> request = new RequestWrapper<>();
+        request.accessKey = testSet.driverId;
+        request.requestContent = requestContent;
+        logger.info(request.toString());
+        String response = requester.request(LoginBySocialAPI.URL, request.toString());
+        logger.info(response);
+    }
+
+    @Test
+    public void testLogoutAPI() throws Exception {
+
+        LogoutAPI.Request requestContent = factory.getLogoutAPIRequest(2855, "badly good should in do else came island is headphones when ends was sidekick on write write came leader this ");
+        RequestWrapper<LogoutAPI.Request> request = new RequestWrapper<>();
+        request.accessKey = testSet.driverId;
+        request.requestContent = requestContent;
+        logger.info(request.toString());
+        String response = requester.request(LogoutAPI.URL, request.toString());
+        logger.info(response);
+    }
+
+    @Test
+    public void testForgotPasswordAPI() throws Exception {
+        ForgotPasswordAPI.Request requestContent = factory.getForgotPasswordAPIRequest();
+        RequestWrapper<ForgotPasswordAPI.Request> request = new RequestWrapper<>();
+        request.accessKey = testSet.driverId;
+        request.requestContent = requestContent;
+        logger.info(request.toString());
+        String response = requester.request(ForgotPasswordAPI.URL, request.toString());
+        logger.info(response);
+    }
+
+    @Test
+    public void testChangePasswordAPI() throws Exception {
+        ChangePasswordAPI.Request requestContent = factory.getChangePasswordAPIRequest(2855,"pinbike2", "badly good should in do else came island is headphones when ends was sidekick on write write came leader this ");
+        RequestWrapper<ChangePasswordAPI.Request> request = new RequestWrapper<>();
+        request.accessKey = testSet.driverId;
+        request.requestContent = requestContent;
+        logger.info(request.toString());
+        String response = requester.request(ChangePasswordAPI.URL, request.toString());
+        logger.info(response);
+    }
+
+    @Test
+    public void testUpdateUserAvatarAPI() throws Exception {
+        UpdateUserAvatarAPI.Request requestContent = factory.getUpdateUserAvatarAPIRequest(2855);
+        RequestWrapper<UpdateUserAvatarAPI.Request> request = new RequestWrapper<>();
+        request.accessKey = testSet.driverId;
+        request.requestContent = requestContent;
+        logger.info(request.toString());
+        String response = requester.request(UpdateUserAvatarAPI.URL, request.toString());
+        logger.info(response);
+    }
+
+    @Test
+    public void testUpdateUserPhoneNumberAPI() throws Exception {
+        UpdateUserPhoneNumberAPI.Request requestContent = factory.getUpdateUserPhoneNumberAPIRequest(2855, "1080","01208031857");
+        RequestWrapper<UpdateUserPhoneNumberAPI.Request> request = new RequestWrapper<>();
+        request.accessKey = testSet.driverId;
+        request.requestContent = requestContent;
+        logger.info(request.toString());
+        String response = requester.request(UpdateUserPhoneNumberAPI.URL, request.toString());
+        logger.info(response);
+    }
+
 }

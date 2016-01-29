@@ -81,10 +81,12 @@ public class PollingChannel<T> implements IPollingChannel {
 
     public boolean subscribe(String key) {
         if (channel.containsKey(key)) {
-            PollingObject<T> object = channel.get(key);
-            if (object.isChanged() && (DateTimeUtils.now() - object.getChangedTimeInSecond()) < acceptableTime) {
-                object.setIsChanged(false);
-                return true;
+            PollingObject<T> subscriber = channel.get(key);
+            synchronized (subscriber) {
+                if (subscriber.isChanged() && (DateTimeUtils.now() - subscriber.getChangedTimeInSecond()) < acceptableTime) {
+                    subscriber.setIsChanged(false);
+                    return true;
+                }
             }
         }
         return false;

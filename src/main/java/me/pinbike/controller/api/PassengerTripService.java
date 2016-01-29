@@ -95,7 +95,30 @@ public class PassengerTripService {
 
         return response;
     }
-
+//    @POST
+//    @Path("/GetDriverUpdatedAPI")//TODO: LONG POLLING
+//    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+//    public void GetDriverUpdatedAPI(@Valid RequestWrapper<GetDriverUpdatedAPI.Request> request, final @Suspend(30000) AsynchronousResponse rep) throws IOException {
+//        Thread t = new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    IPassengerTripAdapter adapter = new PassengerTripAdapter();
+//                    GetDriverUpdatedAPI.Response responseContent;
+//                    GetDriverUpdatedAPI.Request requestContent = request.requestContent;
+//                    logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+//                    responseContent = adapter.getDriverUpdated(requestContent);
+//                    ResponseWrapper<GetDriverUpdatedAPI.Response> response = new ResponseWrapper<>(responseContent);
+//                    logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+//                    Response temp = Response.ok(response.toString()).type(PinBikeConstant.APPLICATION_JSON_UTF8).build();
+//                    rep.setResponse(temp);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        t.start();
+//    }
     @POST
     @Path("/GetTripHistoryAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)

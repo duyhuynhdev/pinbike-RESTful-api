@@ -7,10 +7,7 @@ import com.pinride.pinbike.thrift.TUser;
 import me.pinbike.controller.adapter.adapter_interface.Converter;
 import me.pinbike.controller.adapter.adapter_interface.IUserAdapter;
 import me.pinbike.controller.adapter.adapter_interface.ModelDataFactory;
-import me.pinbike.dao.BikeDao;
-import me.pinbike.dao.BroadcastDao;
-import me.pinbike.dao.OrganizationDao;
-import me.pinbike.dao.UserDao;
+import me.pinbike.dao.*;
 import me.pinbike.dao.non_db.ActivationDao;
 import me.pinbike.geocoder.search.vietbando.ip.GeoFromIpAddress;
 import me.pinbike.polling.PollingChannel;
@@ -70,11 +67,10 @@ public class UserAdapter implements IUserAdapter {
         TUser user = userDao.get(request.userId);
         PollingDB db = PollingDB.getInstance();
         //change
-        PollingChannel<PollingDB.UserUpdated> getUserUpdated = db.getChannel(PollingChannelName.GET_USER_UPDATED);
-        PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
-        userUpdated.location = new Converter().convertUpdatedLocation(user.currentLocation);
-        userUpdated.type = AC.UpdatedStatus.LOCATION;// location;
-        getUserUpdated.change(request.userId, userUpdated);
+        PollingChannel<PollingDB.LocationUpdated> getUserUpdated = db.getChannel(PollingChannelName.GET_LOCATION_UPDATED);
+        PollingDB.LocationUpdated locationUpdated = new PollingDB.LocationUpdated();
+        locationUpdated.location = new Converter().convertUpdatedLocation(user.currentLocation);
+        getUserUpdated.change(request.userId, locationUpdated);
         return null;
     }
 
@@ -93,6 +89,15 @@ public class UserAdapter implements IUserAdapter {
         UserDao userDao = new UserDao();
         BikeDao bikeDao = new BikeDao();
         OrganizationDao organizationDao = new OrganizationDao();
+        //check user exist
+//        try {
+//            userDao.getUserBySocial(request.email, Const.PinBike.SocialType.EMAIL);
+//            throw new PinBikeException(AC.MessageCode.ELEMENT_USED, "email has been used");
+//        } catch (PinBikeException ex) {
+//            if (ex.getMessageCode() != AC.MessageCode.NOT_EXIST)
+//                throw ex;
+//        }
+        //insert new user
         TUser user = new TUser();
         user.name = request.givenName;
         user.lastName = request.familyName;
@@ -107,20 +112,12 @@ public class UserAdapter implements IUserAdapter {
         user.phone = request.phone;
         user.password = request.password;
         user.intro = request.intro;
-        if (request.socialId != null && !request.socialId.isEmpty()) {
+        if (request.socialId != null) {
             user.socialId = request.socialId;
             user.socialType = request.socialType;
-
-        } else {
-            user.socialId = request.email;
-            user.socialType = Const.PinBike.SocialType.EMAIL;
         }
         if (new ActivationDao().checkPhoneNumberStatus(user.phone)) {
             user = userDao.insert(user);
-            userDao.updateSocialForUser(user.userId, user.email, Const.PinBike.SocialType.EMAIL);
-            if (request.socialId != null && !request.socialId.isEmpty()) {
-                userDao.updateSocialForUser(user.userId, user.socialId, user.socialType);
-            }
             List<TBike> bikes = null;
             List<TOrganization> organizations = null;
             if (user.bikeIds != null)
@@ -128,6 +125,7 @@ public class UserAdapter implements IUserAdapter {
             if (user.organizationIds != null)
                 organizations = organizationDao.getList(user.organizationIds);
             UserDetail userDetail = new Converter().convertUser(user, bikes, organizations, false);
+            new ActivationDao().removeActivationPhone(user.phone);
             return new RegisterAPI.Response(userDetail);
         }
         throw new PinBikeException(AC.MessageCode.PHONE_HAVE_NOT_ACTIVATED_YET, "Your phone have not activated yet! Please try over again !");
@@ -273,6 +271,34 @@ public class UserAdapter implements IUserAdapter {
             organizations = organizationDao.getList(user.organizationIds);
         UserDetail userDetail = new Converter().convertUser(user, bikes, organizations, false);
         return new UpdateUserAvatarAPI.Response(userDetail);
+    }
+
+    @Override
+    public GetLocationUpdatedAPI.Response getLocationUpdated(GetLocationUpdatedAPI.Request request) {
+        TripDao tripDao = new TripDao();
+        UserDao userDao = new UserDao();
+        TUser partner = userDao.get(request.partnerId);
+        tripDao.get(request.tripId);
+        PollingDB db = PollingDB.getInstance();
+        PollingChannel<PollingDB.LocationUpdated> getLocationUpdate = db.getChannel(PollingChannelName.GET_LOCATION_UPDATED);
+        long timeout = getLocationUpdate.getTimeout();
+        boolean changed = false;
+        while (timeout > 0) {
+            changed = getLocationUpdate.subscribe(partner.userId);
+            if (changed)
+                break;
+            try {
+                timeout -= getLocationUpdate.getDelay();
+                Thread.sleep(getLocationUpdate.getDelay());
+            } catch (InterruptedException ex) {
+            }
+
+        }
+        GetLocationUpdatedAPI.Response response = null;
+        if (changed) {
+            response = new GetLocationUpdatedAPI.Response(getLocationUpdate.get(partner.userId).location);
+        }
+        return response;
     }
 
 

@@ -2,7 +2,6 @@ package me.pinbike.controller.adapter.adapter_interface;
 
 import com.pinride.pinbike.thrift.*;
 import me.pinbike.dao.RatingDao;
-import me.pinbike.dao.TripDao;
 import me.pinbike.sharedjava.model.base.*;
 import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.common.Path;
@@ -46,13 +45,16 @@ public class Converter {
                 userDetail.organizations.add(convertOrganization(organization));
             }
         Rating rating = new Rating();
-        rating.totalScore = user.totalScore;
+        try {
+//            rating.totalScore = new UserDao().getTotalScoreOfRating(user.getUserId());
+        } catch (Exception ignored) {
+        }
         rating.ratingCount = (int) user.numberOfRating;
         try {
             if (isDriver)
-                userDetail.numberOfTravelledTrip = new TripDao().getTripByDriver(user.userId).size();
+                userDetail.numberOfTravelledTrip = user.getTripDriverIdsSize();
             else
-                userDetail.numberOfTravelledTrip = new TripDao().getTripByPassneger(user.userId).size();
+                userDetail.numberOfTravelledTrip = user.getTripPassengerIdsSize();
         } catch (Exception ignored) {
         }
         userDetail.rating = rating;

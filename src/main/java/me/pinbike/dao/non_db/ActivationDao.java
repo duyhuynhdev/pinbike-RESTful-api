@@ -84,6 +84,12 @@ public class ActivationDao {
             return false;
         }
     }
+    public void removeActivationPhone(String phoneNumber) {
+        try {
+            regBoard.remove(phoneNumber);
+        } catch (Exception ignored) {
+        }
+    }
 
     private void validate(final int errorCode) {
         boolean isSuccess = false;

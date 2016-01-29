@@ -16,19 +16,19 @@ public class PollingObject<T> {
         this.isChanged = isChanged;
     }
 
-    public long getChangedTimeInSecond() {
+    public synchronized long getChangedTimeInSecond() {
         return changedTimeInSecond;
     }
 
-    public void setChangedTimeInSecond(long changedTimeInSecond) {
+    public synchronized void setChangedTimeInSecond(long changedTimeInSecond) {
         this.changedTimeInSecond = changedTimeInSecond;
     }
 
-    public T getContent() {
+    public synchronized T getContent() {
         return content;
     }
 
-    public void setContent(T content) {
+    public synchronized void setContent(T content) {
         this.content = content;
     }
 }

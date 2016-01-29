@@ -6,5 +6,6 @@ package me.pinbike.polling;
 public enum PollingChannelName {
     WAITING_REQUEST,
     TRIP_REQUEST,
-    GET_USER_UPDATED
+    GET_USER_UPDATED,
+    GET_LOCATION_UPDATED,
 }

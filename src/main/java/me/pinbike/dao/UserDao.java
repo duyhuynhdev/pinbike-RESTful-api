@@ -26,9 +26,9 @@ public class UserDao extends DaoTemplate<TUser> {
 
     public TUser getUserByEmailPassword(String email, String password) {
         try {
-            logger.info(String.format("{email:%s, password:%s", email, password));
+            logger.info(String.format("{email:%s, password:%s}", email, password));
             AdapterResponseValue.ResponseValue<TUser> response = client.getUserBySocial(email, Const.PinBike.SocialType.EMAIL);
-            validateResponse(response.getErrorCode(), getGenericName() + ".getUserBySocial()", String.format("{email:%s, password:%s", email, password));
+            validateResponse(response.getErrorCode(), getGenericName() + ".getUserBySocial()", String.format("{email:%s, password:%s}", email, password));
             if (response.getValue().password.equals(password))
                 return response.getValue();
             throw new PinBikeException(AC.MessageCode.WRONG_PASSWORD, "Your password is invalid");
@@ -43,9 +43,9 @@ public class UserDao extends DaoTemplate<TUser> {
 
     public TUser getUserBySocial(String socialId, int socialType) {
         try {
-            logger.info(String.format("{socialId:%s, socialType:%d", socialId, socialType));
+            logger.info(String.format("{socialId:%s, socialType:%d}", socialId, socialType));
             AdapterResponseValue.ResponseValue<TUser> response = client.getUserBySocial(socialId, socialType);
-            validateResponse(response.getErrorCode(), getGenericName() + ".getUserBySocial()", String.format("{socialId:%s, socialType:%d", socialId, socialType));
+            validateResponse(response.getErrorCode(), getGenericName() + ".getUserBySocial()", String.format("{socialId:%s, socialType:%d}", socialId, socialType));
             return response.getValue();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
@@ -73,9 +73,9 @@ public class UserDao extends DaoTemplate<TUser> {
 
     public void updateAvailableDriver(long id, boolean isAvailable) {
         try {
-            logger.info(String.format("{id:%d, isAvailable:%s", id, isAvailable));
+            logger.info(String.format("{id:%d, isAvailable:%s}", id, isAvailable));
             int errorCode = client.updateAvailableDriver(id, isAvailable);
-            validateResponse(errorCode, getGenericName() + ".updateAvailableDriver()", String.format("{id:%d, isAvailable:%s", id, isAvailable));
+            validateResponse(errorCode, getGenericName() + ".updateAvailableDriver()", String.format("{id:%d, isAvailable:%s}", id, isAvailable));
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
             throw ex;
@@ -87,9 +87,9 @@ public class UserDao extends DaoTemplate<TUser> {
 
     public void updateLocation(long id, LatLng ll) {
         try {
-            logger.info(String.format("{id:%d, location:%s", id, ll.toString()));
+            logger.info(String.format("{id:%d, location:%s}", id, ll.toString()));
             int errorCode = client.updateLocation(id, ll.lat, ll.lng);
-            validateResponse(errorCode, getGenericName() + ".updateLocation()", String.format("{id:%d, location:%s", id, ll.toString()));
+            validateResponse(errorCode, getGenericName() + ".updateLocation()", String.format("{id:%d, location:%s}", id, ll.toString()));
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
             throw ex;
@@ -101,7 +101,7 @@ public class UserDao extends DaoTemplate<TUser> {
 
     public boolean checkCurrentDeviceId(long userId, String deviceId) {
         try {
-            logger.info(String.format("{userId:%d", userId));
+            logger.info(String.format("{userId:%d}", userId));
             AdapterResponseValue.ResponseValue<TUser> response = client.get(userId);
             validateResponse(response.getErrorCode(), getGenericName() + ".checkCurrentDeviceId()", String.format("{userId:%d", userId));
             try {
@@ -124,9 +124,9 @@ public class UserDao extends DaoTemplate<TUser> {
 
     public void updateSocialForUser(long userId, String socialId, int socialType) {
         try {
-            logger.info(String.format("{userId:%d , socialId:%s, socialType:%d", userId, socialId, socialType));
+            logger.info(String.format("{userId:%d , socialId:%s, socialType:%d}", userId, socialId, socialType));
             int errorCode = client.updateSocialForUser(userId, socialId, socialType);
-            validateResponse(errorCode, getGenericName() + ".updateSocialForUser()", String.format("{userId:%d , socialId:%s, socialType:%d", userId, socialId, socialType));
+            validateResponse(errorCode, getGenericName() + ".updateSocialForUser()", String.format("{userId:%d , socialId:%s, socialType:%d}", userId, socialId, socialType));
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
             throw ex;
@@ -134,5 +134,17 @@ public class UserDao extends DaoTemplate<TUser> {
             logger.error(ex.getMessage(), ex);
             throw new PinBikeException(AC.MessageCode.SYSTEM_EXCEPTION, ex.getMessage());
         }
+    }
+
+    public double getTotalScoreOfRating(long userId) {
+        try {
+            logger.info(String.format("{userId:%d}", userId));
+            AdapterResponseValue.ResponseValue<Double> response = client.getScoreRating(userId);
+            validateResponse(response.getErrorCode(), getGenericName() + ".getTotalScoreOfRating()", String.format("{userId:%d}", userId));
+            return response.getValue();
+        } catch (PinBikeException ex) {
+        } catch (Exception ex) {
+        }
+        return 0;
     }
 }

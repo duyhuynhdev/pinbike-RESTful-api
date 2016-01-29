@@ -23,9 +23,9 @@ public class RatingDao extends DaoTemplate<TRating> {
 
     public List<TRating> getUserCurrentRating(long userId) {
         try {
-            logger.info(String.format("{userId: %d", userId));
+            logger.info(String.format("{userId: %d}", userId));
             AdapterResponseValue.ResponseListValue<TRating> response = client.getRatingsByUser(userId);
-            validateResponse(response.getErrorCode(), getGenericName() + ".getUserCurrentRating()", String.format("{userId: %d", userId));
+            validateResponse(response.getErrorCode(), getGenericName() + ".getUserCurrentRating()", String.format("{userId: %d}", userId));
             return response.getList();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
@@ -38,9 +38,9 @@ public class RatingDao extends DaoTemplate<TRating> {
 
     public TRating getTripRating(long tripId, long userId) {
         try {
-            logger.info(String.format("{tripId: %d, userId:%d", tripId,userId));
+            logger.info(String.format("{tripId: %d, userId:%d}", tripId,userId));
             AdapterResponseValue.ResponseValue<TRating> response = client.getRatingByUserAndTrip(tripId, userId);
-            validateResponse(response.getErrorCode(), getGenericName() + ".getTripRating()", String.format("{tripId: %d, userId:%d", tripId, userId));
+            validateResponse(response.getErrorCode(), getGenericName() + ".getTripRating()", String.format("{tripId: %d, userId:%d}", tripId, userId));
             return response.getValue();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
