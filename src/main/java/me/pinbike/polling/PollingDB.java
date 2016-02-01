@@ -16,10 +16,10 @@ public class PollingDB {
     }
 
     private PollingDB() {
-        db.put(PollingChannelName.WAITING_REQUEST, new PollingChannel<Listener>(20000, 1000)); // KEY DRIVER ID
-        db.put(PollingChannelName.TRIP_REQUEST, new PollingChannel<TripRequest>(20000, 1000)); // KEY TRIP ID
-        db.put(PollingChannelName.GET_USER_UPDATED, new PollingChannel<UserUpdated>(20000, 1000));// KEY USER ID
-        db.put(PollingChannelName.GET_LOCATION_UPDATED, new PollingChannel<LocationUpdated>(20000, 1000));// KEY USER ID
+        db.put(PollingChannelName.WAITING_REQUEST, new PollingChannel<Listener>(10000, 500, "WAITING_REQUEST")); // KEY DRIVER ID
+        db.put(PollingChannelName.TRIP_REQUEST, new PollingChannel<TripRequest>(10000, 500, "TRIP_REQUEST")); // KEY TRIP ID
+        db.put(PollingChannelName.GET_USER_UPDATED, new PollingChannel<UserUpdated>(10000, 500, "GET_USER_UPDATED"));// KEY USER ID
+        db.put(PollingChannelName.GET_LOCATION_UPDATED, new PollingChannel<LocationUpdated>(10000, 500, "GET_LOCATION_UPDATED"));// KEY USER ID
     }
 
     private Map<PollingChannelName, IPollingChannel> db = new HashMap<>();

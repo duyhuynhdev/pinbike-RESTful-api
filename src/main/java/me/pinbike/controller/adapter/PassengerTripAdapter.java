@@ -136,7 +136,8 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         long timeout = getDriverUpdate.getTimeout();
         boolean changed = false;
         while (timeout > 0) {
-            if (getDriverUpdate.subscribe(driver.userId))
+            changed = getDriverUpdate.subscribe(driver.userId+"#"+request.tripId);
+            if (changed)
                 break;
             try {
                 timeout -= getDriverUpdate.getDelay();
@@ -148,10 +149,10 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         GetDriverUpdatedAPI.Response response = null;
         if (changed) {
             response = new GetDriverUpdatedAPI.Response(new Converter().convertUpdatedLocation(driver.currentLocation));
-            response.type = getDriverUpdate.get(driver.userId).type;
+            response.type = getDriverUpdate.get(driver.userId+"#"+request.tripId).type;
             return response;
         }
-        throw new PinBikeException(AC.MessageCode.FAIL, "Polling Time-out");
+        throw new PinBikeException(AC.MessageCode.FAIL, "Polling time-out");
     }
 
     @Override
@@ -218,8 +219,8 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
             }
         }
         GetTripHistoryAPI.Response response = new GetTripHistoryAPI.Response();
-        response.driverTrips = dvt;
-        response.passengerTrips = pst;
+        response.driverTrips = new ArrayList<>(dvt);
+        response.passengerTrips = new ArrayList<>(pst);
         return response;
     }
 

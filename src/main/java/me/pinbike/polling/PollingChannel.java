@@ -1,5 +1,6 @@
 package me.pinbike.polling;
 
+import com.google.gson.Gson;
 import me.pinbike.util.DateTimeUtils;
 
 import java.util.Hashtable;
@@ -12,10 +13,12 @@ public class PollingChannel<T> implements IPollingChannel {
     private int timeout;
     private int delay;
     private int acceptableTime = 30000;
+    private String className = "";
 
-    public PollingChannel(int timeout, int delay) {
+    public PollingChannel(int timeout, int delay, String className) {
         this.timeout = timeout;
         this.delay = delay;
+        this.className = className;
     }
 
     public PollingChannel(int timeout, int delay, int acceptableTime) {
@@ -58,7 +61,9 @@ public class PollingChannel<T> implements IPollingChannel {
             subscriber.setIsChanged(true);
             subscriber.setChangedTimeInSecond(DateTimeUtils.now());
             subscriber.setContent(content);
+            System.out.println("#########CHANGE at "+className+" \t" + new Gson().toJson(subscriber));
         }
+
     }
 
     public void changeContent(long key, T content) {
@@ -84,6 +89,7 @@ public class PollingChannel<T> implements IPollingChannel {
             PollingObject<T> subscriber = channel.get(key);
             synchronized (subscriber) {
                 if (subscriber.isChanged() && (DateTimeUtils.now() - subscriber.getChangedTimeInSecond()) < acceptableTime) {
+                    System.out.println("#########SUBCRIBE "+className+" \t"+ new Gson().toJson(subscriber));
                     subscriber.setIsChanged(false);
                     return true;
                 }
@@ -91,6 +97,7 @@ public class PollingChannel<T> implements IPollingChannel {
         }
         return false;
     }
+
 
     public int getTimeout() {
         return timeout;

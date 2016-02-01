@@ -7,6 +7,7 @@ import me.pinbike.dao.*;
 import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
 import me.pinbike.polling.PollingDB;
+import me.pinbike.provider.exception.PinBikeException;
 import me.pinbike.sharedjava.model.*;
 import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.DateTimeUtils;
@@ -32,8 +33,16 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         boolean isGoOnline = false;
         while (timeout > 0) {
             changed = listenerPollingChannel.subscribe(driver.userId);
-            if (changed)
+            if (changed) {
+                //TODO NEW
+                PollingDB.Listener listener = listenerPollingChannel.get(driver.userId);
+                if (listener == null) {
+                    listener = new PollingDB.Listener();
+                }
+                listener.isAvailable = false;
+                listenerPollingChannel.changeContent(driver.userId, listener);
                 break;
+            }
             try {
                 if (!isGoOnline) {
                     isGoOnline = true;
@@ -48,7 +57,6 @@ public class DriverTripAdapter implements IDriverTripAdapter {
                 Thread.sleep(listenerPollingChannel.getDelay());
 
             } catch (InterruptedException ex) {
-
             }
 
         }
@@ -67,8 +75,9 @@ public class DriverTripAdapter implements IDriverTripAdapter {
             response.tripId = trip.tripId;
             response.passengerDetail = new Converter().convertUser(passenger, bikes, organizations,false);
             response.tripDetail = new Converter().convertTripDetail(trip);
+            return response;
         }
-        return response;
+        throw new PinBikeException(AC.MessageCode.FAIL, "Polling time-out");
     }
 
     @Override
@@ -83,7 +92,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = new Converter().convertUpdatedLocation(driver.currentLocation);
         userUpdated.type = AC.UpdatedStatus.ARRIVED;
-        getUserUpdated.change(driver.userId, userUpdated);
+        getUserUpdated.change(driver.userId+"#"+request.tripId, userUpdated);
         // update user status
         driver.status = AC.UpdatedStatus.ARRIVED;
         userDao.update(driver);
@@ -101,6 +110,15 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         TTrip trip = tripDao.get(request.tripId);
         TUser driver = userDao.get(request.driverId);
         PollingDB db = PollingDB.getInstance();
+        //TODO NEW
+        //update unavailable
+        PollingChannel<PollingDB.Listener> listenerPollingChannel = db.getChannel(PollingChannelName.WAITING_REQUEST);
+        PollingDB.Listener listener = listenerPollingChannel.get(driver.userId);
+        if (listener == null) {
+            listener = new PollingDB.Listener();
+        }
+        listener.isAvailable = false;
+        listenerPollingChannel.changeContent(driver.userId, listener);
         //change
         AcceptPassengerRequestAPI.Response response = new AcceptPassengerRequestAPI.Response();
         response.isSuccess = false;
@@ -134,7 +152,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = new Converter().convertUpdatedLocation(user.currentLocation);
         userUpdated.type = AC.UpdatedStatus.DESTROYED;
-        getUserUpdated.change(user.userId, userUpdated);
+        getUserUpdated.change(user.userId+"#"+request.tripId, userUpdated);
         // update user status
         user.status = AC.UpdatedStatus.DESTROYED;
         userDao.update(user);
@@ -143,8 +161,8 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         if (request.reason != null)
             trip.reason = request.reason.description;
         trip.datetimeEndTrip = DateTimeUtils.now();
+        trip.userDestroyTripId = request.userId;
         tripDao.update(trip);
-        //TODO who destroy??
         return null;
     }
 
@@ -159,7 +177,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         long timeout = getPassengerUpdated.getTimeout();
         boolean changed = false;
         while (timeout > 0) {
-            changed = getPassengerUpdated.subscribe(passenger.userId);
+            changed = getPassengerUpdated.subscribe(passenger.userId+"#"+request.tripId);
             if (changed)
                 break;
             try {
@@ -172,9 +190,10 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         GetPassengerUpdatedAPI.Response response = null;
         if (changed) {
             response = new GetPassengerUpdatedAPI.Response(new Converter().convertUpdatedLocation(passenger.currentLocation));
-            response.type = getPassengerUpdated.get(passenger.userId).type;
+            response.type = getPassengerUpdated.get(passenger.userId+"#"+request.tripId).type;
+            return response;
         }
-        return response;
+        throw new PinBikeException(AC.MessageCode.FAIL, "Polling time-out");
     }
 
     @Override
@@ -190,7 +209,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = new Converter().convertUpdatedLocation(driver.currentLocation);
         userUpdated.type = AC.UpdatedStatus.STARTED;
-        getUserUpdated.change(driver.userId, userUpdated);
+        getUserUpdated.change(driver.userId+"#"+request.tripId, userUpdated);
         // update user status
         driver.status = AC.UpdatedStatus.STARTED;
         passenger.status = AC.UpdatedStatus.STARTED;
@@ -216,7 +235,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = new Converter().convertUpdatedLocation(driver.currentLocation);
         userUpdated.type = AC.UpdatedStatus.ENDED;
-        getUserUpdated.change(driver.userId, userUpdated);
+        getUserUpdated.change(driver.userId+"#"+request.tripId, userUpdated);
         // update user status
         driver.status = AC.UpdatedStatus.ENDED;
         passenger.status = AC.UpdatedStatus.ENDED;

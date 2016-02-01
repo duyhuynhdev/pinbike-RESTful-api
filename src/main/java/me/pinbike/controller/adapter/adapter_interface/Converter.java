@@ -2,6 +2,7 @@ package me.pinbike.controller.adapter.adapter_interface;
 
 import com.pinride.pinbike.thrift.*;
 import me.pinbike.dao.RatingDao;
+import me.pinbike.dao.UserDao;
 import me.pinbike.sharedjava.model.base.*;
 import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.common.Path;
@@ -30,6 +31,8 @@ public class Converter {
         userDetail.sex = user.sex;
         userDetail.status = user.status;
         userDetail.userId = user.userId;
+        userDetail.socialId = user.socialId;
+        userDetail.socialType = user.socialType;
         userDetail.currentLocation = new LatLng();
         if (user.currentLocation != null) {
             userDetail.currentLocation.lat = user.currentLocation.lat;
@@ -46,7 +49,7 @@ public class Converter {
             }
         Rating rating = new Rating();
         try {
-//            rating.totalScore = new UserDao().getTotalScoreOfRating(user.getUserId());
+            rating.totalScore = new UserDao().getTotalScoreOfRating(user.getUserId());
         } catch (Exception ignored) {
         }
         rating.ratingCount = (int) user.numberOfRating;
