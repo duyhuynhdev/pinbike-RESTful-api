@@ -8,9 +8,11 @@ import me.pinbike.controller.adapter.adapter_interface.IBikeAdapter;
 import me.pinbike.dao.BikeDao;
 import me.pinbike.dao.OrganizationDao;
 import me.pinbike.dao.UserDao;
+import me.pinbike.provider.exception.PinBikeException;
 import me.pinbike.sharedjava.model.AddBikeAPI;
 import me.pinbike.sharedjava.model.UpdateMyCurrentBikeAPI;
 import me.pinbike.sharedjava.model.base.UserDetail;
+import me.pinbike.sharedjava.model.constanst.AC;
 
 import java.util.List;
 
@@ -45,8 +47,11 @@ public class BikeAdapter implements IBikeAdapter {
     public UpdateMyCurrentBikeAPI.Response updateMyCurrentBike(UpdateMyCurrentBikeAPI.Request request) {
         UserDao userDao = new UserDao();
         TUser user = userDao.get(request.userId);
+        if(user.bikeIds == null || !user.bikeIds.contains(request.bikeId))
+            throw new PinBikeException(AC.MessageCode.FAIL,"bike is not belong to you");
         user.currentBikeId = request.bikeId;
         userDao.update(user);
+
         return null;
     }
 }

@@ -12,7 +12,7 @@ public class PollingChannel<T> implements IPollingChannel {
     private Hashtable<String, PollingObject<T>> channel = new Hashtable<>();
     private int timeout;
     private int delay;
-    private int acceptableTime = 30000;
+    private long acceptableTime = 30 * DateTimeUtils.SECONDS;
     private String className = "";
 
     public PollingChannel(int timeout, int delay, String className) {
@@ -61,7 +61,7 @@ public class PollingChannel<T> implements IPollingChannel {
             subscriber.setIsChanged(true);
             subscriber.setChangedTimeInSecond(DateTimeUtils.now());
             subscriber.setContent(content);
-            System.out.println("#########CHANGE at "+className+" \t" + new Gson().toJson(subscriber));
+            System.out.println("#########CHANGE at " + className + " \t" + new Gson().toJson(subscriber));
         }
 
     }
@@ -89,7 +89,7 @@ public class PollingChannel<T> implements IPollingChannel {
             PollingObject<T> subscriber = channel.get(key);
             synchronized (subscriber) {
                 if (subscriber.isChanged() && (DateTimeUtils.now() - subscriber.getChangedTimeInSecond()) < acceptableTime) {
-                    System.out.println("#########SUBCRIBE "+className+" \t"+ new Gson().toJson(subscriber));
+                    System.out.println("#########SUBCRIBE " + className + " \t" + new Gson().toJson(subscriber));
                     subscriber.setIsChanged(false);
                     return true;
                 }

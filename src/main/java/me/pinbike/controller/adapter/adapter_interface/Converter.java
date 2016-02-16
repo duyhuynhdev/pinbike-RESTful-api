@@ -150,11 +150,10 @@ public class Converter {
             tripReviewSortDetail.ratingScore = 0;
         if (trip.status == AC.UpdatedStatus.ENDED) {
             tripReviewSortDetail.isDestroyedTrip = false;
-            tripReviewSortDetail.price = trip.price;
         } else {
             tripReviewSortDetail.isDestroyedTrip = true;
-            tripReviewSortDetail.price = 0;
         }
+        tripReviewSortDetail.price = trip.price;
         return tripReviewSortDetail;
     }
 

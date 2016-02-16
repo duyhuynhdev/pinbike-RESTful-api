@@ -63,6 +63,11 @@ public class PassengerTripAdapterTemp extends ModelDataFactory implements IPasse
     }
 
     @Override
+    public RequestDriverAPI.Response checkDriverAccepted(RequestDriverAPI.Request request) {
+        return null;
+    }
+
+    @Override
     public GetDriverUpdatedAPI.Response getDriverUpdated(GetDriverUpdatedAPI.Request request) {
         PollingDB db = PollingDB.getInstance();
         PollingChannel<PollingDB.UserUpdated> getDriverUpdate = db.getChannel(PollingChannelName.GET_USER_UPDATED);

@@ -63,7 +63,7 @@ public class PassengerTripService {
 
 
     @POST
-    @Path("/RequestDriverAPI") //TODO: LONG POLLING
+    @Path("/RequestDriverAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<RequestDriverAPI.Response> RequestDriverAPI(@Valid RequestWrapper<RequestDriverAPI.Request> request) throws IOException {
         IPassengerTripAdapter adapter = new PassengerTripAdapter();
@@ -73,6 +73,23 @@ public class PassengerTripService {
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.requestDriver(requestContent);
+        ResponseWrapper<RequestDriverAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+
+        return response;
+    }
+
+    @POST
+    @Path("/CheckDriverAcceptedAPI")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<RequestDriverAPI.Response> CheckDriverAcceptedAPI(@Valid RequestWrapper<RequestDriverAPI.Request> request) throws IOException {
+        IPassengerTripAdapter adapter = new PassengerTripAdapter();
+
+        RequestDriverAPI.Response responseContent;
+        RequestDriverAPI.Request requestContent = request.requestContent;
+
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        responseContent = adapter.checkDriverAccepted(requestContent);
         ResponseWrapper<RequestDriverAPI.Response> response = new ResponseWrapper<>(responseContent);
         logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 

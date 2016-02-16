@@ -9,8 +9,8 @@ import java.io.IOException;
  */
 public class SMSManager {
     public void sendActivationCode(String phone, String code) {
-        String sms_Content = "Welcome to PinBike! Your activation code is " + code;
-        ESMS esms = new ESMS(new String[]{phone}, sms_Content, ESMS.sendSMS, ESMS.type_random_phone_express, code);
+        String sms_Content = "PinBike activation code : " + code;
+        ESMS esms = new ESMS(new String[]{phone}, sms_Content, ESMS.sendSMS, ESMS.type_fixed_phone_19001534_express, code);
         try {
             esms.send();
         } catch (IOException e) {

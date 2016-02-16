@@ -85,7 +85,7 @@ public class Path {
     }
 
     public String buildGetNewPasswordUrl(String newPassword, String email){
-        return serverAddress+"/ChangePasswordFromMailAPI?p="+ new StringUtil().EncryptText(newPassword)+"&a="+ new StringUtil().EncryptText(PinBikeConstant.accesskey)+"&e="+email;
+        return "http://pinride.ddns.net:8080/ChangePasswordFromMailAPI?p="+ new StringUtil().EncryptText(newPassword)+"&a="+ new StringUtil().EncryptText(PinBikeConstant.accesskey)+"&e="+email;
     }
 
     @NotNull

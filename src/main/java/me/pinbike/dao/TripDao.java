@@ -36,11 +36,11 @@ public class TripDao extends DaoTemplate<TTrip> {
         }
     }
 
-    public List<TTrip> getTripByPassneger(long passengerId) {
+    public List<TTrip> getTripByPassenger(long passengerId) {
         try {
             logger.info(passengerId);
             AdapterResponseValue.ResponseListValue<TTrip> response = client.getTripsByPassenger(passengerId);
-            validateResponse(response.getErrorCode(), getGenericName() + ".getTripByPassneger()", passengerId+"");
+            validateResponse(response.getErrorCode(), getGenericName() + ".getTripByPassenger()", passengerId+"");
             return response.getList();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);

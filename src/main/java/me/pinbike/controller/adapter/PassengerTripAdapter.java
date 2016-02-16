@@ -60,10 +60,10 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
                 break;
             List<TBike> bikes = null;
             List<TOrganization> organizations = null;
-            if (passenger.bikeIds != null)
-                bikes = bikeDao.getList(passenger.bikeIds);
-            if (passenger.organizationIds != null)
-                organizations = organizationDao.getList(passenger.organizationIds);
+            if (user.bikeIds != null)
+                bikes = bikeDao.getList(user.bikeIds);
+            if (user.organizationIds != null)
+                organizations = organizationDao.getList(user.organizationIds);
             drivers.add(converter.convertUser(user, bikes, organizations, true));
         }
         CreateTripAPI.Response response = new CreateTripAPI.Response();
@@ -92,7 +92,11 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         TripDao tripDao = new TripDao();
         UserDao userDao = new UserDao();
         TUser passenger = userDao.get(request.passengerId);
-        TUser driver = userDao.get(request.driverId);
+        TUser driver = new TUser();
+        driver.userId = -1;
+        if (request.driverId != -1) {
+            driver = userDao.get(request.driverId);
+        }
         TTrip trip = tripDao.get(request.tripId);
 
         RequestDriverAPI.Response response = new RequestDriverAPI.Response();
@@ -107,9 +111,14 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
             listener.tripId = trip.tripId;
             listenerPollingChannel.change(driver.userId, listener);
         } else {
-//            throw new PinBikeException(AC.MessageCode.DRIVER_BUSY, "Driver is not available");
+            // user not available
+            if (listener != null
+                    && (listener.passengerId != request.passengerId
+                    || listener.tripId != request.tripId)) {
+                response.driverId = -1;
+                return response;
+            }
         }
-
         // change
         PollingChannel<PollingDB.TripRequest> tripRequestPollingChannel = db.getChannel(PollingChannelName.TRIP_REQUEST);
         PollingDB.TripRequest rq = tripRequestPollingChannel.get(trip.tripId);
@@ -121,6 +130,21 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
             tripRequestPollingChannel.change(trip.tripId, rq);
         }
         response.driverId = rq.accepterId;
+        return response;
+    }
+
+    @Override
+    public RequestDriverAPI.Response checkDriverAccepted(RequestDriverAPI.Request request) {
+        TripDao tripDao = new TripDao();
+        TTrip trip = tripDao.get(request.tripId);
+
+        RequestDriverAPI.Response response = new RequestDriverAPI.Response();
+        PollingDB db = PollingDB.getInstance();
+
+        PollingChannel<PollingDB.TripRequest> tripRequestPollingChannel = db.getChannel(PollingChannelName.TRIP_REQUEST);
+        PollingDB.TripRequest rq = tripRequestPollingChannel.get(trip.tripId);
+        if (rq != null && request.driverId == rq.requesterId)
+            response.driverId = rq.accepterId;
         return response;
     }
 
@@ -136,7 +160,7 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         long timeout = getDriverUpdate.getTimeout();
         boolean changed = false;
         while (timeout > 0) {
-            changed = getDriverUpdate.subscribe(driver.userId+"#"+request.tripId);
+            changed = getDriverUpdate.subscribe(driver.userId + "#" + request.tripId);
             if (changed)
                 break;
             try {
@@ -144,12 +168,11 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
                 Thread.sleep(getDriverUpdate.getDelay());
             } catch (InterruptedException ex) {
             }
-
         }
         GetDriverUpdatedAPI.Response response = null;
         if (changed) {
             response = new GetDriverUpdatedAPI.Response(new Converter().convertUpdatedLocation(driver.currentLocation));
-            response.type = getDriverUpdate.get(driver.userId+"#"+request.tripId).type;
+            response.type = getDriverUpdate.get(driver.userId + "#" + request.tripId).type;
             return response;
         }
         throw new PinBikeException(AC.MessageCode.FAIL, "Polling time-out");
@@ -170,7 +193,7 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         }
         List<TTrip> passengerTrips = null;
         try {
-            passengerTrips = tripDao.getTripByPassneger(user.userId);
+            passengerTrips = tripDao.getTripByPassenger(user.userId);
         } catch (Exception ignored) {
 
         }
@@ -208,12 +231,14 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
             //get
             for (TTrip t : passengerTrips) {
                 try {
-                    TUser partner = userDao.get(t.driverId);
-                    TripReviewSortDetail trv = new Converter().convertTripReviewSortDetail(t, partner);
-                    if (trv != null)
-                        pst.add(trv);
-                    if (pst.size() >= request.numberOfTrips)
-                        break;
+                    if(t.driverId > 0) {
+                        TUser partner = userDao.get(t.driverId);
+                        TripReviewSortDetail trv = new Converter().convertTripReviewSortDetail(t, partner);
+                        if (trv != null)
+                            pst.add(trv);
+                        if (pst.size() >= request.numberOfTrips)
+                            break;
+                    }
                 } catch (Exception ignored) {
                 }
             }

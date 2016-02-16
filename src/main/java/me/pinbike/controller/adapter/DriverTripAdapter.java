@@ -263,6 +263,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         rating.dateCreated = DateTimeUtils.now();
         ratingDao.insert(rating);
         //update user status
+        user = userDao.get(request.userId);
         user.status = AC.UpdatedStatus.AVAILABLE;
         userDao.update(user);
         return null;

@@ -28,7 +28,7 @@ public class ESMS {
     private int smsType;
     private String requestId;
     //METHOD
-    public static final String sendSMS = "SendMultipleMessage_V2";
+    public static final String sendSMS = "SendMultipleMessage_V4";
     //SMS TYPE
     public static final int type_random_phone = 3;
     public static final int type_fixed_phone_19001534 = 4;
