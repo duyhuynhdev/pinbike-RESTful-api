@@ -73,7 +73,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
                 organizations = organizationDao.getList(passenger.organizationIds);
             response = new GetRequestFromPassengerAPI.Response();
             response.tripId = trip.tripId;
-            response.passengerDetail = new Converter().convertUser(passenger, bikes, organizations,false);
+            response.passengerDetail = new Converter().convertUser(passenger, bikes, organizations, false);
             response.tripDetail = new Converter().convertTripDetail(trip);
             return response;
         }
@@ -92,7 +92,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = new Converter().convertUpdatedLocation(driver.currentLocation);
         userUpdated.type = AC.UpdatedStatus.ARRIVED;
-        getUserUpdated.change(driver.userId+"#"+request.tripId, userUpdated);
+        getUserUpdated.change(driver.userId + "#" + request.tripId, userUpdated);
         // update user status
         driver.status = AC.UpdatedStatus.ARRIVED;
         userDao.update(driver);
@@ -152,7 +152,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = new Converter().convertUpdatedLocation(user.currentLocation);
         userUpdated.type = AC.UpdatedStatus.DESTROYED;
-        getUserUpdated.change(user.userId+"#"+request.tripId, userUpdated);
+        getUserUpdated.change(user.userId + "#" + request.tripId, userUpdated);
         // update user status
         user.status = AC.UpdatedStatus.DESTROYED;
         userDao.update(user);
@@ -177,7 +177,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         long timeout = getPassengerUpdated.getTimeout();
         boolean changed = false;
         while (timeout > 0) {
-            changed = getPassengerUpdated.subscribe(passenger.userId+"#"+request.tripId);
+            changed = getPassengerUpdated.subscribe(passenger.userId + "#" + request.tripId);
             if (changed)
                 break;
             try {
@@ -190,7 +190,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         GetPassengerUpdatedAPI.Response response = null;
         if (changed) {
             response = new GetPassengerUpdatedAPI.Response(new Converter().convertUpdatedLocation(passenger.currentLocation));
-            response.type = getPassengerUpdated.get(passenger.userId+"#"+request.tripId).type;
+            response.type = getPassengerUpdated.get(passenger.userId + "#" + request.tripId).type;
             return response;
         }
         throw new PinBikeException(AC.MessageCode.FAIL, "Polling time-out");
@@ -209,7 +209,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = new Converter().convertUpdatedLocation(driver.currentLocation);
         userUpdated.type = AC.UpdatedStatus.STARTED;
-        getUserUpdated.change(driver.userId+"#"+request.tripId, userUpdated);
+        getUserUpdated.change(driver.userId + "#" + request.tripId, userUpdated);
         // update user status
         driver.status = AC.UpdatedStatus.STARTED;
         passenger.status = AC.UpdatedStatus.STARTED;
@@ -235,7 +235,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         PollingDB.UserUpdated userUpdated = new PollingDB.UserUpdated();
         userUpdated.location = new Converter().convertUpdatedLocation(driver.currentLocation);
         userUpdated.type = AC.UpdatedStatus.ENDED;
-        getUserUpdated.change(driver.userId+"#"+request.tripId, userUpdated);
+        getUserUpdated.change(driver.userId + "#" + request.tripId, userUpdated);
         // update user status
         driver.status = AC.UpdatedStatus.ENDED;
         passenger.status = AC.UpdatedStatus.ENDED;
@@ -255,8 +255,10 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         RatingDao ratingDao = new RatingDao();
         TUser user = userDao.get(request.userId);
         TTrip trip = tripDao.get(request.tripId);
+        long partnerId = trip.driverId == user.userId ? trip.passengerId : trip.driverId;
         TRating rating = new TRating();
-        rating.userId = user.userId;
+        rating.userId = partnerId;
+        rating.ratingUserId = user.userId;
         rating.tripId = trip.tripId;
         rating.score = request.score;
         rating.comment = request.comment;

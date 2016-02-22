@@ -3,6 +3,7 @@ package me.pinbike.controller.adapter;
 import com.pinride.pinbike.config.Const;
 import com.pinride.pinbike.thrift.TBike;
 import com.pinride.pinbike.thrift.TOrganization;
+import com.pinride.pinbike.thrift.TRating;
 import com.pinride.pinbike.thrift.TUser;
 import me.pinbike.controller.adapter.adapter_interface.Converter;
 import me.pinbike.controller.adapter.adapter_interface.IUserAdapter;
@@ -17,6 +18,7 @@ import me.pinbike.provider.exception.PinBikeException;
 import me.pinbike.sharedjava.model.*;
 import me.pinbike.sharedjava.model.base.UpdatedLocation;
 import me.pinbike.sharedjava.model.base.UserDetail;
+import me.pinbike.sharedjava.model.base.UserRatingDetail;
 import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.DateTimeUtils;
 import me.pinbike.util.PinBikeConstant;
@@ -26,9 +28,7 @@ import me.pinbike.util.sample_data.SampleData;
 import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by hpduy17 on 12/4/15.
@@ -44,6 +44,37 @@ public class UserAdapter implements IUserAdapter {
         List<TOrganization> organizations = organizationDao.getList(user.organizationIds);
         UserDetail userDetail = new Converter().convertUser(user, bikes, organizations, false);
         return new GetUserProfileAPI.Response(userDetail);
+    }
+
+    @Override
+    public GetUserRatingsAPI.Response getUserRatings(GetUserRatingsAPI.Request request) {
+        UserDao userDao = new UserDao();
+        TUser user = userDao.get(request.userId);
+        List<TRating> ratings = new RatingDao().getRatingsByUser(user.userId);
+        Collections.sort(ratings, new Comparator<TRating>() {
+            @Override
+            public int compare(TRating o1, TRating o2) {
+                if (o1.dateCreated < o2.dateCreated)
+                    return -1;
+                return 1;
+            }
+        });
+        GetUserRatingsAPI.Response response = new GetUserRatingsAPI.Response();
+        response.userRatingDetails = new ArrayList<>();
+        boolean flag = false;
+        for (TRating rating : ratings) {
+            if (request.startId < 0 || request.startId == rating.ratingId)
+                flag = true;
+            if (flag) {
+                if (response.userRatingDetails.size() >= request.numberOfRating)
+                    break;
+                UserRatingDetail userRatingDetail = new Converter().convertUserRatingDetail(rating);
+                if (userRatingDetail != null) {
+                    response.userRatingDetails.add(userRatingDetail);
+                }
+            }
+        }
+        return response;
     }
 
     @Override
@@ -77,9 +108,9 @@ public class UserAdapter implements IUserAdapter {
     @Override
     public ChangeAvailableStatusAPI.Response changeAvailableStatus(ChangeAvailableStatusAPI.Request request) {
         UserDao userDao = new UserDao();
+        userDao.updateAvailableDriver(request.userId, request.isAvailable);
         TUser user = userDao.get(request.userId);
         user.status = AC.UpdatedStatus.AVAILABLE;
-        user.availableDriver = true;
         userDao.update(user);
         return null;
     }
@@ -90,13 +121,13 @@ public class UserAdapter implements IUserAdapter {
         BikeDao bikeDao = new BikeDao();
         OrganizationDao organizationDao = new OrganizationDao();
         //check user exist
-//        try {
-//            userDao.getUserBySocial(request.email, Const.PinBike.SocialType.EMAIL);
-//            throw new PinBikeException(AC.MessageCode.ELEMENT_USED, "email has been used");
-//        } catch (PinBikeException ex) {
-//            if (ex.getMessageCode() != AC.MessageCode.NOT_EXIST)
-//                throw ex;
-//        }
+        try {
+            userDao.getUserBySocial(request.email, Const.PinBike.SocialType.EMAIL);
+            throw new PinBikeException(AC.MessageCode.ELEMENT_USED, "email has been used");
+        } catch (PinBikeException ex) {
+            if (ex.getMessageCode() != AC.MessageCode.NOT_EXIST)
+                throw ex;
+        }
         //insert new user
         TUser user = new TUser();
         user.name = request.givenName;

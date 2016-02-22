@@ -46,9 +46,7 @@ public class BroadcastDao extends DaoTemplate<TBroadcast> {
             if (isExits)
                 update(broadcast);
             else {
-                TBroadcast b = insert(broadcast);
-                user.currentBroadcastId = b.broadcastId;
-                new UserDao().update(user);
+                insert(broadcast);
             }
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);

@@ -11,6 +11,8 @@ public interface IUserAdapter {
 
     GetUserProfileAPI.Response getUserProfile(GetUserProfileAPI.Request request);
 
+    GetUserRatingsAPI.Response getUserRatings(GetUserRatingsAPI.Request request);
+
     GetDriverAroundAPI.Response getDriverAround(GetDriverAroundAPI.Request request);
 
     UpdateMyLocationAPI.Response updateMyLocation(UpdateMyLocationAPI.Request request);

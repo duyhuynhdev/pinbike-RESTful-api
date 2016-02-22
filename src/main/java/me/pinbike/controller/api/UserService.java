@@ -46,6 +46,24 @@ public class UserService {
     }
 
     @POST
+    @Path("/GetUserRatingsAPI")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<GetUserRatingsAPI.Response> GetUserRatingsAPI(@Valid RequestWrapper<GetUserRatingsAPI.Request> request) throws IOException {
+        IUserAdapter adapter = new UserAdapter();
+
+        GetUserRatingsAPI.Response responseContent;
+        GetUserRatingsAPI.Request requestContent = request.requestContent;
+
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        responseContent = adapter.getUserRatings(requestContent);
+        ResponseWrapper<GetUserRatingsAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+
+        return response;
+    }
+
+
+    @POST
     @Path("/GetDriverAroundAPI") //TODO: LONG POLLING
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<GetDriverAroundAPI.Response> GetDriverAroundAPI(@Valid RequestWrapper<GetDriverAroundAPI.Request> request) throws IOException {

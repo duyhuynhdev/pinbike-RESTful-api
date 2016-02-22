@@ -5,7 +5,7 @@ package me.pinbike.controller.api;
  */
 
 import eu.bitwalker.useragentutils.UserAgent;
-import me.pinbike.sharedjava.model.constanst.AC;
+import me.pinbike.sharedjava.model.UploadImageAPI;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.MultiPartUtil;
 import me.pinbike.util.PinBikeConstant;
@@ -32,10 +32,10 @@ public class UploadService {
     private Logger logger = LogUtil.getLogger(this.getClass());
 
     @POST
-    @Path("/UploadAvatarAPI")
+    @Path("/UploadImageAPI")
     @Consumes("multipart/form-data")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
-    public ResponseWrapper UploadAvatarAPI(MultipartFormDataInput input, @Context HttpServletRequest req) throws IOException {
+    public ResponseWrapper<UploadImageAPI.Response> UploadImageAPI(MultipartFormDataInput input, @Context HttpServletRequest req) throws IOException {
         UserAgent userAgent = null;
         try {
             userAgent = UserAgent.parseUserAgentString(req.getHeader("User-Agent"));
@@ -44,9 +44,13 @@ public class UploadService {
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
         List<InputPart> inputParts = uploadForm.get("uploadedFile");
         String fileNames = new MultiPartUtil().uploadFile(inputParts, me.pinbike.util.common.Path.getInstance().getUserProfileImgPath());
-        String userInfo = userAgent == null ? "" :  userAgent.getBrowser().getName() +" | "+userAgent.getOperatingSystem();
-        logger.info("Some user use " + userInfo +" to upload "+fileNames);
-        return new ResponseWrapper(AC.MessageCode.SUCCESSFULLY, me.pinbike.util.common.Path.getInstance().getUrlFromPath(fileNames));
+        String userInfo = userAgent == null ? "" : userAgent.getBrowser().getName() + " | " + userAgent.getOperatingSystem();
+        logger.info("Some user use " + userInfo + " to upload " + fileNames);
+        UploadImageAPI.Response responseContent = new UploadImageAPI.Response();
+        responseContent.url = me.pinbike.util.common.Path.getInstance().getUrlFromPath(fileNames);
+        ResponseWrapper<UploadImageAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+        return response;
     }
 
 

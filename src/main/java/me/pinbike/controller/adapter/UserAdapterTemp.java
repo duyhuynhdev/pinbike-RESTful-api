@@ -21,6 +21,11 @@ public class UserAdapterTemp extends ModelDataFactory implements IUserAdapter {
     }
 
     @Override
+    public GetUserRatingsAPI.Response getUserRatings(GetUserRatingsAPI.Request request) {
+        return null;
+    }
+
+    @Override
     public GetDriverAroundAPI.Response getDriverAround(GetDriverAroundAPI.Request request) {
         GetDriverAroundAPI.Response response = new GetDriverAroundAPI.Response();
         response.drivers = Arrays.asList(getUpdatedLocation(request.lat, request.lng, 1.5)

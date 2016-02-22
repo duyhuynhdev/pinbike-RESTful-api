@@ -43,4 +43,26 @@ public class SampleData {
             "http://103.20.148.111:8080/RideSharing/cloudbike/images/fakedata/avt12.png"};
 
     public static final String priceModelJSON = "{\"blockCost\":[{\"checkIndex\":1,\"costPerKm\":3000,\"distanceLimit\":5},{\"checkIndex\":2,\"costPerKm\":2000,\"distanceLimit\":10}],\"firstCost\":{\"distanceLimit\":2,\"haveMinCost\":true,\"minCost\":10000},\"normalCost\":{\"costPerKm\":1000}}";
+
+    public static final String[] hot_girl_avatars = {"http://103.20.148.111:8080/RideSharing/cloudbike/images/avt/1.jpg",
+            "http://103.20.148.111:8080/RideSharing/cloudbike/images/avt/2.jpg",
+            "http://103.20.148.111:8080/RideSharing/cloudbike/images/avt/3.jpg",
+            "http://103.20.148.111:8080/RideSharing/cloudbike/images/avt/4.jpg",
+            "http://103.20.148.111:8080/RideSharing/cloudbike/images/avt/5.jpg",
+            "http://103.20.148.111:8080/RideSharing/cloudbike/images/avt/6.jpg",
+            "http://103.20.148.111:8080/RideSharing/cloudbike/images/avt/7.jpg",
+            "http://103.20.148.111:8080/RideSharing/cloudbike/images/avt/8.jpg",
+            "http://103.20.148.111:8080/RideSharing/cloudbike/images/avt/9.jpg",
+            "http://103.20.148.111:8080/RideSharing/cloudbike/images/avt/10.jpg"};
+    public static final String[] hot_girl_names = {"Hà Nam",
+            "Thanh Tú",
+            "Tuyết Nhi",
+            "Tú Anh",
+            "Hà Uyên",
+            "Mẫn Nhi",
+            "Thanh Tâm",
+            "Elly Nguyễn",
+            "Đặng Dung",
+            "Hoàng Giang"};
+
 }

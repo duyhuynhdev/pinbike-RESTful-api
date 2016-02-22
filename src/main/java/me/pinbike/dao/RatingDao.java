@@ -21,7 +21,7 @@ public class RatingDao extends DaoTemplate<TRating> {
         logger = LogUtil.getLogger(this.getClass());
     }
 
-    public List<TRating> getUserCurrentRating(long userId) {
+    public List<TRating> getRatingsByUser(long userId) {
         try {
             logger.info(String.format("{userId: %d}", userId));
             AdapterResponseValue.ResponseListValue<TRating> response = client.getRatingsByUser(userId);
@@ -39,7 +39,7 @@ public class RatingDao extends DaoTemplate<TRating> {
     public TRating getTripRating(long tripId, long userId) {
         try {
             logger.info(String.format("{tripId: %d, userId:%d}", tripId,userId));
-            AdapterResponseValue.ResponseValue<TRating> response = client.getRatingByUserAndTrip(tripId, userId);
+            AdapterResponseValue.ResponseValue<TRating> response = client.getRatingByUserAndTrip(userId, tripId);
             validateResponse(response.getErrorCode(), getGenericName() + ".getTripRating()", String.format("{tripId: %d, userId:%d}", tripId, userId));
             return response.getValue();
         } catch (PinBikeException ex) {

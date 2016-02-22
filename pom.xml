@@ -253,7 +253,7 @@
         <dependency>
             <groupId>com.pinride</groupId>
             <artifactId>pinbike.thrift</artifactId>
-            <version>0.0.26-NEW</version>
+            <version>0.0.30-NEW</version>
         </dependency>
     </dependencies>
     <properties>

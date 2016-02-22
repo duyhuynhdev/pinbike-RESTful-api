@@ -72,6 +72,8 @@ public class Path {
             return url.toString();
         } catch (MalformedURLException e) {
             // it wasn't a URL
+            if(getServerAddress().contains("192.168.1.") || getServerAddress().contains("127.0.1.1"))
+                return "http://pinride.ddns.net:8080/api"+ (path.replaceAll(" ", "").equals("") ? defaultAvatar : path);
             return getServerAddress() + (path.replaceAll(" ", "").equals("") ? defaultAvatar : path);
         }
     }

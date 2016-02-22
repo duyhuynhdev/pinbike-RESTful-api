@@ -8,6 +8,9 @@ import me.pinbike.sharedjava.model.constanst.AC;
 import me.pinbike.util.common.Path;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -61,8 +64,53 @@ public class Converter {
         } catch (Exception ignored) {
         }
         userDetail.rating = rating;
-
+        // get rating detail
+        try {
+            List<TRating> ratings = new RatingDao().getRatingsByUser(user.userId);
+            if (ratings != null) {
+                // sort;
+                Collections.sort(ratings, new Comparator<TRating>() {
+                    @Override
+                    public int compare(TRating o1, TRating o2) {
+                        if (o1.dateCreated < o2.dateCreated)
+                            return -1;
+                        return 1;
+                    }
+                });
+                userDetail.userRatingDetails = new ArrayList<>();
+                for (TRating r : ratings) {
+                    if (userDetail.userRatingDetails.size() >= 10)
+                        break;
+                    UserRatingDetail userRatingDetail = convertUserRatingDetail(r);
+                    if (userRatingDetail != null) {
+                        userDetail.userRatingDetails.add(userRatingDetail);
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
         return userDetail;
+    }
+
+    public UserRatingDetail convertUserRatingDetail(TRating rating) {
+        if (rating == null)
+            return null;
+        try {
+            TUser user = new UserDao().get(rating.userId);
+            UserRatingDetail userRatingDetail = new UserRatingDetail();
+            userRatingDetail.comment = rating.comment;
+            userRatingDetail.ratingId = rating.ratingId;
+            userRatingDetail.dateCreated = rating.dateCreated;
+            userRatingDetail.score = rating.score;
+            userRatingDetail.userId = rating.userId;
+            userRatingDetail.avatar = Path.getInstance().getUrlFromPath(user.avatar);
+            userRatingDetail.givenName = user.name;
+            userRatingDetail.middleName = user.middleName;
+            userRatingDetail.familyName = user.lastName;
+            return userRatingDetail;
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     public Bike convertBike(TBike bike) {
