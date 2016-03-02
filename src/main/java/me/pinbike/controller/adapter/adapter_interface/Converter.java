@@ -1,5 +1,7 @@
 package me.pinbike.controller.adapter.adapter_interface;
 
+import com.pinride.pinbike.payment.config.Const;
+import com.pinride.pinbike.payment.thrift.TTransaction;
 import com.pinride.pinbike.thrift.*;
 import me.pinbike.dao.RatingDao;
 import me.pinbike.dao.UserDao;
@@ -17,6 +19,10 @@ import java.util.List;
  * Created by hpduy17 on 12/9/15.
  */
 public class Converter {
+    public static final int PROMO_CREDIT_TYPE = 0;
+    public static final int INCOME_CREDIT_TYPE = 1;
+    public static final int DRIVER_CREDIT_TYPE = 2;
+
     public UserDetail convertUser(TUser user, List<TBike> bikes, List<TOrganization> organizations, boolean isDriver) {
         if (user == null)
             return null;
@@ -53,9 +59,10 @@ public class Converter {
         Rating rating = new Rating();
         try {
             rating.totalScore = new UserDao().getTotalScoreOfRating(user.getUserId());
+            rating.ratingCount = (int) new UserDao().getNumberOfRating(user.getUserId());
         } catch (Exception ignored) {
         }
-        rating.ratingCount = (int) user.numberOfRating;
+
         try {
             if (isDriver)
                 userDetail.numberOfTravelledTrip = user.getTripDriverIdsSize();
@@ -165,12 +172,13 @@ public class Converter {
         }
         tripDetail.passengerId = trip.passengerId;
         tripDetail.price = trip.price;
+        tripDetail.promoCodeValue = trip.promoCodeValue;
         return tripDetail;
     }
 
 
     public TripReviewSortDetail convertTripReviewSortDetail(TTrip trip, TUser partner) throws IOException {
-        if (trip == null && partner == null)
+        if (trip == null || partner == null)
             return null;
         TripReviewSortDetail tripReviewSortDetail = new TripReviewSortDetail();
         tripReviewSortDetail.distance = trip.distance;
@@ -201,8 +209,53 @@ public class Converter {
         } else {
             tripReviewSortDetail.isDestroyedTrip = true;
         }
-        tripReviewSortDetail.price = trip.price;
+        tripReviewSortDetail.practicalPaid = trip.price - trip.promoCodeValue;
         return tripReviewSortDetail;
+    }
+
+    public TransactionSum convertTransactionSum(TTransaction transaction, int convertType) {
+        //0: promo credit; 1: income ; 2: driver credit
+        TransactionSum sum = new TransactionSum();
+        sum.epochTime = transaction.dateCreated;
+        sum.transactionId = transaction.transactionId;
+        sum.detail = transaction.description;
+        switch (convertType) {
+            case PROMO_CREDIT_TYPE:
+                switch (transaction.transactionType) {
+                    case Const.PinBike.TransactionType.END_TRIP_WITH_PROMO:
+                        sum.value = transaction.promoValue;
+                        break;
+                    case Const.PinBike.TransactionType.WITH_DRAW_CREDIT:
+                        sum.value = -transaction.promoValue;
+                        break;
+                    case Const.PinBike.TransactionType.SWITCH_CREDIT:
+                        sum.value = -transaction.promoValue;
+                        break;
+                }
+                break;
+            case INCOME_CREDIT_TYPE:
+                if (transaction.transactionType == Const.PinBike.TransactionType.END_TRIP
+                        || transaction.transactionType == Const.PinBike.TransactionType.END_TRIP_WITH_PROMO)
+                    sum.value = transaction.tripFare - transaction.pinbikeTax;
+                break;
+            case DRIVER_CREDIT_TYPE:
+                switch (transaction.transactionType) {
+                    case Const.PinBike.TransactionType.END_TRIP:
+                        sum.value = -transaction.pinbikeTax;
+                        break;
+                    case Const.PinBike.TransactionType.END_TRIP_WITH_PROMO:
+                        sum.value = transaction.pinbikeTax;
+                        break;
+                    case Const.PinBike.TransactionType.SWITCH_CREDIT:
+                        sum.value = -transaction.pinbikeTax;
+                        break;
+                    case Const.PinBike.TransactionType.TRANFER_CASH_CREDIT:
+                        sum.value = transaction.pinbikeTax;
+                        break;
+                }
+                break;
+        }
+        return sum;
     }
 
 }

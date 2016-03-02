@@ -1,11 +1,9 @@
 package me.pinbike.controller.api;
 
 import me.pinbike.controller.adapter.adapter_interface.IVerificationAdapter;
-import me.pinbike.controller.adapter.adapter_interface.VerificationAdapter;
-import me.pinbike.sharedjava.model.AddVerificationAPI;
-import me.pinbike.sharedjava.model.ConfirmVerifiedUserAPI;
-import me.pinbike.sharedjava.model.GetVerifiedContactOfflineAPI;
-import me.pinbike.sharedjava.model.RequestVerifyAPI;
+import me.pinbike.controller.adapter.VerificationAdapter;
+import me.pinbike.controller.adapter.VerificationAdapterTemp;
+import me.pinbike.sharedjava.model.*;
 import me.pinbike.sharedjava.model.base.RequestWrapper;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.PinBikeConstant;
@@ -14,9 +12,7 @@ import org.apache.log4j.Logger;
 import org.jboss.resteasy.spi.validation.ValidateRequest;
 
 import javax.validation.Valid;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import java.io.IOException;
 
 /**
@@ -80,19 +76,54 @@ public class VerificationService {
         return response;
     }
 
+    @GET
+    @Path("/ConfirmVerifiedUserViaEmail")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<ConfirmVerifiedUserAPI.Response> ConfirmVerifiedUserViaEmail(@QueryParam("userId") long userId) throws IOException {
+
+        ConfirmVerifiedUserAPI.Request requestContent = new ConfirmVerifiedUserAPI.Request();
+        requestContent.userId = userId;
+        IVerificationAdapter adapter = new VerificationAdapter();
+
+        ConfirmVerifiedUserAPI.Response responseContent;
+
+        logger.info(requestContent.getClass().getSimpleName() + ":" + requestContent.toString());
+        responseContent = adapter.confirmVerifiedUserAPI(requestContent);
+        ResponseWrapper<ConfirmVerifiedUserAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+        return response;
+    }
+
     @POST
     @Path("/GetVerifiedContactOfflineAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<GetVerifiedContactOfflineAPI.Response> GetVerifiedContactOfflineAPI(@Valid RequestWrapper<GetVerifiedContactOfflineAPI.Request> request) throws IOException {
 
-        IVerificationAdapter adapter = new VerificationAdapter();
+        IVerificationAdapter adapter = new VerificationAdapterTemp();
 
         GetVerifiedContactOfflineAPI.Response responseContent;
         GetVerifiedContactOfflineAPI.Request requestContent = request.requestContent;
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
-        responseContent = adapter.GetVerifiedContactOfflineAPI(requestContent);
+        responseContent = adapter.getVerifiedContactOfflineAPI(requestContent);
         ResponseWrapper<GetVerifiedContactOfflineAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+        return response;
+    }
+
+    @POST
+    @Path("/GetUserVerifiedStatusAPI")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<GetUserVerifiedStatusAPI.Response> GetUserVerifiedStatusAPI(@Valid RequestWrapper<GetUserVerifiedStatusAPI.Request> request) throws IOException {
+
+        IVerificationAdapter adapter = new VerificationAdapter();
+
+        GetUserVerifiedStatusAPI.Response responseContent;
+        GetUserVerifiedStatusAPI.Request requestContent = request.requestContent;
+
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        responseContent = adapter.getUserVerifiedStatusAPI(requestContent);
+        ResponseWrapper<GetUserVerifiedStatusAPI.Response> response = new ResponseWrapper<>(responseContent);
         logger.info(response.getClass().getSimpleName() + ":" + response.toString());
         return response;
     }

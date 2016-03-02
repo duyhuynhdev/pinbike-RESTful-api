@@ -3,6 +3,7 @@ package me.pinbike.controller.adapter;
 import com.pinride.pinbike.thrift.*;
 import me.pinbike.controller.adapter.adapter_interface.Converter;
 import me.pinbike.controller.adapter.adapter_interface.IDriverTripAdapter;
+import me.pinbike.controller.adapter.payment.PaymentAdapter;
 import me.pinbike.dao.*;
 import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
@@ -144,6 +145,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
     public DestroyTripAPI.Response destroyTrip(DestroyTripAPI.Request request) {
         TripDao tripDao = new TripDao();
         UserDao userDao = new UserDao();
+        PromotionDao promotionDao = new PromotionDao();
         TTrip trip = tripDao.get(request.tripId);
         TUser user = userDao.get(request.userId);
         PollingDB db = PollingDB.getInstance();
@@ -156,12 +158,20 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         // update user status
         user.status = AC.UpdatedStatus.DESTROYED;
         userDao.update(user);
+        //unlock promo code
+        try {
+            promotionDao.unlockPromoCode(trip.promoCodeId, user.userId);
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
+        }
         //update trip status
         trip.status = AC.UpdatedStatus.DESTROYED;
         if (request.reason != null)
             trip.reason = request.reason.description;
         trip.datetimeEndTrip = DateTimeUtils.now();
         trip.userDestroyTripId = request.userId;
+        trip.promoCodeId = 0;
+        trip.promoCodeValue = 0;
         tripDao.update(trip);
         return null;
     }
@@ -226,6 +236,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
     public EndTripAPI.Response endTrip(EndTripAPI.Request request) {
         TripDao tripDao = new TripDao();
         UserDao userDao = new UserDao();
+        PromotionDao promotionDao = new PromotionDao();
         TTrip trip = tripDao.get(request.tripId);
         TUser driver = userDao.get(request.driverId);
         TUser passenger = userDao.get(trip.passengerId);
@@ -245,7 +256,17 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         trip.status = AC.UpdatedStatus.ENDED;
         trip.datetimeEndTrip = DateTimeUtils.now();
         tripDao.update(trip);
-        return null;
+        // use promo code
+        try {
+            promotionDao.usePromoCode(trip.promoCodeId, passenger.userId);
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
+        }
+
+        // credit processing
+        EndTripAPI.Response response = new EndTripAPI.Response();
+        response = new PaymentAdapter().endTripTransaction(trip);
+        return response;
     }
 
     @Override

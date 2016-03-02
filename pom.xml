@@ -253,8 +253,14 @@
         <dependency>
             <groupId>com.pinride</groupId>
             <artifactId>pinbike.thrift</artifactId>
-            <version>0.0.30-NEW</version>
+            <version>0.0.41-NEW</version>
         </dependency>
+          <dependency>
+              <groupId>com.pinride</groupId>
+              <artifactId>pinbike.payment.thrift</artifactId>
+              <version>0.0.6-NEW</version>
+        </dependency>
+
     </dependencies>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

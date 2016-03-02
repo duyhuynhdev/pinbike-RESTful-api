@@ -28,7 +28,10 @@ public class UserDao extends DaoTemplate<TUser> {
         try {
             logger.info(String.format("{email:%s, password:%s}", email, password));
             AdapterResponseValue.ResponseValue<TUser> response = client.getUserBySocial(email, Const.PinBike.SocialType.EMAIL);
-            validateResponse(response.getErrorCode(), getGenericName() + ".getUserBySocial()", String.format("{email:%s, password:%s}", email, password));
+            validateResponse(response.getErrorCode(), getGenericName() + ".getUserByEmailPassword()", String.format("{email:%s, password:%s}", email, password));
+            if( Const.PinBike.UserType.isAdmin(response.getValue().userType)){
+                throw new PinBikeException(AC.MessageCode.ACCOUNT_IS_DEACTIVATED, "Your account is deactivated");
+            }
             if (response.getValue().password.equals(password))
                 return response.getValue();
             throw new PinBikeException(AC.MessageCode.WRONG_PASSWORD, "Your password is invalid");
@@ -46,6 +49,9 @@ public class UserDao extends DaoTemplate<TUser> {
             logger.info(String.format("{socialId:%s, socialType:%d}", socialId, socialType));
             AdapterResponseValue.ResponseValue<TUser> response = client.getUserBySocial(socialId, socialType);
             validateResponse(response.getErrorCode(), getGenericName() + ".getUserBySocial()", String.format("{socialId:%s, socialType:%d}", socialId, socialType));
+            if( Const.PinBike.UserType.isAdmin(response.getValue().userType)){
+                throw new PinBikeException(AC.MessageCode.ACCOUNT_IS_DEACTIVATED, "Your account is deactive");
+            }
             return response.getValue();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
@@ -136,15 +142,39 @@ public class UserDao extends DaoTemplate<TUser> {
         }
     }
 
+    public void updateVerifyStatus(long userId, int verifiedStatus) {
+        try {
+            logger.info(String.format("{userId:%d , verifiedStatus:%d}}", userId, verifiedStatus));
+            int errorCode = client.updateVerifyStatus(userId, verifiedStatus);
+            validateResponse(errorCode, getGenericName() + ".updateVerifyStatus()", String.format("{userId:%d , verifiedStatus:%s}", userId, verifiedStatus));
+        } catch (PinBikeException ex) {
+            logger.error(ex.getMessage(), ex);
+            throw ex;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+            throw new PinBikeException(AC.MessageCode.SYSTEM_EXCEPTION, ex.getMessage());
+        }
+    }
+
     public double getTotalScoreOfRating(long userId) {
         try {
             logger.info(String.format("{userId:%d}", userId));
             AdapterResponseValue.ResponseValue<Double> response = client.getScoreRating(userId);
             validateResponse(response.getErrorCode(), getGenericName() + ".getTotalScoreOfRating()", String.format("{userId:%d}", userId));
             return response.getValue();
-        } catch (PinBikeException ex) {
         } catch (Exception ex) {
+            return 0;
         }
-        return 0;
+    }
+
+    public long getNumberOfRating(long userId) {
+        try {
+            logger.info(String.format("{userId:%d}", userId));
+            AdapterResponseValue.ResponseValue<Long> response = client.getNumberOfRating(userId);
+            validateResponse(response.getErrorCode(), getGenericName() + ".getNumberOfRating()", String.format("{userId:%d}", userId));
+            return response.getValue();
+        } catch (Exception ex) {
+            return 0;
+        }
     }
 }

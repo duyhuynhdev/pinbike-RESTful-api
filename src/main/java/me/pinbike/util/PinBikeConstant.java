@@ -16,6 +16,8 @@ public class PinBikeConstant {
     public static class BackEndConfig {
         public static final String Host = "pinride.ddns.net";
         public static final int Port = 9000;
+        public static final String Host_Payment = "pinride.ddns.net";
+        public static final int Port_Payment = 9002;
     }
 
     public static class TripConst {
@@ -23,7 +25,7 @@ public class PinBikeConstant {
     }
 
     public static class CustomerServiceMail {
-        public static final String[] feedback_mails = {"service@pinride.me", "tungstuff@pinride.me","hpduy17@gmail.com"};
+        public static final String[] feedback_mails = {"service@pinride.me", "tungstuff@pinride.me", "hpduy17@gmail.com"};
     }
 
     public static class DeveloperMail {
@@ -363,8 +365,8 @@ public class PinBikeConstant {
                     "                                                                        </td>\n" +
                     "                                                                     </tr>\n";
             if (feedbackImages != null && !feedbackImages.isEmpty()) {
-                for(String url : feedbackImages) {
-                    html+=  "                                                                     <tr id=\"yui_3_16_0_1_1453518493797_3149\">\n" +
+                for (String url : feedbackImages) {
+                    html += "                                                                     <tr id=\"yui_3_16_0_1_1453518493797_3149\">\n" +
                             "                                                                        <td style=\"font-size:11px;font-family:LucidaGrande, tahoma, verdana, arial, sans-serif;padding-top:5px;padding-bottom:5px;\" id=\"yui_3_16_0_1_1453518493797_3148\"><img width=\"360\" height=\"640\" src=\"" + Path.getInstance().getUrlFromPath(url) + "\" style=\"border:0;\"></td>" +
                             "                                                                     </tr>\n";
                 }

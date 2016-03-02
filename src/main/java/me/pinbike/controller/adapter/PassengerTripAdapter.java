@@ -3,10 +3,7 @@ package me.pinbike.controller.adapter;
 import com.pinride.pinbike.thrift.*;
 import me.pinbike.controller.adapter.adapter_interface.Converter;
 import me.pinbike.controller.adapter.adapter_interface.IPassengerTripAdapter;
-import me.pinbike.dao.BikeDao;
-import me.pinbike.dao.OrganizationDao;
-import me.pinbike.dao.TripDao;
-import me.pinbike.dao.UserDao;
+import me.pinbike.dao.*;
 import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
 import me.pinbike.polling.PollingDB;
@@ -32,6 +29,7 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         TripDao tripDao = new TripDao();
         UserDao userDao = new UserDao();
         BikeDao bikeDao = new BikeDao();
+        PromotionDao promotionDao = new PromotionDao();
         OrganizationDao organizationDao = new OrganizationDao();
         //check user exits
         TUser passenger = userDao.get(request.passengerId);
@@ -66,9 +64,23 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
                 organizations = organizationDao.getList(user.organizationIds);
             drivers.add(converter.convertUser(user, bikes, organizations, true));
         }
+        //Get promotion code
+        List<String> promoStrings = new ArrayList<>();
+        try {
+            List<TPromoCode> promoCodes = promotionDao.getCurrentActivePromoCode();
+            if (promoCodes != null) {
+                for (TPromoCode pc : promoCodes) {
+                    promoStrings.add(pc.description);
+                }
+            }
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
+        }
+        //Create response
         CreateTripAPI.Response response = new CreateTripAPI.Response();
         response.drivers = drivers;
         response.tripId = trip.tripId;
+        response.promoString = promoStrings;
         return response;
     }
 
@@ -231,7 +243,7 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
             //get
             for (TTrip t : passengerTrips) {
                 try {
-                    if(t.driverId > 0) {
+                    if (t.driverId > 0) {
                         TUser partner = userDao.get(t.driverId);
                         TripReviewSortDetail trv = new Converter().convertTripReviewSortDetail(t, partner);
                         if (trv != null)

@@ -1,9 +1,9 @@
 package me.pinbike.controller.adapter.adapter_interface;
 
-import me.pinbike.sharedjava.model.AddVerificationAPI;
-import me.pinbike.sharedjava.model.ConfirmVerifiedUserAPI;
-import me.pinbike.sharedjava.model.GetVerifiedContactOfflineAPI;
-import me.pinbike.sharedjava.model.RequestVerifyAPI;
+import me.pinbike.sharedjava.model.*;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by hpduy17 on 12/4/15.
@@ -11,10 +11,12 @@ import me.pinbike.sharedjava.model.RequestVerifyAPI;
 public interface IVerificationAdapter {
     public AddVerificationAPI.Response addVerification(AddVerificationAPI.Request request);
 
-    public RequestVerifyAPI.Response requestVerifyAPI(RequestVerifyAPI.Request request);
+    public RequestVerifyAPI.Response requestVerifyAPI(RequestVerifyAPI.Request request) throws IOException;
 
     public ConfirmVerifiedUserAPI.Response confirmVerifiedUserAPI(ConfirmVerifiedUserAPI.Request request);
 
-    public GetVerifiedContactOfflineAPI.Response GetVerifiedContactOfflineAPI(GetVerifiedContactOfflineAPI.Request request);
+    public GetVerifiedContactOfflineAPI.Response getVerifiedContactOfflineAPI(GetVerifiedContactOfflineAPI.Request request);
+
+    public GetUserVerifiedStatusAPI.Response getUserVerifiedStatusAPI(GetUserVerifiedStatusAPI.Request request);
 
 }

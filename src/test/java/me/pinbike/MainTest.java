@@ -1,6 +1,6 @@
 package me.pinbike;
 
-import me.pinbike.util.SendMailUtil;
+import me.pinbike.dao.UserDao;
 import org.fluttercode.datafactory.impl.DataFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -26,10 +26,7 @@ public class MainTest {
 
     @Test
     public void TestSth() throws UnsupportedEncodingException {
-        new SendMailUtil("hpduy17@gmail.com", "Test", "test");
-        while (true) {
-
-        }
+       System.out.print(new UserDao().getNumberOfRating(3778));
     }
 
     @Test

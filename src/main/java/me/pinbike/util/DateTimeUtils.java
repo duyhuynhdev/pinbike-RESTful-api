@@ -2,8 +2,7 @@ package me.pinbike.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * Created by hpduy17 on 6/17/15.
@@ -57,20 +56,36 @@ public class DateTimeUtils {
         return date % SECONDS_PER_DAY;
     }
 
-    public static String getHCMFormatDate(long timeInMilisecond){
+    public static String getHCMFormatDate(long timeInMilisecond) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEEE, MMMMM dd, yyyy");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
 
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
 
-        return dateFormat.format(timeInMilisecond)+ " at " + hourFormat.format(timeInMilisecond) + " (GTM +7)";
+        return dateFormat.format(timeInMilisecond) + " at " + hourFormat.format(timeInMilisecond) + " (GTM +7)";
     }
 
     public static long parseddMMyyyyToSecond(String timeAsString) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
-        return dateFormat.parse(timeAsString).getTime()/1000;
+        return dateFormat.parse(timeAsString).getTime() / 1000;
+    }
+
+    public static LinkedHashMap<Integer, List<Integer>> getYearAndMonthBetween2Day(long startDay, long endDay) {
+        LinkedHashMap<Integer, List<Integer>> result = new LinkedHashMap<>();
+        for (long i = startDay; i <= endDay; i = i + SECONDS_PER_DAY * 1000) {
+            Date date = new Date(i);
+            List<Integer> months = result.get(date.getYear());
+            if (months == null) {
+                months = new ArrayList<>();
+                result.put(date.getYear(), months);
+            }
+            if (!months.contains(date.getMonth()))
+                months.add(date.getMonth());
+
+        }
+        return result;
     }
 
 }

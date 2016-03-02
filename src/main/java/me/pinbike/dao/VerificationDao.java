@@ -19,19 +19,6 @@ public class VerificationDao extends DaoTemplate<TVerification> {
         logger = LogUtil.getLogger(this.getClass());
     }
 
-    public void updateVerifyStatus(long userId, int verifiedStatus) {
-        try {
-            logger.info(String.format("{userId:%d , verifiedStatus:%d}}", userId, verifiedStatus));
-            int errorCode = client.updateVerifyStatus(userId, verifiedStatus);
-            validateResponse(errorCode, getGenericName() + ".updateVerifyStatus()", String.format("{userId:%d , verifiedStatus:%s}", userId, verifiedStatus));
-        } catch (PinBikeException ex) {
-            logger.error(ex.getMessage(), ex);
-            throw ex;
-        } catch (Exception ex) {
-            logger.error(ex.getMessage(), ex);
-            throw new PinBikeException(AC.MessageCode.SYSTEM_EXCEPTION, ex.getMessage());
-        }
-    }
 
 
     public TVerification getVerificationByUser(long userId) {
