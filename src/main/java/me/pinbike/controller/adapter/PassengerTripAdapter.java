@@ -261,5 +261,47 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         return response;
     }
 
+    @Override
+    public GetTripDetailsAPI.Response getTripDetail(GetTripDetailsAPI.Request request) {
+        UserDao userDao = new UserDao();
+        TripDao tripDao = new TripDao();
+        OrganizationDao organizationDao = new OrganizationDao();
+        BikeDao bikeDao = new BikeDao();
+        RatingDao ratingDao = new RatingDao();
+        TTrip trip = tripDao.get(request.tripId);
+        TUser driver = userDao.get(trip.driverId);
+        TUser passenger = userDao.get(trip.passengerId);
+
+        GetTripDetailsAPI.Response response = new GetTripDetailsAPI.Response();
+        Converter converter = new Converter();
+        //driver
+        List<TBike> driverBikes = null;
+        List<TOrganization> driverOrganizations = null;
+        if (driver.bikeIds != null)
+            driverBikes = bikeDao.getList(driver.bikeIds);
+        if (driver.organizationIds != null)
+            driverOrganizations = organizationDao.getList(driver.organizationIds);
+        response.driverDetail = converter.convertUser(driver, driverBikes, driverOrganizations, true);
+        try {
+            response.driverRated = (int) ratingDao.getTripRating(trip.tripId, driver.userId).score;
+        } catch (Exception ignored) {
+        }
+        //passenger
+        List<TBike> passengerBikes = null;
+        List<TOrganization> passengerOrganizations = null;
+        if (passenger.bikeIds != null)
+            passengerBikes = bikeDao.getList(passenger.bikeIds);
+        if (passenger.organizationIds != null)
+            passengerOrganizations = organizationDao.getList(passenger.organizationIds);
+        response.passengerDetail = converter.convertUser(passenger, passengerBikes, passengerOrganizations, true);
+        try {
+            response.passengerRated = (int) ratingDao.getTripRating(trip.tripId, passenger.userId).score;
+        } catch (Exception ignored) {
+        }
+        //trip
+        response.tripDetail = converter.convertTripDetail(trip);
+        return response;
+    }
+
 
 }

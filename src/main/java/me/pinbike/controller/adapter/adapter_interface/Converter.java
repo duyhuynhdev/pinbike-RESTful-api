@@ -181,6 +181,7 @@ public class Converter {
         if (trip == null || partner == null)
             return null;
         TripReviewSortDetail tripReviewSortDetail = new TripReviewSortDetail();
+        tripReviewSortDetail.tripId = trip.tripId;
         tripReviewSortDetail.distance = trip.distance;
         tripReviewSortDetail.endLocation = new Location();
         tripReviewSortDetail.startLocation = new Location();
@@ -219,6 +220,7 @@ public class Converter {
         sum.epochTime = transaction.dateCreated;
         sum.transactionId = transaction.transactionId;
         sum.detail = transaction.description;
+        sum.tripId = transaction.tripId;
         switch (convertType) {
             case PROMO_CREDIT_TYPE:
                 switch (transaction.transactionType) {

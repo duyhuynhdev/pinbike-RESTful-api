@@ -152,6 +152,22 @@ public class PassengerTripService {
 
         return response;
     }
+    @POST
+    @Path("/GetTripDetailsAPI")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<GetTripDetailsAPI.Response> GetTripDetailsAPI(@Valid RequestWrapper<GetTripDetailsAPI.Request> request) throws IOException {
+        IPassengerTripAdapter adapter = new PassengerTripAdapter();
+
+        GetTripDetailsAPI.Response responseContent;
+        GetTripDetailsAPI.Request requestContent = request.requestContent;
+
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        responseContent = adapter.getTripDetail(requestContent);
+        ResponseWrapper<GetTripDetailsAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+
+        return response;
+    }
 
 }
 

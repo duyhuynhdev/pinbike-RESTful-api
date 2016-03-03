@@ -19,4 +19,6 @@ public interface IPassengerTripAdapter {
 
     GetTripHistoryAPI.Response getTripHistory(GetTripHistoryAPI.Request request);
 
+    GetTripDetailsAPI.Response getTripDetail(GetTripDetailsAPI.Request request);
+
 }

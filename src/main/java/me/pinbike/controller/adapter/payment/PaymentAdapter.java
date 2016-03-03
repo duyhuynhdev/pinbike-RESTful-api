@@ -36,12 +36,12 @@ public class PaymentAdapter {
             promotionDao.get(trip.promoCodeId);
             type = Const.PinBike.TransactionType.END_TRIP_WITH_PROMO;
         }catch (Exception ignored){
-
         }
+
         TTransaction transaction = new TTransaction();
         transaction.description = "đến "+trip.endLocation;
         transaction.pinbikeTax = new GetDefaultSettingAPI.Response().priceModel.getCommissionCut(trip.distance);
-        transaction.promoValue = trip.promoCodeValue > transaction.tripFare ? transaction.tripFare : transaction.promoValue;
+        transaction.promoValue = trip.promoCodeValue > trip.price ? trip.price : trip.promoCodeValue;
         transaction.transactionType = type;
         transaction.tripFare = trip.price;
         transaction.tripId = trip.tripId;
@@ -179,5 +179,7 @@ public class PaymentAdapter {
         response.driverIncome = paymentDao.getInComeInMonth(user.userId, new Date().getMonth(), new Date().getYear());
         return response;
     }
+
+
 
 }

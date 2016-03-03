@@ -29,7 +29,7 @@ public class UserDao extends DaoTemplate<TUser> {
             logger.info(String.format("{email:%s, password:%s}", email, password));
             AdapterResponseValue.ResponseValue<TUser> response = client.getUserBySocial(email, Const.PinBike.SocialType.EMAIL);
             validateResponse(response.getErrorCode(), getGenericName() + ".getUserByEmailPassword()", String.format("{email:%s, password:%s}", email, password));
-            if( Const.PinBike.UserType.isAdmin(response.getValue().userType)){
+            if( Const.PinBike.UserType.isDeActive(response.getValue().userType)){
                 throw new PinBikeException(AC.MessageCode.ACCOUNT_IS_DEACTIVATED, "Your account is deactivated");
             }
             if (response.getValue().password.equals(password))
@@ -49,7 +49,7 @@ public class UserDao extends DaoTemplate<TUser> {
             logger.info(String.format("{socialId:%s, socialType:%d}", socialId, socialType));
             AdapterResponseValue.ResponseValue<TUser> response = client.getUserBySocial(socialId, socialType);
             validateResponse(response.getErrorCode(), getGenericName() + ".getUserBySocial()", String.format("{socialId:%s, socialType:%d}", socialId, socialType));
-            if( Const.PinBike.UserType.isAdmin(response.getValue().userType)){
+            if( Const.PinBike.UserType.isDeActive(response.getValue().userType)){
                 throw new PinBikeException(AC.MessageCode.ACCOUNT_IS_DEACTIVATED, "Your account is deactive");
             }
             return response.getValue();

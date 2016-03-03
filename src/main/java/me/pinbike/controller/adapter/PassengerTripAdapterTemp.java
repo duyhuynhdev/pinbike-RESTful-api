@@ -96,4 +96,9 @@ public class PassengerTripAdapterTemp extends ModelDataFactory implements IPasse
     public GetTripHistoryAPI.Response getTripHistory(GetTripHistoryAPI.Request request) {
         return null;
     }
+
+    @Override
+    public GetTripDetailsAPI.Response getTripDetail(GetTripDetailsAPI.Request request) {
+        return null;
+    }
 }
