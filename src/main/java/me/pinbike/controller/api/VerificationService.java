@@ -98,7 +98,7 @@ public class VerificationService {
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<GetVerifiedContactOfflineAPI.Response> GetVerifiedContactOfflineAPI(@Valid RequestWrapper<GetVerifiedContactOfflineAPI.Request> request) throws IOException {
 
-        IVerificationAdapter adapter = new VerificationAdapterg();
+        IVerificationAdapter adapter = new VerificationAdapter();
 
         GetVerifiedContactOfflineAPI.Response responseContent;
         GetVerifiedContactOfflineAPI.Request requestContent = request.requestContent;
