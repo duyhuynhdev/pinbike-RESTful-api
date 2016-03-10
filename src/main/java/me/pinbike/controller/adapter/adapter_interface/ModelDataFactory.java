@@ -421,15 +421,15 @@ public class ModelDataFactory {
 
     public TConst getTConst() {
         TConst tconst = new TConst();
-        tconst.aroundDistance = 5 / 100;
-        tconst.coverImage = "http://www.sleekcover.com/covers/christmas-flakes-facebook-cover.jpg";
-        tconst.fanPage = "https://www.facebook.com/PinBikeMe";
-        tconst.notes = "";
-        tconst.price = SampleData.priceModelJSON;
-        tconst.qaLink = "https://www.facebook.com/PinBikeMe";
-        tconst.reasonDestroyTrip = "";
-        tconst.requestTimeout = 30;
-        tconst.website = "http://www.pinbike.me";
+//        tconst.aroundDistance = 5 / 100;
+//        tconst.coverImage = "http://www.sleekcover.com/covers/christmas-flakes-facebook-cover.jpg";
+//        tconst.fanPage = "https://www.facebook.com/PinBikeMe";
+//        tconst.notes = "";
+//        tconst.price = SampleData.priceModelJSON;
+//        tconst.qaLink = "https://www.facebook.com/PinBikeMe";
+//        tconst.reasonDestroyTrip = "";
+//        tconst.requestTimeout = 30;
+//        tconst.website = "http://www.pinbike.me";
         return tconst;
     }
 

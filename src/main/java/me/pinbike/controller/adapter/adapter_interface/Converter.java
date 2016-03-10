@@ -42,6 +42,7 @@ public class Converter {
         userDetail.userId = user.userId;
         userDetail.socialId = user.socialId;
         userDetail.socialType = user.socialType;
+        userDetail.isEnglishCommunicative = com.pinride.pinbike.config.Const.PinBike.UserType.isSpeaking_English(user.userType);
         userDetail.currentLocation = new LatLng();
         if (user.currentLocation != null) {
             userDetail.currentLocation.lat = user.currentLocation.lat;
@@ -211,6 +212,8 @@ public class Converter {
             tripReviewSortDetail.isDestroyedTrip = true;
         }
         tripReviewSortDetail.practicalPaid = trip.price - trip.promoCodeValue;
+        if (tripReviewSortDetail.practicalPaid < 0)
+            tripReviewSortDetail.practicalPaid = 0;
         return tripReviewSortDetail;
     }
 
@@ -236,9 +239,12 @@ public class Converter {
                 }
                 break;
             case INCOME_CREDIT_TYPE:
-                if (transaction.transactionType == Const.PinBike.TransactionType.END_TRIP
-                        || transaction.transactionType == Const.PinBike.TransactionType.END_TRIP_WITH_PROMO)
-                    sum.value = transaction.tripFare - transaction.pinbikeTax;
+                if (transaction.transactionType == Const.PinBike.TransactionType.END_TRIP)
+                    sum.value = transaction.tripFare;
+                else if (transaction.transactionType == Const.PinBike.TransactionType.END_TRIP_WITH_PROMO)
+                    sum.value = transaction.tripFare - transaction.getPromoValue();
+                if (sum.value < 0)
+                    sum.value = 0;
                 break;
             case DRIVER_CREDIT_TYPE:
                 switch (transaction.transactionType) {
@@ -246,10 +252,10 @@ public class Converter {
                         sum.value = -transaction.pinbikeTax;
                         break;
                     case Const.PinBike.TransactionType.END_TRIP_WITH_PROMO:
-                        sum.value = transaction.pinbikeTax;
+                        sum.value = -transaction.pinbikeTax;
                         break;
                     case Const.PinBike.TransactionType.SWITCH_CREDIT:
-                        sum.value = -transaction.pinbikeTax;
+                        sum.value = transaction.pinbikeTax;
                         break;
                     case Const.PinBike.TransactionType.TRANFER_CASH_CREDIT:
                         sum.value = transaction.pinbikeTax;

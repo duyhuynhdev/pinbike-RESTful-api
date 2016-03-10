@@ -10,9 +10,10 @@ import java.io.IOException;
 public class SMSManager {
     public void sendActivationCode(String phone, String code) {
         String sms_Content = "PinBike activation code : " + code;
-        ESMS esms = new ESMS(new String[]{phone}, sms_Content, ESMS.sendSMS, ESMS.type_fixed_phone_19001534_express, code);
+//        ESMS esms = new ESMS(new String[]{phone}, sms_Content, ESMS.sendSMS, ESMS.type_fixed_phone_19001534_express, code);
+        VietGuysSMS vietGuysSMS = new VietGuysSMS();
         try {
-            esms.send();
+            vietGuysSMS.send(phone, sms_Content);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {

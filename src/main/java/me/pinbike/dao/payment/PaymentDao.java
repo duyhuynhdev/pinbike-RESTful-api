@@ -1,9 +1,11 @@
 package me.pinbike.dao.payment;
 
+import com.pinride.pinbike.payment.config.Const;
 import com.pinride.pinbike.payment.config.adapter.AdapterResponseValue;
 import com.pinride.pinbike.payment.thrift.TTransaction;
 import com.pinride.pinbike.payment.thrift.TUserProfile;
 import com.pinride.pinbike.payment.thriftclient.TPaymentClientImpl;
+import me.pinbike.dao.ConstDao;
 import me.pinbike.dao.DaoTemplate;
 import me.pinbike.provider.exception.PinBikeException;
 import me.pinbike.sharedjava.model.constanst.AC;
@@ -26,6 +28,27 @@ public class PaymentDao {
         logger = LogUtil.getLogger(this.getClass());
     }
 
+    public TTransaction insertBeginningCredit(long userId) {
+        try {
+            TTransaction object = new TTransaction();
+            double credit = new ConstDao().getConst().beginningCredit;
+            object.description = "Bạn nhận được tín dụng trị giá " + credit + " khi lần đầu đăng nhập bằng tài khoản tài xế.";
+            object.pinbikeTax = credit;
+            object.transactionType = Const.PinBike.TransactionType.TRANFER_CASH_CREDIT;
+            object.userId = userId;
+            object.userIdModified = userId;
+            logger.info(object.toString());
+            AdapterResponseValue.ResponseValue<TTransaction> response = client.insert(object);
+            new DaoTemplate<>().validateResponse(response.getErrorCode(), this.getClass() + ".insertBeginningCredit()", object.toString());
+            return response.getValue();
+        } catch (PinBikeException ex) {
+            logger.error(ex.getMessage(), ex);
+            throw ex;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+            throw new PinBikeException(AC.MessageCode.SYSTEM_EXCEPTION, ex.getMessage());
+        }
+    }
 
     public TTransaction insert(TTransaction object) {
         try {

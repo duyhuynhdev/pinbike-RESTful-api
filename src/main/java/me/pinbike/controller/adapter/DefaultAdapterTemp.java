@@ -14,7 +14,8 @@ public class DefaultAdapterTemp extends ModelDataFactory implements IDefaultAdap
         response.aroundDistance = 0.5;
         response.coverImage = "http://imgt.taimienphi.vn/cf/Images/nmt/2013/12/bo-hinh-nen-nam-moi-2014-doc-dao-an-tuong-3.jpg";
         response.fanPage = "https://www.facebook.com/PinBikeMe";
-        response.qaLink = "https://www.facebook.com/PinBikeMe";
+        response.faqPassengerLink = "https://www.facebook.com/PinBikeMe";
+        response.faqDriverLink = "https://www.facebook.com/PinBikeMe";
         response.requestTimeout = 15;
         response.website = "http://www.pinbike.me";
         return response;

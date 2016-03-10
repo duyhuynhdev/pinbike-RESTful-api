@@ -110,4 +110,9 @@ public class UserAdapterTemp extends ModelDataFactory implements IUserAdapter {
     public GetLocationUpdatedAPI.Response getLocationUpdated(GetLocationUpdatedAPI.Request request) {
         return null;
     }
+
+    @Override
+    public UpdateUserEnglishCommunicateAPI.Response updateUserEnglishCommunicate(UpdateUserEnglishCommunicateAPI.Request request) {
+        return null;
+    }
 }

@@ -10,6 +10,7 @@ import me.pinbike.controller.adapter.adapter_interface.IUserAdapter;
 import me.pinbike.controller.adapter.adapter_interface.ModelDataFactory;
 import me.pinbike.dao.*;
 import me.pinbike.dao.non_db.ActivationDao;
+import me.pinbike.dao.payment.PaymentDao;
 import me.pinbike.geocoder.search.vietbando.ip.GeoFromIpAddress;
 import me.pinbike.polling.PollingChannel;
 import me.pinbike.polling.PollingChannelName;
@@ -120,6 +121,8 @@ public class UserAdapter implements IUserAdapter {
         UserDao userDao = new UserDao();
         BikeDao bikeDao = new BikeDao();
         OrganizationDao organizationDao = new OrganizationDao();
+        ActivationDao activationDao = new ActivationDao();
+        PaymentDao paymentDao = new PaymentDao();
         //check user exist
         try {
             userDao.getUserBySocial(request.email, Const.PinBike.SocialType.EMAIL);
@@ -143,12 +146,20 @@ public class UserAdapter implements IUserAdapter {
         user.phone = request.phone;
         user.password = request.password;
         user.intro = request.intro;
+        if (request.isEnglishCommunicative)
+            user.userType = Const.PinBike.UserType.addSpeaking_English(user.userType);
         if (request.socialId != null) {
             user.socialId = request.socialId;
             user.socialType = request.socialType;
         }
         if (new ActivationDao().checkPhoneNumberStatus(user.phone)) {
             user = userDao.insert(user);
+//            //insert beginning credit
+            try {
+                paymentDao.insertBeginningCredit(user.userId);
+            } catch (Exception ex) {
+            }
+//            //done
             List<TBike> bikes = null;
             List<TOrganization> organizations = null;
             if (user.bikeIds != null)
@@ -156,7 +167,7 @@ public class UserAdapter implements IUserAdapter {
             if (user.organizationIds != null)
                 organizations = organizationDao.getList(user.organizationIds);
             UserDetail userDetail = new Converter().convertUser(user, bikes, organizations, false);
-            new ActivationDao().removeActivationPhone(user.phone);
+            activationDao.removeActivationPhone(user.phone);
             return new RegisterAPI.Response(userDetail);
         }
         throw new PinBikeException(AC.MessageCode.PHONE_HAVE_NOT_ACTIVATED_YET, "Your phone have not activated yet! Please try over again !");
@@ -330,6 +341,18 @@ public class UserAdapter implements IUserAdapter {
             response = new GetLocationUpdatedAPI.Response(getLocationUpdate.get(partner.userId).location);
         }
         return response;
+    }
+
+    @Override
+    public UpdateUserEnglishCommunicateAPI.Response updateUserEnglishCommunicate(UpdateUserEnglishCommunicateAPI.Request request) {
+        UserDao userDao = new UserDao();
+        TUser user = userDao.get(request.userId);
+        if (request.isEnglishCommunicative)
+            user.userType = Const.PinBike.UserType.addSpeaking_English(user.userType);
+        else
+            user.userType = Const.PinBike.UserType.removeSpeaking_English(user.userType);
+        userDao.update(user);
+        return null;
     }
 
 

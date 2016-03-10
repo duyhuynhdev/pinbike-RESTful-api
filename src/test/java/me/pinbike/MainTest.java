@@ -1,13 +1,19 @@
 package me.pinbike;
 
-import me.pinbike.dao.UserDao;
+import com.pinride.pinbike.thrift.TConst;
+import me.pinbike.dao.ConstDao;
+import me.pinbike.sharedjava.model.base.GroupContact;
+import me.pinbike.sharedjava.model.base.OfflineContact;
 import org.fluttercode.datafactory.impl.DataFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by hpduy17 on 12/5/15.
@@ -26,7 +32,60 @@ public class MainTest {
 
     @Test
     public void TestSth() throws UnsupportedEncodingException {
-       System.out.print(new UserDao().getNumberOfRating(3778));
+        ConstDao.Const consts = new ConstDao.Const();
+        consts.beginningCredit = 500 * 1000;
+        consts.aroundDistance = 0.5;
+        consts.coverImage = "http://www.pinbike.me/api/pinbike2/images/cover.png";
+        consts.fanPage = "https://www.facebook.com/PinBikeMe/";
+        consts.faqDriverLink = "http://www.pinbike.me/faq/driver/";
+        consts.faqPassengerLink = "http://www.pinbike.me/faq/passenger/";
+        consts.requestTimeout = 20;
+        consts.website = "http://pinbike.me";
+        consts.groupContacts = getContacts();
+        TConst tConst = new TConst();
+        tConst.json = consts.toString();
+        tConst.userModified = 3765;
+        new ConstDao().update(tConst);
+        System.out.println(new ConstDao().getConst().toString());
+    }
+
+    public List<GroupContact> getContacts() {
+        String HCM = "Quận 1 (Tùng)\n" +
+                "0169 271 5716\n" +
+                "Quận 11 (Huy)\n" +
+                "0938879567\n" +
+                "Quận Phú Nhuận (Tài)\n" +
+                "0122 307 3719\n" +
+                "Quận Bình Thạnh (Quang)\n" +
+                "0164 433 3145\n" +
+                "Quận Thủ Đức (Ngân)\n" +
+                "0186 929 0902\n";
+        String DaLat = "Trung tâm (Ngân)\n" +
+                "0127 707 7717\n";
+        String NhaTrang = "Trung tâm (Minh)\n" +
+                "0167 960 761";
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Thành phố Hồ Chí Minh", HCM);
+        map.put("Đà Lạt", DaLat);
+        map.put("Nha Trang", NhaTrang);
+
+        List<GroupContact> groupContacts = new ArrayList<>();
+        for (String city : map.keySet()) {
+            GroupContact gc = new GroupContact();
+            gc.name = city;
+            gc.contacts = new ArrayList<>();
+            String[] contacts = map.get(city).split("\\n");
+            for (int i = 0; i < contacts.length; i += 2) {
+                OfflineContact contact = new OfflineContact();
+                contact.name = contacts[i];
+                contact.phone = contacts[i+1];
+                gc.contacts.add(contact);
+            }
+            groupContacts.add(gc);
+        }
+//        GetVerifiedContactOfflineAPI.Response response = new GetVerifiedContactOfflineAPI.Response();
+//        response.groupContacts = groupContacts;
+        return groupContacts;
     }
 
     @Test

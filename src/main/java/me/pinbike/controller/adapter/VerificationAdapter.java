@@ -4,6 +4,7 @@ import com.pinride.pinbike.config.Const;
 import com.pinride.pinbike.thrift.TUser;
 import com.pinride.pinbike.thrift.TVerification;
 import me.pinbike.controller.adapter.adapter_interface.IVerificationAdapter;
+import me.pinbike.dao.ConstDao;
 import me.pinbike.dao.UserDao;
 import me.pinbike.dao.VerificationDao;
 import me.pinbike.sharedjava.model.*;
@@ -83,8 +84,10 @@ public class VerificationAdapter implements IVerificationAdapter {
 
     @Override
     public GetVerifiedContactOfflineAPI.Response getVerifiedContactOfflineAPI(GetVerifiedContactOfflineAPI.Request request) {
-
-        return null;
+        ConstDao constDao = new ConstDao();
+        GetVerifiedContactOfflineAPI.Response response = new GetVerifiedContactOfflineAPI.Response();
+        response.groupContacts = constDao.getConst().groupContacts;
+        return response;
     }
 
     @Override

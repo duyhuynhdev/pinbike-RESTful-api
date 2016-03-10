@@ -75,15 +75,16 @@ public class DateTimeUtils {
     public static LinkedHashMap<Integer, List<Integer>> getYearAndMonthBetween2Day(long startDay, long endDay) {
         LinkedHashMap<Integer, List<Integer>> result = new LinkedHashMap<>();
         for (long i = startDay; i <= endDay; i = i + SECONDS_PER_DAY) {
-            Date date = new Date(i * 1000);
+            Date date = new Date(i);
             int year = com.pinride.pinbike.framework.util.DateTimeUtils.getYear(date);
             List<Integer> months = result.get(year);
             if (months == null) {
                 months = new ArrayList<>();
                 result.put(year, months);
             }
-            if (!months.contains(date.getMonth()))
-                months.add(com.pinride.pinbike.framework.util.DateTimeUtils.getMonth(date));
+            int month = com.pinride.pinbike.framework.util.DateTimeUtils.getMonth(date);
+            if (!months.contains(month))
+                months.add(month);
         }
         return result;
     }

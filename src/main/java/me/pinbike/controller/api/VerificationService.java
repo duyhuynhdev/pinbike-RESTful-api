@@ -1,8 +1,7 @@
 package me.pinbike.controller.api;
 
-import me.pinbike.controller.adapter.adapter_interface.IVerificationAdapter;
 import me.pinbike.controller.adapter.VerificationAdapter;
-import me.pinbike.controller.adapter.VerificationAdapterTemp;
+import me.pinbike.controller.adapter.adapter_interface.IVerificationAdapter;
 import me.pinbike.sharedjava.model.*;
 import me.pinbike.sharedjava.model.base.RequestWrapper;
 import me.pinbike.util.LogUtil;
@@ -99,7 +98,7 @@ public class VerificationService {
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
     public ResponseWrapper<GetVerifiedContactOfflineAPI.Response> GetVerifiedContactOfflineAPI(@Valid RequestWrapper<GetVerifiedContactOfflineAPI.Request> request) throws IOException {
 
-        IVerificationAdapter adapter = new VerificationAdapterTemp();
+        IVerificationAdapter adapter = new VerificationAdapterg();
 
         GetVerifiedContactOfflineAPI.Response responseContent;
         GetVerifiedContactOfflineAPI.Request requestContent = request.requestContent;

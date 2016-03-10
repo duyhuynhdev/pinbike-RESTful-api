@@ -32,14 +32,14 @@ public class PaymentAdapter {
         PaymentDao paymentDao = new PaymentDao();
         PromotionDao promotionDao = new PromotionDao();
         int type = Const.PinBike.TransactionType.END_TRIP;
-        try{
+        try {
             promotionDao.get(trip.promoCodeId);
             type = Const.PinBike.TransactionType.END_TRIP_WITH_PROMO;
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
         }
 
         TTransaction transaction = new TTransaction();
-        transaction.description = "đến "+trip.endLocation;
+        transaction.description = "đến " + trip.endLocation;
         transaction.pinbikeTax = new GetDefaultSettingAPI.Response().priceModel.getCommissionCut(trip.distance);
         transaction.promoValue = trip.promoCodeValue > trip.price ? trip.price : trip.promoCodeValue;
         transaction.transactionType = type;
@@ -49,7 +49,7 @@ public class PaymentAdapter {
         transaction.userIdModified = trip.driverId;
         transaction = paymentDao.insert(transaction);
         // update user credit
-        paymentDao.updateCreditForUser(trip.driverId, transaction.transactionId, trip.driverId);
+//        paymentDao.updateCreditForUser(trip.driverId, transaction.transactionId, trip.driverId);
         TUserProfile userProfile = paymentDao.getUserProfile(trip.driverId);
         EndTripAPI.Response response = new EndTripAPI.Response();
         response.driverCredit = userProfile.userCredit;
@@ -63,12 +63,19 @@ public class PaymentAdapter {
         BikeDao bikeDao = new BikeDao();
         PaymentDao paymentDao = new PaymentDao();
         TUser user = userDao.get(request.userId);
-        TBike bike = bikeDao.get(user.currentBikeId);
+        TBike bike = null;
+        try {
+            if (user.currentBikeId != 0)
+                bike = bikeDao.get(user.currentBikeId);
+        } catch (Exception ex) {
+        }
         TUserProfile userProfile = paymentDao.getUserProfile(request.userId);
         GetDriverAccountDetailAPI.Response response = new GetDriverAccountDetailAPI.Response();
         response.driverCredit = userProfile.userCredit;
         response.promoCredit = userProfile.promoCredit;
-        response.driverIncome = paymentDao.getInComeInMonth(request.userId, new Date().getMonth(), new Date().getYear());
+        int year = com.pinride.pinbike.framework.util.DateTimeUtils.getYear(new Date());
+        int month = com.pinride.pinbike.framework.util.DateTimeUtils.getMonth(new Date());
+        response.driverIncome = paymentDao.getInComeInMonth(request.userId, month, year);
         response.currentBike = new Converter().convertBike(bike);
         return response;
     }
@@ -171,7 +178,7 @@ public class PaymentAdapter {
         transaction.userIdModified = user.userId;
         transaction = paymentDao.insert(transaction);
         // update user credit
-        paymentDao.updateCreditForUser(user.userId, transaction.transactionId, user.userId);
+//        paymentDao.updateCreditForUser(user.userId, transaction.transactionId, user.userId);
         userProfile = paymentDao.getUserProfile(user.userId);
         TransferPromoCreditToDriverCreditAPI.Response response = new TransferPromoCreditToDriverCreditAPI.Response();
         response.driverCredit = userProfile.userCredit;
@@ -179,7 +186,6 @@ public class PaymentAdapter {
         response.driverIncome = paymentDao.getInComeInMonth(user.userId, new Date().getMonth(), new Date().getYear());
         return response;
     }
-
 
 
 }

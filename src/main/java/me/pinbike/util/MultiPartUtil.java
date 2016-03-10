@@ -33,7 +33,7 @@ public class MultiPartUtil {
                 //constructs upload file path
                 fileName = path + File.separator + fileName;
 
-                writeFile(bytes, fileName);
+                fileName = writeFile(bytes, fileName);
                 fileNames += fileName;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -86,7 +86,7 @@ public class MultiPartUtil {
 
     }
 
-    private void writeFile(byte[] content, String filename) throws IOException {
+    private String writeFile(byte[] content, String filename) throws IOException {
         String fn = filename;
         File file = new File(fn);
         int idx = 0;
@@ -102,5 +102,6 @@ public class MultiPartUtil {
         fop.write(content);
         fop.flush();
         fop.close();
+        return fn;
     }
 }

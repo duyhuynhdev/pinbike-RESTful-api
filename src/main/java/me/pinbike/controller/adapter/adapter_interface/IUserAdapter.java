@@ -40,4 +40,6 @@ public interface IUserAdapter {
     UpdateUserAvatarAPI.Response updateUserAvatarAPI(UpdateUserAvatarAPI.Request request);
 
     GetLocationUpdatedAPI.Response getLocationUpdated(GetLocationUpdatedAPI.Request request);
+
+    UpdateUserEnglishCommunicateAPI.Response updateUserEnglishCommunicate(UpdateUserEnglishCommunicateAPI.Request request);
 }

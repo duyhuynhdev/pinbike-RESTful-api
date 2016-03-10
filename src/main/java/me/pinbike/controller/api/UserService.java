@@ -326,6 +326,22 @@ public class UserService {
         return response;
     }
 
+    @POST
+    @Path("/UpdateUserEnglishCommunicateAPI")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<UpdateUserEnglishCommunicateAPI.Response> UpdateUserEnglishCommunicateAPI(@Valid RequestWrapper<UpdateUserEnglishCommunicateAPI.Request> request) throws IOException {
+        IUserAdapter adapter = new UserAdapter();
+
+        UpdateUserEnglishCommunicateAPI.Response responseContent;
+        UpdateUserEnglishCommunicateAPI.Request requestContent = request.requestContent;
+
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        responseContent = adapter.updateUserEnglishCommunicate(requestContent);
+        ResponseWrapper<UpdateUserEnglishCommunicateAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+        return response;
+    }
+
 }
 
 
