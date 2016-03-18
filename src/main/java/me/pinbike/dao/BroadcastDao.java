@@ -61,11 +61,16 @@ public class BroadcastDao extends DaoTemplate<TBroadcast> {
         try {
             logger.info(String.format("{user:%s \n deviceId:%s}", user.toString(), deviceId));
             // get current broadcast
-            TBroadcast broadcast = get(user.getCurrentBroadcastId());
-            if (!broadcast.deviceId.equals(deviceId)) {
-                throw new PinBikeException(AC.MessageCode.ACCOUNT_HAS_BEEN_USING, "Your account has been used on other device!");
+            try {
+                TBroadcast broadcast = get(user.getCurrentBroadcastId());
+                if (broadcast.deviceId!= null && !broadcast.deviceId.equals(deviceId)) {
+                    throw new PinBikeException(AC.MessageCode.ACCOUNT_HAS_BEEN_USING, "Your account has been used on other device! Please logout before login!");
+                }
+                delete(broadcast.broadcastId);
+            } catch (PinBikeException ex) {
+                if (ex.getMessageCode() != AC.MessageCode.NOT_EXIST)
+                    throw ex;
             }
-            delete(broadcast.broadcastId);
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);
             throw ex;

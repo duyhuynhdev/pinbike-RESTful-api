@@ -58,8 +58,25 @@ public class ConstDao {
         }
     }
 
+    public TConst insert(TConst tConst) {
+        try {
+            logger.info("{}");
+            AdapterResponseValue.ResponseValue<TConst> response = client.insert(tConst);
+            new DaoTemplate().validateResponse(response.getErrorCode(), "ConstDao" + ".insert()", "{}");
+            return response.getValue();
+        } catch (PinBikeException ex) {
+            logger.error(ex.getMessage(), ex);
+            throw ex;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+            throw new PinBikeException(AC.MessageCode.SYSTEM_EXCEPTION, ex.getMessage());
+        }
+    }
+
     public static class Const extends GetDefaultSettingAPI.Response {
         public double beginningCredit;
+        public String termsLink;
+        public String privacyLink;
         public List<GroupContact> groupContacts = new ArrayList<>();
         @Override
         public String toString() {

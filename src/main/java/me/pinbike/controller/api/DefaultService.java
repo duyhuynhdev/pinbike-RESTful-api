@@ -7,6 +7,7 @@ package me.pinbike.controller.api;
 import me.pinbike.controller.adapter.DefaultAdapter;
 import me.pinbike.controller.adapter.adapter_interface.IDefaultAdapter;
 import me.pinbike.sharedjava.model.GetDefaultSettingAPI;
+import me.pinbike.sharedjava.model.GetTermAndPrivacyAPI;
 import me.pinbike.sharedjava.model.base.RequestWrapper;
 import me.pinbike.util.LogUtil;
 import me.pinbike.util.PinBikeConstant;
@@ -41,6 +42,24 @@ public class DefaultService {
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.getDefaultSetting(requestContent);
         ResponseWrapper<GetDefaultSettingAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+
+        return response;
+    }
+
+    @POST
+    @Path("/GetTermAndPrivacyAPI")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<GetTermAndPrivacyAPI.Response> GetTermAndPrivacyAPI(@Valid RequestWrapper<GetTermAndPrivacyAPI.Request> request) throws IOException {
+
+        IDefaultAdapter adapter = new DefaultAdapter();
+
+        GetTermAndPrivacyAPI.Response responseContent;
+        GetTermAndPrivacyAPI.Request requestContent = request.requestContent;
+
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        responseContent = adapter.getTermAndPrivacyAPI(requestContent);
+        ResponseWrapper<GetTermAndPrivacyAPI.Response> response = new ResponseWrapper<>(responseContent);
         logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
         return response;

@@ -108,6 +108,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
     public AcceptPassengerRequestAPI.Response acceptPassengerRequest(AcceptPassengerRequestAPI.Request request) {
         TripDao tripDao = new TripDao();
         UserDao userDao = new UserDao();
+        BikeDao bikeDao = new BikeDao();
         TTrip trip = tripDao.get(request.tripId);
         TUser driver = userDao.get(request.driverId);
         PollingDB db = PollingDB.getInstance();
@@ -136,7 +137,13 @@ public class DriverTripAdapter implements IDriverTripAdapter {
             //update trip status
             trip.driverId = driver.userId;
             trip.status = AC.UpdatedStatus.ON_ROAD;
+            try {
+                TBike bike = bikeDao.get(driver.currentBikeId);
+                trip.notes = bike.model + " " + bike.licensePlate + " " + bike.description;
+            } catch (Exception ignored) {
+            }
             tripDao.update(trip);
+
         }
         return response;
     }
@@ -240,6 +247,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         TTrip trip = tripDao.get(request.tripId);
         TUser driver = userDao.get(request.driverId);
         TUser passenger = userDao.get(trip.passengerId);
+
         PollingDB db = PollingDB.getInstance();
         //change
         PollingChannel<PollingDB.UserUpdated> getUserUpdated = db.getChannel(PollingChannelName.GET_USER_UPDATED);
@@ -274,21 +282,22 @@ public class DriverTripAdapter implements IDriverTripAdapter {
         TripDao tripDao = new TripDao();
         UserDao userDao = new UserDao();
         RatingDao ratingDao = new RatingDao();
-        TUser user = userDao.get(request.userId);
+        TUser partner = userDao.get(request.userId);
         TTrip trip = tripDao.get(request.tripId);
-        long partnerId = trip.driverId == user.userId ? trip.passengerId : trip.driverId;
+        long ratingUserId = trip.driverId == partner.userId ? trip.passengerId : trip.driverId;
+        TUser ratingUser = userDao.get(ratingUserId);
         TRating rating = new TRating();
-        rating.userId = partnerId;
-        rating.ratingUserId = user.userId;
+        rating.userId = partner.userId;
+        rating.ratingUserId = ratingUser.userId;
         rating.tripId = trip.tripId;
         rating.score = request.score;
         rating.comment = request.comment;
         rating.dateCreated = DateTimeUtils.now();
         ratingDao.insert(rating);
         //update user status
-        user = userDao.get(request.userId);
-        user.status = AC.UpdatedStatus.AVAILABLE;
-        userDao.update(user);
+        ratingUser = userDao.get(ratingUserId);
+        ratingUser.status = AC.UpdatedStatus.AVAILABLE;
+        userDao.update(ratingUser);
         return null;
     }
 }

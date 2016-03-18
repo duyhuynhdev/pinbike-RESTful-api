@@ -102,7 +102,7 @@ public class UserAdapterTemp extends ModelDataFactory implements IUserAdapter {
     }
 
     @Override
-    public UpdateUserAvatarAPI.Response updateUserAvatarAPI(UpdateUserAvatarAPI.Request request) {
+    public UpdateUserAvatarAPI.Response updateUserAvatar(UpdateUserAvatarAPI.Request request) {
         return null;
     }
 
@@ -113,6 +113,11 @@ public class UserAdapterTemp extends ModelDataFactory implements IUserAdapter {
 
     @Override
     public UpdateUserEnglishCommunicateAPI.Response updateUserEnglishCommunicate(UpdateUserEnglishCommunicateAPI.Request request) {
+        return null;
+    }
+
+    @Override
+    public UpdateUserSocialAPI.Response updateUserSocial(UpdateUserSocialAPI.Request request) {
         return null;
     }
 }

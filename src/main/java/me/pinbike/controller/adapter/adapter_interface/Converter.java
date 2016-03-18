@@ -4,6 +4,7 @@ import com.pinride.pinbike.payment.config.Const;
 import com.pinride.pinbike.payment.thrift.TTransaction;
 import com.pinride.pinbike.thrift.*;
 import me.pinbike.dao.RatingDao;
+import me.pinbike.dao.TripDao;
 import me.pinbike.dao.UserDao;
 import me.pinbike.sharedjava.model.base.*;
 import me.pinbike.sharedjava.model.constanst.AC;
@@ -66,9 +67,9 @@ public class Converter {
 
         try {
             if (isDriver)
-                userDetail.numberOfTravelledTrip = user.getTripDriverIdsSize();
+                userDetail.numberOfTravelledTrip = new TripDao().getNumberTravelledDriverTrip(user.userId);
             else
-                userDetail.numberOfTravelledTrip = user.getTripPassengerIdsSize();
+                userDetail.numberOfTravelledTrip = new TripDao().getNumberTravelledPassengerTrip(user.userId);
         } catch (Exception ignored) {
         }
         userDetail.rating = rating;
@@ -80,7 +81,7 @@ public class Converter {
                 Collections.sort(ratings, new Comparator<TRating>() {
                     @Override
                     public int compare(TRating o1, TRating o2) {
-                        if (o1.dateCreated < o2.dateCreated)
+                        if (o1.dateCreated > o2.dateCreated)
                             return -1;
                         return 1;
                     }
@@ -104,13 +105,13 @@ public class Converter {
         if (rating == null)
             return null;
         try {
-            TUser user = new UserDao().get(rating.userId);
+            TUser user = new UserDao().get(rating.ratingUserId);
             UserRatingDetail userRatingDetail = new UserRatingDetail();
             userRatingDetail.comment = rating.comment;
             userRatingDetail.ratingId = rating.ratingId;
             userRatingDetail.dateCreated = rating.dateCreated;
             userRatingDetail.score = rating.score;
-            userRatingDetail.userId = rating.userId;
+            userRatingDetail.userId = user.userId;
             userRatingDetail.avatar = Path.getInstance().getUrlFromPath(user.avatar);
             userRatingDetail.givenName = user.name;
             userRatingDetail.middleName = user.middleName;

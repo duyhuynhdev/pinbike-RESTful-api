@@ -121,12 +121,27 @@ public class UserAdapter implements IUserAdapter {
         UserDao userDao = new UserDao();
         BikeDao bikeDao = new BikeDao();
         OrganizationDao organizationDao = new OrganizationDao();
+        BroadcastDao broadcastDao = new BroadcastDao();
         ActivationDao activationDao = new ActivationDao();
         PaymentDao paymentDao = new PaymentDao();
         //check user exist
         try {
             userDao.getUserBySocial(request.email, Const.PinBike.SocialType.EMAIL);
-            throw new PinBikeException(AC.MessageCode.ELEMENT_USED, "email has been used");
+            throw new PinBikeException(AC.MessageCode.EMAIL_HAS_BEEN_USING, "email has been used");
+        } catch (PinBikeException ex) {
+            if (ex.getMessageCode() != AC.MessageCode.NOT_EXIST)
+                throw ex;
+        }
+        try {
+            userDao.getUserBySocial(request.phone, Const.PinBike.SocialType.PHONENUMBER);
+            throw new PinBikeException(AC.MessageCode.PHONE_HAS_BEEN_USING, "phone has been used");
+        } catch (PinBikeException ex) {
+            if (ex.getMessageCode() != AC.MessageCode.NOT_EXIST)
+                throw ex;
+        }
+        try {
+            userDao.getUserBySocial(request.socialId, request.socialType);
+            throw new PinBikeException(AC.MessageCode.FACEBOOK_HAS_BEEN_USING, "facebook has been used");
         } catch (PinBikeException ex) {
             if (ex.getMessageCode() != AC.MessageCode.NOT_EXIST)
                 throw ex;
@@ -154,12 +169,15 @@ public class UserAdapter implements IUserAdapter {
         }
         if (new ActivationDao().checkPhoneNumberStatus(user.phone)) {
             user = userDao.insert(user);
-//            //insert beginning credit
-            try {
-                paymentDao.insertBeginningCredit(user.userId);
-            } catch (Exception ex) {
-            }
-//            //done
+            //insert beginning credit
+//            try {
+//                paymentDao.insertBeginningCredit(user.userId);
+//            } catch (Exception ex) {
+//            }
+            //done
+            //update current broadcast
+            broadcastDao.updateCurrentBroadcast(user, request.deviceId, request.regId, request.os);
+            //done
             List<TBike> bikes = null;
             List<TOrganization> organizations = null;
             if (user.bikeIds != null)
@@ -231,6 +249,7 @@ public class UserAdapter implements IUserAdapter {
         UserDao userDao = new UserDao();
         TUser user = userDao.get(request.userId);
         broadcastDao.removeCurrentBroadcast(user, request.deviceId);
+        userDao.updateAvailableDriver(user.userId,false);
         return null;
     }
 
@@ -298,7 +317,7 @@ public class UserAdapter implements IUserAdapter {
     }
 
     @Override
-    public UpdateUserAvatarAPI.Response updateUserAvatarAPI(UpdateUserAvatarAPI.Request request) {
+    public UpdateUserAvatarAPI.Response updateUserAvatar(UpdateUserAvatarAPI.Request request) {
         UserDao userDao = new UserDao();
         BikeDao bikeDao = new BikeDao();
         OrganizationDao organizationDao = new OrganizationDao();
@@ -353,6 +372,24 @@ public class UserAdapter implements IUserAdapter {
             user.userType = Const.PinBike.UserType.removeSpeaking_English(user.userType);
         userDao.update(user);
         return null;
+    }
+
+    @Override
+    public UpdateUserSocialAPI.Response updateUserSocial(UpdateUserSocialAPI.Request request) {
+        UserDao userDao = new UserDao();
+        BikeDao bikeDao = new BikeDao();
+        OrganizationDao organizationDao = new OrganizationDao();
+        TUser user = userDao.get(request.userId);
+        userDao.updateSocialForUser(user.userId, request.socialId, request.socialType);
+        user = userDao.get(request.userId);
+        List<TBike> bikes = null;
+        List<TOrganization> organizations = null;
+        if (user.bikeIds != null)
+            bikes = bikeDao.getList(user.bikeIds);
+        if (user.organizationIds != null)
+            organizations = organizationDao.getList(user.organizationIds);
+        UserDetail userDetail = new Converter().convertUser(user, bikes, organizations, false);
+        return new UpdateUserSocialAPI.Response(userDetail);
     }
 
 

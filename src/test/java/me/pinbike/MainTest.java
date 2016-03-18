@@ -1,7 +1,10 @@
 package me.pinbike;
 
+import com.pinride.pinbike.config.Const;
 import com.pinride.pinbike.thrift.TConst;
+import com.pinride.pinbike.thrift.TUser;
 import me.pinbike.dao.ConstDao;
+import me.pinbike.dao.UserDao;
 import me.pinbike.sharedjava.model.base.GroupContact;
 import me.pinbike.sharedjava.model.base.OfflineContact;
 import org.fluttercode.datafactory.impl.DataFactory;
@@ -40,13 +43,24 @@ public class MainTest {
         consts.faqDriverLink = "http://www.pinbike.me/faq/driver/";
         consts.faqPassengerLink = "http://www.pinbike.me/faq/passenger/";
         consts.requestTimeout = 20;
-        consts.website = "http://pinbike.me";
+        consts.website = "http://pinbike.me/?utm_source=in-app-about&utm_medium=in-app&utm_term=in-app&utm_content=in-app&utm_campaign=in-app";
+        consts.termsLink = "http://pinbike.me/terms/";
+        consts.privacyLink = "http://pinbike.me/privacy/";
         consts.groupContacts = getContacts();
         TConst tConst = new TConst();
         tConst.json = consts.toString();
-        tConst.userModified = 3765;
+        tConst.userModified = 3723;
         new ConstDao().update(tConst);
         System.out.println(new ConstDao().getConst().toString());
+    }
+
+    @Test
+    public void verifyNormally() throws UnsupportedEncodingException {
+        UserDao userDao = new UserDao();
+        TUser user = userDao.getUserBySocial("huanpt8006@gmail.com", Const.PinBike.SocialType.EMAIL);
+        user.verifiedStatus = Const.PinBike.VerifiedStatus.VERIFIED;
+        System.out.println(user.toString());
+
     }
 
     public List<GroupContact> getContacts() {
@@ -63,7 +77,7 @@ public class MainTest {
         String DaLat = "Trung tâm (Ngân)\n" +
                 "0127 707 7717\n";
         String NhaTrang = "Trung tâm (Minh)\n" +
-                "0167 960 761";
+                "0167 960 7612";
         HashMap<String, String> map = new HashMap<>();
         map.put("Thành phố Hồ Chí Minh", HCM);
         map.put("Đà Lạt", DaLat);
@@ -78,7 +92,7 @@ public class MainTest {
             for (int i = 0; i < contacts.length; i += 2) {
                 OfflineContact contact = new OfflineContact();
                 contact.name = contacts[i];
-                contact.phone = contacts[i+1];
+                contact.phone = contacts[i + 1];
                 gc.contacts.add(contact);
             }
             groupContacts.add(gc);

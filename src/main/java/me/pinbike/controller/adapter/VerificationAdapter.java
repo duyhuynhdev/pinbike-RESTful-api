@@ -8,6 +8,7 @@ import me.pinbike.dao.ConstDao;
 import me.pinbike.dao.UserDao;
 import me.pinbike.dao.VerificationDao;
 import me.pinbike.sharedjava.model.*;
+import me.pinbike.util.PinBikeConstant;
 import me.pinbike.util.SendMailUtil;
 import me.pinbike.util.common.Path;
 
@@ -60,7 +61,7 @@ public class VerificationAdapter implements IVerificationAdapter {
                         "<p>Contact Info:<br>" +
                         " Skype: %s<br>" +
                         " Viber: %s<br>" +
-                        " Facebook: <a href = \"www.facebook.com/%s\"></a>facebook link<br> " +
+                        " Facebook: <a href = \"www.facebook.com/%s\">facebook link</a><br> " +
                         " Hangout: %s<br>" +
                         " </p>" +
                         "<p>To change verified status of user to VERIFIED click <a href=\"%s\">here</a></p></html>",
@@ -70,7 +71,9 @@ public class VerificationAdapter implements IVerificationAdapter {
                 verification.facebookAccount,
                 verification.hangoutAccount,
                 Path.getInstance().getServerAddress() + "/ConfirmVerifiedUserViaEmail?userId=" + user.userId);
-        new SendMailUtil("hpduy17@gmail.com", user.name + " have sent request to you", content);
+        for(String mail : PinBikeConstant.CustomerServiceMail.feedback_mails) {
+            new SendMailUtil(mail, user.name + " have sent request to you", content);
+        }
         return null;
     }
 

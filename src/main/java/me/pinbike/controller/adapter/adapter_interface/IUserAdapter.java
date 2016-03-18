@@ -37,9 +37,12 @@ public interface IUserAdapter {
 
     UpdateUserPhoneNumberAPI.Response updateUserPhoneNumber(UpdateUserPhoneNumberAPI.Request request);
 
-    UpdateUserAvatarAPI.Response updateUserAvatarAPI(UpdateUserAvatarAPI.Request request);
+    UpdateUserAvatarAPI.Response updateUserAvatar(UpdateUserAvatarAPI.Request request);
 
     GetLocationUpdatedAPI.Response getLocationUpdated(GetLocationUpdatedAPI.Request request);
 
     UpdateUserEnglishCommunicateAPI.Response updateUserEnglishCommunicate(UpdateUserEnglishCommunicateAPI.Request request);
+
+    UpdateUserSocialAPI.Response updateUserSocial(UpdateUserSocialAPI.Request request);
+
 }

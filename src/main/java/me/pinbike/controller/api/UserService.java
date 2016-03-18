@@ -286,8 +286,24 @@ public class UserService {
         UpdateUserAvatarAPI.Request requestContent = request.requestContent;
 
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
-        responseContent = adapter.updateUserAvatarAPI(requestContent);
+        responseContent = adapter.updateUserAvatar(requestContent);
         ResponseWrapper<UpdateUserAvatarAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+        return response;
+    }
+
+    @POST
+    @Path("/UpdateUserSocialAPI")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<UpdateUserSocialAPI.Response> UpdateUserSocialAPI(@Valid RequestWrapper<UpdateUserSocialAPI.Request> request, @Context HttpServletRequest req) throws IOException {
+        IUserAdapter adapter = new UserAdapter();
+
+        UpdateUserSocialAPI.Response responseContent;
+        UpdateUserSocialAPI.Request requestContent = request.requestContent;
+
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        responseContent = adapter.updateUserSocial(requestContent);
+        ResponseWrapper<UpdateUserSocialAPI.Response> response = new ResponseWrapper<>(responseContent);
         logger.info(response.getClass().getSimpleName() + ":" + response.toString());
         return response;
     }

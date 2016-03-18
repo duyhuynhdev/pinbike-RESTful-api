@@ -25,7 +25,7 @@ public class RatingDao extends DaoTemplate<TRating> {
         try {
             logger.info(String.format("{userId: %d}", userId));
             AdapterResponseValue.ResponseListValue<TRating> response = client.getRatingsByUser(userId);
-            validateResponse(response.getErrorCode(), getGenericName() + ".getUserCurrentRating()", String.format("{userId: %d}", userId));
+            validateResponse(response.getErrorCode(), getGenericName() + ".getRatingsByUser()", String.format("{userId: %d}", userId));
             return response.getList();
         } catch (PinBikeException ex) {
             logger.error(ex.getMessage(), ex);

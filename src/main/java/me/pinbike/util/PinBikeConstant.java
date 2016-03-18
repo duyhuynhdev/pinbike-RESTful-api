@@ -14,9 +14,11 @@ public class PinBikeConstant {
     public static final String APPLICATION_JSON_UTF8 = "application/json;charset=UTF-8";
 
     public static class BackEndConfig {
-        public static final String Host = "pinride.ddns.net";
+//        public static final String Host = "pinride.ddns.net";
+        public static final String Host = "103.20.148.111";
         public static final int Port = 9000;
-        public static final String Host_Payment = "pinride.ddns.net";
+//        public static final String Host_Payment = "pinride.ddns.net";
+        public static final String Host_Payment = "103.20.148.111";
         public static final int Port_Payment = 9002;
     }
 
@@ -25,7 +27,7 @@ public class PinBikeConstant {
     }
 
     public static class CustomerServiceMail {
-        public static final String[] feedback_mails = {"service@pinride.me", "tungstuff@pinride.me", "hpduy17@gmail.com"};
+        public static final String[] feedback_mails = {"service@pinride.me", "tungstuff@pinride.me", "duyhuynh@pinride.me"};
     }
 
     public static class DeveloperMail {
@@ -367,7 +369,7 @@ public class PinBikeConstant {
             if (feedbackImages != null && !feedbackImages.isEmpty()) {
                 for (String url : feedbackImages) {
                     html += "                                                                     <tr id=\"yui_3_16_0_1_1453518493797_3149\">\n" +
-                            "                                                                        <td style=\"font-size:11px;font-family:LucidaGrande, tahoma, verdana, arial, sans-serif;padding-top:5px;padding-bottom:5px;\" id=\"yui_3_16_0_1_1453518493797_3148\"><img width=\"360\" height=\"640\" src=\"" + Path.getInstance().getUrlFromPath(url) + "\" style=\"border:0;\"></td>" +
+                            "                                                                        <td style=\"font-size:11px;font-family:LucidaGrande, tahoma, verdana, arial, sans-serif;padding-top:5px;padding-bottom:5px;\" id=\"yui_3_16_0_1_1453518493797_3148\"><img src=\"" + Path.getInstance().getUrlFromPath(url) + "\" style=\"border:0;\"></td>" +
                             "                                                                     </tr>\n";
                 }
             }

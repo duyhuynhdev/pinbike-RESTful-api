@@ -70,7 +70,8 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
             List<TPromoCode> promoCodes = promotionDao.getCurrentActivePromoCode();
             if (promoCodes != null) {
                 for (TPromoCode pc : promoCodes) {
-                    promoStrings.add(pc.description);
+                    if (pc.description != null && pc.isDisplayed)
+                        promoStrings.add(pc.description);
                 }
             }
         } catch (Exception ignored) {

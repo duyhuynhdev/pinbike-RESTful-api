@@ -3,6 +3,7 @@ package me.pinbike.controller.adapter;
 import me.pinbike.controller.adapter.adapter_interface.IDefaultAdapter;
 import me.pinbike.controller.adapter.adapter_interface.ModelDataFactory;
 import me.pinbike.sharedjava.model.GetDefaultSettingAPI;
+import me.pinbike.sharedjava.model.GetTermAndPrivacyAPI;
 
 /**
  * Created by hpduy17 on 12/4/15.
@@ -19,5 +20,10 @@ public class DefaultAdapterTemp extends ModelDataFactory implements IDefaultAdap
         response.requestTimeout = 15;
         response.website = "http://www.pinbike.me";
         return response;
+    }
+
+    @Override
+    public GetTermAndPrivacyAPI.Response getTermAndPrivacyAPI(GetTermAndPrivacyAPI.Request request) {
+        return null;
     }
 }

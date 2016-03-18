@@ -151,7 +151,7 @@ public class UserDaoTest {
         UserDetail userDetail = factory.getUserDetail();
         TUser user = new TUser();
         user.avatar = userDetail.avatar;
-        user.socialId = userDetail.email;
+        user.email = userDetail.email;
         user.socialType = Const.PinBike.SocialType.EMAIL;
         user.intro = userDetail.intro;
         user.name = userDetail.givenName;
@@ -170,6 +170,5 @@ public class UserDaoTest {
 
     @After
     public void tearDown() throws Exception {
-           dao.delete(userId);
     }
 }

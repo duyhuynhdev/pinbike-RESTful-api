@@ -66,8 +66,8 @@ public class VietGuysSMS {
             default: flag = false;
         }
         if(flag) {
-            new SendMailUtil("tung@pinride.me","Message from viet guy sms after sent activation code", warning ).send();
-            new SendMailUtil("hpduy17@gmail.com","Message from viet guy sms after sent activation code", warning ).send();
+            new SendMailUtil("tungstuff@pinride.me","Message from viet guy sms after sent activation code", warning ).send();
+            new SendMailUtil("duyhuynh@pinride.me","Message from viet guy sms after sent activation code", warning ).send();
         }
         System.out.println(output);
     }

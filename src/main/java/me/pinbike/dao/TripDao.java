@@ -21,6 +21,36 @@ public class TripDao extends DaoTemplate<TTrip> {
         logger = LogUtil.getLogger(this.getClass());
     }
 
+    public long getNumberTravelledDriverTrip(long driverId){
+        try {
+            logger.info(driverId);
+            AdapterResponseValue.ResponseValue<Long> response = client.getTravelledDriverTripsSize(driverId);
+            validateResponse(response.getErrorCode(), getGenericName() + ".getNumberTravelledDriverTrip()", driverId+"");
+            return response.getValue();
+        } catch (PinBikeException ex) {
+            logger.error(ex.getMessage(), ex);
+            throw ex;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+            throw new PinBikeException(AC.MessageCode.SYSTEM_EXCEPTION, ex.getMessage());
+        }
+    }
+
+    public long getNumberTravelledPassengerTrip(long passenger){
+        try {
+            logger.info(passenger);
+            AdapterResponseValue.ResponseValue<Long> response = client.getTravelledPassengerTripsSize(passenger);
+            validateResponse(response.getErrorCode(), getGenericName() + ".getNumberTravelledPassengerTrip()", passenger+"");
+            return response.getValue();
+        } catch (PinBikeException ex) {
+            logger.error(ex.getMessage(), ex);
+            throw ex;
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
+            throw new PinBikeException(AC.MessageCode.SYSTEM_EXCEPTION, ex.getMessage());
+        }
+    }
+
     public List<TTrip> getTripByDriver(long driverId) {
         try {
             logger.info(driverId);

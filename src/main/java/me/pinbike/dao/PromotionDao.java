@@ -3,6 +3,7 @@ package me.pinbike.dao;
 import com.pinride.pinbike.config.Const;
 import com.pinride.pinbike.config.adapter.AdapterResponseValue;
 import com.pinride.pinbike.thrift.TPromoCode;
+import com.pinride.pinbike.thrift.TTrip;
 import com.pinride.pinbike.thriftclient.TPromoCodeClientImpl;
 import me.pinbike.provider.exception.PinBikeException;
 import me.pinbike.sharedjava.model.constanst.AC;
@@ -82,6 +83,14 @@ public class PromotionDao extends DaoTemplate<TPromoCode> {
     }
 
     public void checkPromoCode(TPromoCode promoCode, long userId) {
+        if (promoCode.promoCodeType == Const.PinBike.PromoCodeType.PROMOCODE_TYPE_NEWUSER) {
+            try {
+                List<TTrip> trips = new TripDao().getTripByPassenger(userId);
+                if (trips != null && trips.size() > 0)
+                    throw new PinBikeException(AC.MessageCode.PROMOCODE_JUST_APPLY_FOR_NEW_USER);
+            } catch (Exception ex) {
+            }
+        }
         if (promoCode.promoCodeType == Const.PinBike.PromoCodeType.PROMOCODE_TYPE_GROUP
                 && promoCode.sendGroupUserId != null
                 && !promoCode.sendGroupUserId.contains(userId))
@@ -94,7 +103,7 @@ public class PromotionDao extends DaoTemplate<TPromoCode> {
             throw new PinBikeException(AC.MessageCode.PROMOCODE_HAS_BEEN_USED);
         long today = new Date().getTime();
         if (promoCode.startDate > today || promoCode.endDate < today)
-            throw new PinBikeException(AC.MessageCode.PROMOCODE_IS_INVALID);
+            throw new PinBikeException(AC.MessageCode.PROMOCODE_EXPIRED);
         if (promoCode.isUsed)
             throw new PinBikeException(AC.MessageCode.PROMOCODE_HAS_BEEN_USED);
     }
@@ -138,5 +147,4 @@ public class PromotionDao extends DaoTemplate<TPromoCode> {
             throw new PinBikeException(AC.MessageCode.SYSTEM_EXCEPTION, ex.getMessage());
         }
     }
-
 }
