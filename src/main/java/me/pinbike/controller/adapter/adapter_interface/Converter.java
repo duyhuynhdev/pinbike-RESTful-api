@@ -175,6 +175,12 @@ public class Converter {
         tripDetail.passengerId = trip.passengerId;
         tripDetail.price = trip.price;
         tripDetail.promoCodeValue = trip.promoCodeValue;
+        try {
+            tripDetail.passengerMessage = trip.notes.split("###")[0];
+        }catch (Exception ignored){}
+        try {
+            tripDetail.bikeShortInfo = trip.notes.split("###")[1];
+        }catch (Exception ignored){}
         return tripDetail;
     }
 

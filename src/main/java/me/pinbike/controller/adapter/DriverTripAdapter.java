@@ -139,7 +139,7 @@ public class DriverTripAdapter implements IDriverTripAdapter {
             trip.status = AC.UpdatedStatus.ON_ROAD;
             try {
                 TBike bike = bikeDao.get(driver.currentBikeId);
-                trip.notes = bike.model + " " + bike.licensePlate + " " + bike.description;
+                trip.notes += "###"+ bike.model + " " + bike.licensePlate + " " + bike.description;
             } catch (Exception ignored) {
             }
             tripDao.update(trip);

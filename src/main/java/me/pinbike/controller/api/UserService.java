@@ -358,6 +358,22 @@ public class UserService {
         return response;
     }
 
+    @POST
+    @Path("/UpdateUserIntroAPI")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<UpdateUserIntroAPI.Response> UpdateUserIntroAPI(@Valid RequestWrapper<UpdateUserIntroAPI.Request> request) throws IOException {
+        IUserAdapter adapter = new UserAdapter();
+
+        UpdateUserIntroAPI.Response responseContent;
+        UpdateUserIntroAPI.Request requestContent = request.requestContent;
+
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        responseContent = adapter.updateUserIntro(requestContent);
+        ResponseWrapper<UpdateUserIntroAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+        return response;
+    }
+
 }
 
 

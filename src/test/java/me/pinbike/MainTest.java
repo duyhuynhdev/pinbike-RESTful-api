@@ -1,10 +1,14 @@
 package me.pinbike;
 
 import com.pinride.pinbike.config.Const;
+import com.pinride.pinbike.thrift.TBroadcast;
 import com.pinride.pinbike.thrift.TConst;
 import com.pinride.pinbike.thrift.TUser;
+import me.pinbike.controller.adapter.UserAdapter;
+import me.pinbike.dao.BroadcastDao;
 import me.pinbike.dao.ConstDao;
 import me.pinbike.dao.UserDao;
+import me.pinbike.sharedjava.model.LogoutAPI;
 import me.pinbike.sharedjava.model.base.GroupContact;
 import me.pinbike.sharedjava.model.base.OfflineContact;
 import org.fluttercode.datafactory.impl.DataFactory;
@@ -38,7 +42,7 @@ public class MainTest {
         ConstDao.Const consts = new ConstDao.Const();
         consts.beginningCredit = 500 * 1000;
         consts.aroundDistance = 0.5;
-        consts.coverImage = "http://www.pinbike.me/api/pinbike2/images/cover.png";
+        consts.coverImage = "http://www.pinbike.me:8080/api/pinbike2/images/cover.png";
         consts.fanPage = "https://www.facebook.com/PinBikeMe/";
         consts.faqDriverLink = "http://www.pinbike.me/faq/driver/";
         consts.faqPassengerLink = "http://www.pinbike.me/faq/passenger/";
@@ -59,6 +63,20 @@ public class MainTest {
         UserDao userDao = new UserDao();
         TUser user = userDao.getUserBySocial("huanpt8006@gmail.com", Const.PinBike.SocialType.EMAIL);
         user.verifiedStatus = Const.PinBike.VerifiedStatus.VERIFIED;
+        System.out.println(user.toString());
+
+    }
+
+    @Test
+    public void logoutNormally() throws UnsupportedEncodingException {
+        UserDao userDao = new UserDao();
+        BroadcastDao broadcastDao = new BroadcastDao();
+        TUser user = userDao.getUserBySocial("hpduy17@gmail.com", Const.PinBike.SocialType.EMAIL);
+        LogoutAPI.Request request = new LogoutAPI.Request();
+        request.userId = user.userId;
+        TBroadcast broadcast = broadcastDao.get(user.currentBroadcastId);
+        request.deviceId = broadcast.deviceId;
+        new UserAdapter().logout(request);
         System.out.println(user.toString());
 
     }

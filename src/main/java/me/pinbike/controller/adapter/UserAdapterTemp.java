@@ -120,4 +120,9 @@ public class UserAdapterTemp extends ModelDataFactory implements IUserAdapter {
     public UpdateUserSocialAPI.Response updateUserSocial(UpdateUserSocialAPI.Request request) {
         return null;
     }
+
+    @Override
+    public UpdateUserIntroAPI.Response updateUserIntro(UpdateUserIntroAPI.Request request) {
+        return null;
+    }
 }

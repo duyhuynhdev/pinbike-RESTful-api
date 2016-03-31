@@ -11,7 +11,7 @@ import java.util.List;
 public class PinBikeConstant {
     public static final String md5key = "GoBigOrGoHome";
     public static final String accesskey = "pinbikeonair";
-    public static final String APPLICATION_JSON_UTF8 = "application/json;charset=UTF-8";
+    public static final String APPLICATION_JSON_UTF8 = "application/json;";
 
     public static class BackEndConfig {
 //        public static final String Host = "pinride.ddns.net";

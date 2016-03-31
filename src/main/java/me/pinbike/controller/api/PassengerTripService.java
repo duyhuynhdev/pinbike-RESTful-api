@@ -112,7 +112,8 @@ public class PassengerTripService {
 
         return response;
     }
-//    @POST
+
+    //    @POST
 //    @Path("/GetDriverUpdatedAPI")//TODO: LONG POLLING
 //    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
 //    public void GetDriverUpdatedAPI(@Valid RequestWrapper<GetDriverUpdatedAPI.Request> request, final @Suspend(30000) AsynchronousResponse rep) throws IOException {
@@ -152,6 +153,7 @@ public class PassengerTripService {
 
         return response;
     }
+
     @POST
     @Path("/GetTripDetailsAPI")
     @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
@@ -164,6 +166,23 @@ public class PassengerTripService {
         logger.info(request.getClass().getSimpleName() + ":" + request.toString());
         responseContent = adapter.getTripDetail(requestContent);
         ResponseWrapper<GetTripDetailsAPI.Response> response = new ResponseWrapper<>(responseContent);
+        logger.info(response.getClass().getSimpleName() + ":" + response.toString());
+
+        return response;
+    }
+
+    @POST
+    @Path("/UpdatePassengerMessageAPI")
+    @Produces(PinBikeConstant.APPLICATION_JSON_UTF8)
+    public ResponseWrapper<UpdatePassengerMessageAPI.Response> UpdatePassengerMessageAPI(@Valid RequestWrapper<UpdatePassengerMessageAPI.Request> request) throws IOException {
+        IPassengerTripAdapter adapter = new PassengerTripAdapter();
+
+        UpdatePassengerMessageAPI.Response responseContent;
+        UpdatePassengerMessageAPI.Request requestContent = request.requestContent;
+
+        logger.info(request.getClass().getSimpleName() + ":" + request.toString());
+        responseContent = adapter.updatePassengerMessage(requestContent);
+        ResponseWrapper<UpdatePassengerMessageAPI.Response> response = new ResponseWrapper<>(responseContent);
         logger.info(response.getClass().getSimpleName() + ":" + response.toString());
 
         return response;

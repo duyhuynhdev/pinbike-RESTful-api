@@ -33,6 +33,9 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         OrganizationDao organizationDao = new OrganizationDao();
         //check user exits
         TUser passenger = userDao.get(request.passengerId);
+        //Update passenger status
+        passenger.status = AC.UpdatedStatus.AVAILABLE;
+        userDao.update(passenger);
         //create trip
         TTrip trip = new TTrip();
         trip.dateCreated = DateTimeUtils.now();
@@ -47,8 +50,8 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         trip.startLatLng.lng = request.startLocation.lng;
         trip.passengerId = passenger.userId;
         trip.price = request.price;
+        trip.notes = request.passengerMessage;
         trip = tripDao.insert(trip);
-
         //Get driver around
         Converter converter = new Converter();
         List<TUser> users = userDao.getDriverAround(request.startLocation);
@@ -83,6 +86,18 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
         response.tripId = trip.tripId;
         response.promoString = promoStrings;
         return response;
+    }
+
+    @Override
+    public UpdatePassengerMessageAPI.Response updatePassengerMessage(UpdatePassengerMessageAPI.Request request) {
+        TripDao tripDao = new TripDao();
+        UserDao userDao = new UserDao();
+        PollingDB db = PollingDB.getInstance();
+        TUser user = userDao.get(request.userId);
+        TTrip trip = tripDao.get(request.tripId);
+        trip.notes = request.message;
+        tripDao.update(trip);
+        return null;
     }
 
     @Override
@@ -214,7 +229,7 @@ public class PassengerTripAdapter implements IPassengerTripAdapter {
             Collections.sort(driverTrips, new Comparator<TTrip>() {
                 @Override
                 public int compare(TTrip o1, TTrip o2) {
-                    if (o1.dateCreated < o2.dateCreated)
+                    if (o1.dateCreated > o2.dateCreated)
                         return -1;
                     return 1;
                 }

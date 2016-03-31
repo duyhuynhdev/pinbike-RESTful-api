@@ -45,4 +45,6 @@ public interface IUserAdapter {
 
     UpdateUserSocialAPI.Response updateUserSocial(UpdateUserSocialAPI.Request request);
 
+    UpdateUserIntroAPI.Response updateUserIntro(UpdateUserIntroAPI.Request request);
+
 }

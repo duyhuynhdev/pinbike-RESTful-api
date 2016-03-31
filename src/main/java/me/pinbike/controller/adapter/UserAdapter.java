@@ -7,7 +7,6 @@ import com.pinride.pinbike.thrift.TRating;
 import com.pinride.pinbike.thrift.TUser;
 import me.pinbike.controller.adapter.adapter_interface.Converter;
 import me.pinbike.controller.adapter.adapter_interface.IUserAdapter;
-import me.pinbike.controller.adapter.adapter_interface.ModelDataFactory;
 import me.pinbike.dao.*;
 import me.pinbike.dao.non_db.ActivationDao;
 import me.pinbike.dao.payment.PaymentDao;
@@ -25,7 +24,6 @@ import me.pinbike.util.DateTimeUtils;
 import me.pinbike.util.PinBikeConstant;
 import me.pinbike.util.SendMailUtil;
 import me.pinbike.util.common.Path;
-import me.pinbike.util.sample_data.SampleData;
 import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.IOException;
@@ -154,7 +152,7 @@ public class UserAdapter implements IUserAdapter {
         if (request.avatar != null && !request.avatar.isEmpty())
             user.avatar = request.avatar;
         else
-            user.avatar = new ModelDataFactory().getFactory().getItem(SampleData.avatars);
+            user.avatar = "http://103.20.148.111:8080/api/pinbike2/images/avatars/default.png";
         user.birthday = request.birthday;
         user.sex = request.sex;
         user.email = request.email;
@@ -390,6 +388,25 @@ public class UserAdapter implements IUserAdapter {
             organizations = organizationDao.getList(user.organizationIds);
         UserDetail userDetail = new Converter().convertUser(user, bikes, organizations, false);
         return new UpdateUserSocialAPI.Response(userDetail);
+    }
+
+    @Override
+    public UpdateUserIntroAPI.Response updateUserIntro(UpdateUserIntroAPI.Request request) {
+        UserDao userDao = new UserDao();
+        BikeDao bikeDao = new BikeDao();
+        OrganizationDao organizationDao = new OrganizationDao();
+        TUser user = userDao.get(request.userId);
+        user.intro = request.intro;
+        userDao.update(user);
+        user = userDao.get(request.userId);
+        List<TBike> bikes = null;
+        List<TOrganization> organizations = null;
+        if (user.bikeIds != null)
+            bikes = bikeDao.getList(user.bikeIds);
+        if (user.organizationIds != null)
+            organizations = organizationDao.getList(user.organizationIds);
+        UserDetail userDetail = new Converter().convertUser(user, bikes, organizations, false);
+        return new UpdateUserIntroAPI.Response(userDetail);
     }
 
 

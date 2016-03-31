@@ -23,6 +23,11 @@ public class PassengerTripAdapterTemp extends ModelDataFactory implements IPasse
     }
 
     @Override
+    public UpdatePassengerMessageAPI.Response updatePassengerMessage(UpdatePassengerMessageAPI.Request request) {
+        return null;
+    }
+
+    @Override
     public CancelTripAPI.Response cancelTrip(CancelTripAPI.Request request) {
         PollingDB db = PollingDB.getInstance();
         // remove request

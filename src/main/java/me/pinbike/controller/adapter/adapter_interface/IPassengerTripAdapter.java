@@ -9,6 +9,8 @@ public interface IPassengerTripAdapter {
 
     CreateTripAPI.Response createTrip(CreateTripAPI.Request request);
 
+    UpdatePassengerMessageAPI.Response updatePassengerMessage(UpdatePassengerMessageAPI.Request request);
+
     CancelTripAPI.Response cancelTrip(CancelTripAPI.Request request);
 
     RequestDriverAPI.Response requestDriver(RequestDriverAPI.Request request);
